@@ -1,9 +1,9 @@
-"""Stage 5: run interactions through all 4 signals and fusion end to end."""
+"""Run interactions through all 4 signals and fusion end to end."""
 import pandas as pd
 
-from trustgraph.anomaly.data_gen import FEATURES
 from trustgraph.anomaly.detector import anomaly_score
-from trustgraph.fusion import fuse
+from trustgraph.anomaly.features import RAW_FEATURES
+from trustgraph.fusion import fuse, risk_band
 from trustgraph.stubs import continuity_score, precedent_score, similarity_score
 
 SIGNAL_FUNCS = [continuity_score, similarity_score, precedent_score, anomaly_score]
@@ -11,8 +11,7 @@ SIGNAL_FUNCS = [continuity_score, similarity_score, precedent_score, anomaly_sco
 
 def score_interaction(interaction: dict):
     signals = [fn(interaction) for fn in SIGNAL_FUNCS]
-    fused = fuse(signals)
-    return signals, fused
+    return signals, fuse(signals)
 
 
 def main():
@@ -24,16 +23,15 @@ def main():
     signals, fused = score_interaction(sample_interaction)
     for s in signals:
         print(f"  {s.signal_name:12s} score={s.score:.2f}  {s.explanation}")
-    print(f"  {fused.signal_name:12s} score={fused.score:.2f}  {fused.explanation}")
+    print(f"  {fused.signal_name:12s} score={fused.score:.2f}  [{risk_band(fused.score)}]  {fused.explanation}")
 
     print()
     print("=== Stage 2 anomalous rows end to end (all 4 signals + fusion) ===")
     anomalous = pd.read_csv("data/anomaly/anomalous.csv")
     for i, row in anomalous.iterrows():
-        interaction = row[FEATURES].to_dict()
-        _, fused = score_interaction(interaction)
+        _, fused = score_interaction(row[RAW_FEATURES].to_dict())
         print(f"  row {i:2d} pushed={row['pushed_features']:<30s} "
-              f"fused_score={fused.score:.2f}  driver: {fused.explanation.split('driven by ')[1]}")
+              f"{fused.score:.2f} [{risk_band(fused.score):<7s}] {fused.explanation}")
 
 
 if __name__ == "__main__":

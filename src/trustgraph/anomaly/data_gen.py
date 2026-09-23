@@ -11,14 +11,7 @@ Columns:
 import numpy as np
 import pandas as pd
 
-FEATURES = [
-    "duration_sec",
-    "hour_of_day",
-    "amount_ratio",
-    "contact_freq_24h",
-    "urgency_score",
-    "new_channel_flag",
-]
+from trustgraph.anomaly.features import RAW_FEATURES as FEATURES
 
 # Business-hours weighting for hour_of_day: 9-18 gets most of the mass,
 # the rest of the day gets a thin tail so "normal" isn't ONLY 9-to-5.
@@ -82,18 +75,51 @@ def generate_anomalous_rows(n: int = 15, seed: int = 1) -> pd.DataFrame:
     return base
 
 
+# Hand-written scam patterns, independent of the random anomaly generator, so
+# detection on these isn't guaranteed by construction. NaN = feature unknown.
+# subtle_invoice_bump is deliberately mild: it's expected to be missed and
+# shows where this signal needs help from the others.
+SCENARIOS = [
+    {"scenario": "grandparent_emergency", "duration_sec": 150, "hour_of_day": 2,
+     "amount_ratio": 6.0, "contact_freq_24h": 3, "urgency_score": 5, "new_channel_flag": 1},
+    {"scenario": "ceo_wire_fraud", "duration_sec": 60, "hour_of_day": 11,
+     "amount_ratio": 9.0, "contact_freq_24h": 2, "urgency_score": 4, "new_channel_flag": 0},
+    {"scenario": "sim_swap_takeover", "duration_sec": 45, "hour_of_day": 14,
+     "amount_ratio": 3.5, "contact_freq_24h": 1, "urgency_score": 1, "new_channel_flag": 1},
+    {"scenario": "harassment_burst", "duration_sec": 15, "hour_of_day": 22,
+     "amount_ratio": 1.0, "contact_freq_24h": 20, "urgency_score": 2, "new_channel_flag": 0},
+    {"scenario": "romance_scam_escalation", "duration_sec": 900, "hour_of_day": 23,
+     "amount_ratio": 4.0, "contact_freq_24h": 4, "urgency_score": 1, "new_channel_flag": 0},
+    {"scenario": "tech_support_popup", "duration_sec": 1200, "hour_of_day": 16,
+     "amount_ratio": 2.5, "contact_freq_24h": 1, "urgency_score": 3, "new_channel_flag": 1},
+    {"scenario": "one_ring_callback_bait", "duration_sec": 1, "hour_of_day": 3,
+     "amount_ratio": np.nan, "contact_freq_24h": 5, "urgency_score": 0, "new_channel_flag": 1},
+    {"scenario": "subtle_invoice_bump", "duration_sec": 90, "hour_of_day": 10,
+     "amount_ratio": 1.6, "contact_freq_24h": 1, "urgency_score": 1, "new_channel_flag": 0},
+]
+
+
 def main():
-    normal = generate_normal_rows(300, seed=0)
-    anomalous = generate_anomalous_rows(15, seed=1)
+    outputs = {
+        "normal": generate_normal_rows(300, seed=0),
+        # Never trained on. Calibration sets the risk-band cut points; test
+        # reports the false-positive rate at those cut points.
+        "normal_calibration": generate_normal_rows(1000, seed=2),
+        "normal_test": generate_normal_rows(1000, seed=3),
+        "anomalous": generate_anomalous_rows(15, seed=1),
+        "scenarios": pd.DataFrame(SCENARIOS),
+    }
+    for name, df in outputs.items():
+        path = f"data/anomaly/{name}.csv"
+        df.to_csv(path, index=False)
+        print(f"Wrote {len(df)} rows -> {path}")
 
-    normal.to_csv("data/anomaly/normal.csv", index=False)
-    anomalous.to_csv("data/anomaly/anomalous.csv", index=False)
-
-    print(f"Wrote {len(normal)} normal rows -> data/anomaly/normal.csv")
-    print(normal.describe().to_string())
     print()
-    print(f"Wrote {len(anomalous)} anomalous rows -> data/anomaly/anomalous.csv")
-    print(anomalous.to_string(index=False))
+    print(outputs["normal"].describe().to_string())
+    print()
+    print(outputs["anomalous"].to_string(index=False))
+    print()
+    print(outputs["scenarios"].to_string(index=False))
 
 
 if __name__ == "__main__":
