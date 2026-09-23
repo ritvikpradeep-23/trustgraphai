@@ -19,12 +19,16 @@ CAUTION_FPR = 0.10
 HIGH_FPR = 0.01
 
 
-def _legit(features_csv: str, identity_json: str) -> list[dict]:
-    """Legit call features paired row-for-row with legit identity histories."""
-    features = pd.read_csv(features_csv)[RAW_FEATURES].to_dict(orient="records")
-    with open(identity_json) as f:
+def _legit(split: str) -> list[dict]:
+    """Legit call features paired row-for-row with legit identity histories
+    and message text, each drawn independently."""
+    features = pd.read_csv(f"data/anomaly/normal_{split}.csv")[RAW_FEATURES].to_dict(orient="records")
+    with open(f"data/continuity/legit_{split}.json") as f:
         identities = json.load(f)
-    return [{**feat, **ident} for feat, ident in zip(features, identities, strict=True)]
+    with open(f"data/similarity/legit_{split}.json") as f:
+        texts = json.load(f)
+    return [{**feat, **ident, "message_text": text}
+            for feat, ident, text in zip(features, identities, texts, strict=True)]
 
 
 def _fused_scores(interactions: list[dict]) -> np.ndarray:
@@ -32,8 +36,8 @@ def _fused_scores(interactions: list[dict]) -> np.ndarray:
 
 
 def main():
-    calibration = _legit("data/anomaly/normal_calibration.csv", "data/continuity/legit_calibration.json")
-    test = _legit("data/anomaly/normal_test.csv", "data/continuity/legit_test.json")
+    calibration = _legit("calibration")
+    test = _legit("test")
     anomalous = pd.read_csv("data/anomaly/anomalous.csv")[RAW_FEATURES].to_dict(orient="records")
 
     calib_scores = _fused_scores(calibration)
@@ -53,7 +57,7 @@ def main():
     print(f"  High:             {np.mean(test_scores >= bands['high']):.1%}")
 
     print()
-    print("Named scenarios (anomaly / continuity -> fused):")
+    print("Named scenarios (anomaly / continuity / similarity -> fused):")
     results = {"scam": [], "legit": []}
     for name, kind, interaction in SCENARIOS:
         signals, fused = score_interaction(interaction)
@@ -62,7 +66,8 @@ def main():
         results[kind].append(band)
         ok = (band != "Low") == (kind == "scam")
         print(f"  {'ok ' if ok else 'MISS'} [{kind:<5s}] {name:<37s} "
-              f"{by_name['anomaly'].score:.2f} / {by_name['continuity'].score:.2f} -> {fused.score:.2f} {band:<7s}")
+              f"{by_name['anomaly'].score:.2f} / {by_name['continuity'].score:.2f} / {by_name['similarity'].score:.2f}"
+              f" -> {fused.score:.2f} {band:<7s}")
         print(f"         {fused.explanation}")
     scams, legit = results["scam"], results["legit"]
     print(f"  -> scams: {sum(b != 'Low' for b in scams)}/{len(scams)} at Caution or above, "

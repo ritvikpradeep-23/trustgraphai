@@ -122,7 +122,8 @@ for severity in ("mild", "moderate", "severe"):
     if severity == "severe":
         check("severe fraud is almost always caught", on >= 0.99, f"{on:.1%}")
 overall = float(np.mean(caught))
-check("99% of all fraud flagged Caution+", overall >= 0.99, f"{overall:.1%}")
+# Rounded: 1485/1500 is exactly 99% but averages to 0.98999... in floating point.
+check("99% of all fraud flagged Caution+", round(overall, 9) >= 0.99, f"{overall:.1%}")
 
 print()
 print("3. Dose-response: push ONE feature on a typical call, others held normal")
