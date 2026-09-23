@@ -1,9 +1,0 @@
-scenario,duration_sec,hour_of_day,amount_ratio,contact_freq_24h,urgency_score,new_channel_flag
-grandparent_emergency,150,2,6.0,3,5,1
-ceo_wire_fraud,60,11,9.0,2,4,0
-sim_swap_takeover,45,14,3.5,1,1,1
-harassment_burst,15,22,1.0,20,2,0
-romance_scam_escalation,900,23,4.0,4,1,0
-tech_support_popup,1200,16,2.5,1,3,1
-one_ring_callback_bait,1,3,,5,0,1
-subtle_invoice_bump,90,10,1.6,1,1,0

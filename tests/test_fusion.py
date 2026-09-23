@@ -47,3 +47,9 @@ def test_risk_bands():
     assert risk_band(0.2, BANDS) == "Low"
     assert risk_band(0.5, BANDS) == "Caution"
     assert risk_band(0.95, BANDS) == "High"
+
+
+def test_supporting_signals_are_listed_after_the_driver():
+    fused = fuse(_signals(continuity=0.5, precedent=0.1, anomaly=0.9))
+    assert fused.explanation.index("'anomaly'") < fused.explanation.index("Also 'continuity'")
+    assert "precedent" not in fused.explanation

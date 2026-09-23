@@ -15,6 +15,10 @@ DEFAULT_WEIGHTS = {
 
 BANDS_PATH = "models/risk_bands.json"
 
+# Secondary signals at or above this score are listed after the driver, so the
+# UI shows every reason that contributed (a nickname at 0.1 isn't worth it).
+SUPPORTING_MIN = 0.3
+
 _bands = None
 
 
@@ -34,6 +38,12 @@ def fuse(signals: list[RiskSignal], weights: dict[str, float] = None) -> RiskSig
             f"Combined score {combined_score:.2f}; driven by '{driver.signal_name}' "
             f"(score {driver.score:.2f}): {driver.explanation}"
         )
+        also = sorted(
+            (s for s in signals if s is not driver and contributions[s.signal_name] >= SUPPORTING_MIN),
+            key=lambda s: contributions[s.signal_name], reverse=True,
+        )
+        for s in also:
+            explanation += f". Also '{s.signal_name}' (score {s.score:.2f}): {s.explanation}"
 
     return RiskSignal(signal_name="fused", score=combined_score, explanation=explanation)
 
