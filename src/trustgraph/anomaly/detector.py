@@ -11,6 +11,14 @@ from trustgraph.signal import RiskSignal
 
 Z_THRESHOLD = 2.0
 
+# IsolationForest can't tell how far past the training range a value is (9x
+# the usual amount isolates as fast as 2x), so an extreme single feature sets
+# a minimum score that keeps rising with z: 0.5 at z=4, ~0.73 at z=6, ~0.9 at z=8.4.
+Z_FLOOR_START = 4.0
+Z_FLOOR_SCALE = 2.0
+# Binary: z is fixed (~4.2 when set), and "new channel" alone isn't extreme.
+_NO_FLOOR = {"new_channel_flag"}
+
 # 0.5 is where decision_function crosses zero, i.e. the model's own
 # contamination=0.05 boundary.
 _MODEL_BOUNDARY = 0.5
@@ -72,15 +80,30 @@ def _describe(feat: str, value: float, z: float) -> str:
     return "first contact from this device/channel"
 
 
-def _explain(values: dict, missing: list[str], score: float, bundle: dict) -> str:
-    unusual = []
+def _strengths(values: dict, missing: list[str], bundle: dict) -> dict[str, tuple[float, float]]:
+    """feature -> (how unusual, signed z). Imputed features are skipped."""
+    out = {}
     for feat in RAW_FEATURES:
         if feat in missing:
             continue
         z = _z(feat, values[feat], bundle)
-        strength = z if feat in _ONE_SIDED else abs(z)
-        if strength > Z_THRESHOLD:
-            unusual.append((strength, _describe(feat, values[feat], z)))
+        out[feat] = (z if feat in _ONE_SIDED else abs(z), z)
+    return out
+
+
+def _extreme_floor(strengths: dict[str, tuple[float, float]]) -> float:
+    z = max((s for feat, (s, _) in strengths.items() if feat not in _NO_FLOOR), default=0.0)
+    if z <= Z_FLOOR_START:
+        return 0.0
+    return 1.0 / (1.0 + math.exp(-(z - Z_FLOOR_START) / Z_FLOOR_SCALE))
+
+
+def _explain(values: dict, missing: list[str], strengths: dict, score: float) -> str:
+    unusual = [
+        (strength, _describe(feat, values[feat], z))
+        for feat, (strength, z) in strengths.items()
+        if strength > Z_THRESHOLD
+    ]
 
     if unusual:
         unusual.sort(reverse=True)
@@ -108,10 +131,12 @@ def anomaly_score(interaction: dict) -> RiskSignal:
 
     row = to_model_frame(pd.DataFrame([values]))
     decision_value = bundle["model"].decision_function(row)[0]
-    score = float(np.clip(_normalize(decision_value, bundle["sigma"]), 0.0, 1.0))
+    strengths = _strengths(values, missing, bundle)
+    score = max(_normalize(decision_value, bundle["sigma"]), _extreme_floor(strengths))
+    score = float(np.clip(score, 0.0, 1.0))
 
     return RiskSignal(
         signal_name="anomaly",
         score=score,
-        explanation=_explain(values, missing, score, bundle),
+        explanation=_explain(values, missing, strengths, score),
     )

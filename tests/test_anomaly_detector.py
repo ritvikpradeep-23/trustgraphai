@@ -12,8 +12,8 @@ ANOMALOUS_INTERACTION = {
     "duration_sec": 30, "hour_of_day": 3, "amount_ratio": 8.5,
     "contact_freq_24h": 25, "urgency_score": 7, "new_channel_flag": 1,
 }
-# Single mild push: amount_ratio somewhat elevated, everything else normal.
-BORDERLINE_AMOUNT = {**NORMAL_INTERACTION, "duration_sec": 100, "hour_of_day": 13, "amount_ratio": 2.2}
+# Single mild push: amount_ratio just past the normal range, below the floor.
+BORDERLINE_AMOUNT = {**NORMAL_INTERACTION, "duration_sec": 100, "hour_of_day": 13, "amount_ratio": 1.4}
 # Single mild push: an unseen channel, everything else normal.
 BORDERLINE_NEW_CHANNEL = {**NORMAL_INTERACTION, "duration_sec": 80, "hour_of_day": 15, "new_channel_flag": 1}
 
@@ -43,7 +43,7 @@ def test_borderline_amount_ratio_scores_between_normal_and_anomalous():
     signal = anomaly_score(BORDERLINE_AMOUNT)
     _check_shape(signal)
     assert 0.1 <= signal.score <= 0.6
-    assert "2.2× this contact's usual" in signal.explanation
+    assert "1.4× this contact's usual" in signal.explanation
 
 
 def test_borderline_new_channel_scores_between_normal_and_anomalous():
@@ -51,6 +51,17 @@ def test_borderline_new_channel_scores_between_normal_and_anomalous():
     _check_shape(signal)
     assert 0.1 <= signal.score <= 0.6
     assert "first contact from this device/channel" in signal.explanation
+
+
+def test_score_keeps_rising_past_the_training_range():
+    scores = [anomaly_score({**BORDERLINE_AMOUNT, "amount_ratio": a}).score for a in (1.4, 1.6, 2.2, 9.0)]
+    assert scores == sorted(scores)
+    assert scores[1] >= 0.5
+    assert scores[-1] >= 0.9
+
+
+def test_new_channel_alone_is_not_floored():
+    assert anomaly_score(BORDERLINE_NEW_CHANNEL).score < 0.5
 
 
 def test_missing_feature_is_imputed_and_reported():
