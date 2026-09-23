@@ -13,6 +13,10 @@ The signals combine into one risk level: **Low**, **Caution** or **High**.
 
 ## Try it in your browser
 
+**Windows:** install [Python 3.12](https://www.python.org/downloads/) (tick "Add python.exe to PATH"), then double-click `start_website.bat`.
+
+**Any system:**
+
 ```bash
 pip install -r requirements.txt
 python run_website.py
