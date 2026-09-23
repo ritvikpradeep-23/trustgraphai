@@ -40,7 +40,7 @@ def fuse(signals: list[RiskSignal], weights: dict[str, float] = None) -> RiskSig
 
 def risk_band(score: float, bands: dict = None) -> str:
     """Low / Caution / High, with cut points calibrated on held-out normal
-    traffic by evaluate.py (Caution ~5% false positives, High ~1%)."""
+    traffic by evaluate.py (Caution 10% of calibration traffic, High 1%)."""
     global _bands
     if bands is None:
         if _bands is None:

@@ -11,7 +11,10 @@ from trustgraph.anomaly.features import RAW_FEATURES
 from trustgraph.fusion import BANDS_PATH, risk_band
 from trustgraph.pipeline import score_interaction
 
-CAUTION_FPR = 0.05
+# Caution is a soft warning, so it gets the looser budget: 10% of this
+# calibration set came out at ~4.5% of independently generated legit traffic
+# while lifting fraud caught from ~98.5% to ~99%. High stays strict.
+CAUTION_FPR = 0.10
 HIGH_FPR = 0.01
 
 
