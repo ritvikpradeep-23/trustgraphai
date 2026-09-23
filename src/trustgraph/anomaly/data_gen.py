@@ -29,10 +29,10 @@ def generate_normal_rows(n: int = 300, seed: int = 0) -> pd.DataFrame:
     duration_sec = rng.uniform(20, 180, size=n)
     hour_of_day = rng.choice(np.arange(24), size=n, p=_HOUR_WEIGHTS)
     amount_ratio = np.clip(rng.normal(1.0, 0.15, size=n), 0.1, None)
+    # Unclipped: "mostly 0-2" still leaves a real tail of legit callers who
+    # reach out 3+ times. Clipping taught the model that 3 contacts is extreme.
     contact_freq_24h = rng.poisson(0.8, size=n)
-    contact_freq_24h = np.clip(contact_freq_24h, 0, 2)
     urgency_score = rng.poisson(0.4, size=n)
-    urgency_score = np.clip(urgency_score, 0, 1)
     new_channel_flag = rng.choice([0, 1], size=n, p=[0.95, 0.05])
 
     return pd.DataFrame({

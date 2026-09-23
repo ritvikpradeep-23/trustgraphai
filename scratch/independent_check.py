@@ -5,9 +5,14 @@ durations/amounts, unclipped Poisson counts, an evening-heavy hour mix), not
 from trustgraph.anomaly.data_gen, so the model sees traffic it wasn't built
 around. Every check runs with the floor ON and OFF to isolate what it does.
 
-Run: PYTHONPATH=src python3 scratch/independent_check.py
+Targets: >=99% of fraud flagged at Caution or above, while <=5% of fresh
+legit calls are. Pass a seed to draw a new sample (the rule was tuned on
+2026; report on a seed it has never seen).
+
+Run: PYTHONPATH=src python3 scratch/independent_check.py [seed]
 """
 import json
+import sys
 from contextlib import contextmanager
 
 import numpy as np
@@ -16,7 +21,9 @@ from trustgraph.anomaly import detector
 from trustgraph.fusion import BANDS_PATH, risk_band
 from trustgraph.pipeline import score_interaction
 
-rng = np.random.default_rng(2026)
+SEED = int(sys.argv[1]) if len(sys.argv) > 1 else 2026
+rng = np.random.default_rng(SEED)
+print(f"seed {SEED}")
 BANDS = json.load(open(BANDS_PATH))
 FEATURES = ["duration_sec", "hour_of_day", "amount_ratio", "contact_freq_24h", "urgency_score", "new_channel_flag"]
 results = []
@@ -24,13 +31,13 @@ results = []
 
 @contextmanager
 def floor(enabled: bool):
-    original = detector._extreme_floor
+    original = detector._evidence_floor
     if not enabled:
-        detector._extreme_floor = lambda strengths: 0.0
+        detector._evidence_floor = lambda strengths: 0.0
     try:
         yield
     finally:
-        detector._extreme_floor = original
+        detector._evidence_floor = original
 
 
 def fused(interaction: dict) -> float:
@@ -98,22 +105,25 @@ with floor(False):
     off_caution = flag_rate(normal_rows, BANDS["caution"])
 check("floor adds few false positives", on_caution - off_caution <= 0.02,
       f"+{on_caution - off_caution:.1%} Caution+ from the floor")
-check("Caution FPR stays near the 5% target under distribution shift", on_caution <= 0.10,
-      f"{on_caution:.1%}")
+check("legit calls flagged Caution+ stay within the 5% budget", on_caution <= 0.05, f"{on_caution:.1%}")
 
 print()
-print("2. Fresh fraud at three severities (200 rows each), Caution+ detection")
+print("2. Fresh fraud at three severities (500 rows each), Caution+ detection")
+caught = []
 for severity in ("mild", "moderate", "severe"):
-    rows = fresh_fraud(200, severity)
+    rows = fresh_fraud(500, severity)
     with floor(False):
         off = flag_rate(rows, BANDS["caution"])
     with floor(True):
         on = flag_rate(rows, BANDS["caution"])
         on_high = flag_rate(rows, BANDS["high"])
-    print(f"     {severity:<9s} floor OFF {off:.0%} -> ON {on:.0%} (High {on_high:.0%})")
+        caught.append(on)
+    print(f"     {severity:<9s} floor OFF {off:.1%} -> ON {on:.1%} (High {on_high:.1%})")
     check(f"floor never lowers {severity} detection", on >= off, f"{off:.0%} -> {on:.0%}")
     if severity == "severe":
-        check("severe fraud is almost always caught", on >= 0.95, f"{on:.0%}")
+        check("severe fraud is almost always caught", on >= 0.99, f"{on:.1%}")
+overall = float(np.mean(caught))
+check("99% of all fraud flagged Caution+", overall >= 0.99, f"{overall:.1%}")
 
 print()
 print("3. Dose-response: push ONE feature on a typical call, others held normal")
@@ -151,27 +161,33 @@ check("with floor, 9x reaches High", risk_band(on_9, BANDS) == "High", f"{on_9:.
 print()
 print("5. Things the floor must NOT do")
 new_ch = fused({**base, "new_channel_flag": 1})
+alone = {f: fused({**base, f: v}) for f, v in (("contact_freq_24h", 3), ("urgency_score", 2))}
+check("one mildly-off count alone stays Low (legit traffic does this ~3% of the time)",
+      all(risk_band(v, BANDS) == "Low" for v in alone.values()), ", ".join(f"{k} {v:.2f}" for k, v in alone.items()))
 check("new channel alone is not floored to Caution", new_ch < BANDS["caution"], f"{new_ch:.2f}")
 low_amt = fused({**base, "amount_ratio": 0.05})
 check("a tiny amount is not treated as suspicious", low_amt < BANDS["caution"], f"0.05x -> {low_amt:.2f}")
 three_am = fused({**base, "hour_of_day": 3})
 check("3am alone stays below High", risk_band(three_am, BANDS) != "High", f"{three_am:.2f}")
+combo = fused({**base, "amount_ratio": 1.3, "contact_freq_24h": 3, "urgency_score": 2})
+check("several mild signals together reach Caution", risk_band(combo, BANDS) != "Low", f"{combo:.2f}")
 
 print()
 print("6. Garbage-in robustness")
 edge_cases = {
-    "all missing": {},
-    "all NaN": {f: float("nan") for f in FEATURES},
-    "absurd amount 1e9": {**base, "amount_ratio": 1e9},
-    "negative duration": {**base, "duration_sec": -50},
-    "hour 24": {**base, "hour_of_day": 24},
-    "extra unknown keys": {**base, "caller_id": "+1555", "notes": "hi"},
+    "all missing": ({}, "Insufficient data"),
+    "all NaN": ({f: float("nan") for f in FEATURES}, "Insufficient data"),
+    "absurd amount 1e9": ({**base, "amount_ratio": 1e9}, "1,000,000,000×"),
+    "negative duration": ({**base, "duration_sec": -50}, "call duration invalid"),
+    "hour 24": ({**base, "hour_of_day": 24}, "time of day invalid"),
+    "non-numeric amount": ({**base, "amount_ratio": "lots"}, "amount invalid"),
+    "extra unknown keys": ({**base, "caller_id": "+1555", "notes": "hi"}, "No unusual behavior"),
 }
-for name, interaction in edge_cases.items():
+for name, (interaction, expected) in edge_cases.items():
     try:
         signals, result = score_interaction(interaction)
-        ok = 0.0 <= result.score <= 1.0 and not np.isnan(result.score)
         explanation = next(s for s in signals if s.signal_name == "anomaly").explanation
+        ok = 0.0 <= result.score <= 1.0 and expected in explanation
         check(name, ok, f"{result.score:.2f}  {explanation}")
     except Exception as exc:
         check(name, False, f"{type(exc).__name__}: {exc}")

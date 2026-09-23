@@ -2,6 +2,7 @@ import math
 
 from trustgraph.anomaly.detector import anomaly_score
 from trustgraph.anomaly.features import circular_hour_distance
+from trustgraph.fusion import risk_band
 from trustgraph.signal import RiskSignal
 
 NORMAL_INTERACTION = {
@@ -42,14 +43,16 @@ def test_clearly_anomalous_interaction_scores_high():
 def test_borderline_amount_ratio_scores_between_normal_and_anomalous():
     signal = anomaly_score(BORDERLINE_AMOUNT)
     _check_shape(signal)
-    assert 0.1 <= signal.score <= 0.6
+    assert anomaly_score(NORMAL_INTERACTION).score < signal.score
+    assert risk_band(signal.score) == "Low"
     assert "1.4× this contact's usual" in signal.explanation
 
 
 def test_borderline_new_channel_scores_between_normal_and_anomalous():
     signal = anomaly_score(BORDERLINE_NEW_CHANNEL)
     _check_shape(signal)
-    assert 0.1 <= signal.score <= 0.6
+    assert anomaly_score(NORMAL_INTERACTION).score < signal.score
+    assert risk_band(signal.score) == "Low"
     assert "first contact from this device/channel" in signal.explanation
 
 
@@ -80,3 +83,33 @@ def test_hour_wraps_around_midnight():
     late = anomaly_score({**NORMAL_INTERACTION, "hour_of_day": 23})
     midnight = anomaly_score({**NORMAL_INTERACTION, "hour_of_day": 0})
     assert abs(late.score - midnight.score) < 0.1
+
+
+def test_several_mild_signals_add_up():
+    mild = {"amount_ratio": 1.3, "contact_freq_24h": 3, "urgency_score": 2}
+    for feat, value in mild.items():
+        assert risk_band(anomaly_score({**NORMAL_INTERACTION, feat: value}).score) == "Low"
+    assert risk_band(anomaly_score({**NORMAL_INTERACTION, **mild}).score) != "Low"
+
+
+def test_invalid_values_are_ignored_and_reported():
+    signal = anomaly_score({**NORMAL_INTERACTION, "duration_sec": -50, "hour_of_day": 24, "new_channel_flag": 7})
+    _check_shape(signal)
+    assert signal.score < 0.3
+    assert "call duration invalid" in signal.explanation
+    assert "time of day invalid" in signal.explanation
+    assert "channel history invalid" in signal.explanation
+    assert "invalid" in anomaly_score({**NORMAL_INTERACTION, "amount_ratio": "lots"}).explanation
+
+
+def test_empty_interaction_says_insufficient_data_not_safe():
+    signal = anomaly_score({})
+    _check_shape(signal)
+    assert signal.explanation.startswith("Insufficient data to assess")
+    assert "No unusual behavior" not in signal.explanation
+
+
+def test_huge_amount_is_readable():
+    signal = anomaly_score({**NORMAL_INTERACTION, "amount_ratio": 1e9})
+    assert signal.score > 0.9
+    assert "1,000,000,000×" in signal.explanation
