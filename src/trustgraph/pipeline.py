@@ -3,8 +3,9 @@ import pandas as pd
 
 from trustgraph.anomaly.detector import anomaly_score
 from trustgraph.anomaly.features import RAW_FEATURES
+from trustgraph.continuity.detector import continuity_score
 from trustgraph.fusion import fuse, risk_band
-from trustgraph.stubs import continuity_score, precedent_score, similarity_score
+from trustgraph.stubs import precedent_score, similarity_score
 
 SIGNAL_FUNCS = [continuity_score, similarity_score, precedent_score, anomaly_score]
 
