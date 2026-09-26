@@ -94,7 +94,7 @@
     <div class="block">
       <h2>Call details</h2>
       <div class="grid">
-        <div><label for="duration_sec">Length (seconds)</label><input id="duration_sec" type="number" min="0" placeholder="e.g. 90"></div>
+        <div><label for="duration_sec">Call length (seconds)</label><input id="duration_sec" type="number" min="0" placeholder="blank if a text"></div>
         <div><label for="hour_of_day">Hour of day (0–23)</label><input id="hour_of_day" type="number" min="0" max="23" placeholder="e.g. 14"></div>
         <div><label for="amount_ratio">Amount × usual</label><input id="amount_ratio" type="number" min="0" step="0.1" placeholder="e.g. 1.0"></div>
         <div><label for="contact_freq_24h">Contacts in last 24h</label><input id="contact_freq_24h" type="number" min="0" placeholder="e.g. 1"></div>
@@ -213,8 +213,13 @@ function showResult(data) {
   const verdict = el("div", { class: `verdict band-${data.band}` });
   verdict.append(el("div", { class: "band" }, data.band === "Low" ? "Low risk" : data.band === "High" ? "High risk" : "Caution"));
   verdict.append(el("div", { class: "score" }, `Combined score ${data.score.toFixed(2)}`));
-  const why = data.explanation.replace(/^Combined score [\d.]+; /, "");
-  verdict.append(el("p", {}, why.charAt(0).toUpperCase() + why.slice(1)));
+  let why = data.explanation.replace(/^Combined score [\d.]+; /, "");
+  why = why.charAt(0).toUpperCase() + why.slice(1);
+  if (data.band === "Low") {
+    const top = data.signals.reduce((a, b) => (b.score > a.score ? b : a));
+    why = top.score >= 0.3 ? `No strong warning signs. Worth noting: ${top.explanation}` : "No warning signs.";
+  }
+  verdict.append(el("p", {}, why));
   const parts = [verdict];
   for (const s of data.signals) {
     const box = el("div", { class: "signal" });

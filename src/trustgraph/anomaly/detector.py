@@ -58,6 +58,9 @@ def _parse(feat: str, value) -> tuple[float | None, str | None]:
         return None, "invalid"
     if math.isnan(v):
         return None, "unknown"
+    if feat == "duration_sec" and v == 0:
+        # A text or email has no call; 0 is not "a very short call" (1s still is).
+        return None, "not applicable"
     if feat == "hour_of_day":
         ok = 0 <= v < 24
     elif feat == "new_channel_flag":
