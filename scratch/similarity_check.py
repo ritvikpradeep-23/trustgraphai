@@ -76,6 +76,18 @@ SCAMS = {
         ["My trading coach got me 40% last month.", "There's a new token launching this week.", "Guaranteed returns, zero risk."],
         ["Send some bitcoin to this wallet address and I'll set you up.", "Transfer USDT to my wallet and I'll invest it for you.",
          "Buy crypto and send it to the wallet below to join."]),
+    "blackmail": (
+        ["I got into your laptop camera months ago.", "Your email password was leaked and I used it to access your device.",
+         "I've been watching you through your phone."],
+        ["Send 800 in BTC to my wallet, otherwise I'll share the footage with your colleagues.",
+         "Pay up within two days or I will forward the recording to everyone you know.",
+         "Transfer the money or the intimate photos go straight to your family."]),
+    "job fee": (
+        ["Great news, your application for the home-based role was successful!", "Welcome aboard as our new online assistant.",
+         "You've been shortlisted for the flexible remote position."],
+        ["To activate your account, pay the 95 onboarding fee, refunded after your first week.",
+         "You just need to pay for your starter kit upfront and we'll reimburse you later.",
+         "A one-off processing charge of 60 is required before your first day."]),
     "tax threat": (
         ["Official notice regarding unpaid tax.", "This call is from the revenue office.", "Final warning about your tax account."],
         ["A warrant will be issued for your arrest unless you pay today.", "Pay the outstanding amount now to avoid legal action.",
@@ -104,6 +116,9 @@ LEGIT = [
     "Happy anniversary! Dinner's booked for 8.", "Can you send me the photos from the weekend?",
     "The plumber quoted 120 for the leak, ok to go ahead?", "Your tax return was received, no further action needed.",
     "Car's booked in for a service Tuesday.", "Could you cover my 2pm call? Notes are in the shared doc.",
+    "I'll send the holiday photos to the family chat tonight.", "Netball registration fee is 25, due at the first session.",
+    "Can you film the school play on Thursday? I'll share the video with grandma.", "Gym joining fee is waived this month!",
+    "Your new job starts Monday, bring your passport for the right-to-work check.",
 ]
 NAMES = ["Sam", "Priya", "Tom", "Aisha", "Kofi", "Elena"]
 

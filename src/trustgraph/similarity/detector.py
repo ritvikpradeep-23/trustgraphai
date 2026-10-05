@@ -56,19 +56,39 @@ RED_FLAGS = [
      r"\b(bitcoin|btc|usdt|crypto(currency)?|wallet address)\b"),
     # Weak alone (surprise parties); scams pair secrecy with a money or code ask.
     (0.4, "asks to keep it secret",
-     r"\b(don'?t|do not) (tell|mention it to|speak to) (anyone|anybody|the (branch|bank)|mum|mom|dad|your (family|bank|wife|husband))"
+     r"\b(don'?t|do not) (tell|mention it to|speak to|contact|call) (anyone|anybody|the (branch|bank|police)|police|mum|mom|dad|your (family|bank|wife|husband))"
      r"|\bkeep (this|it) (between us|confidential|quiet|secret)\b"),
     (0.5, "threatens arrest or legal action",
      r"\b(warrant|arrest(ed)?|deport(ed)?|lawsuit|court proceedings|legal action)\b"),
-    (0.4, "asks for an upfront fee to release money or a prize",
-     r"\b(processing|release|clearance|administration|admin|withdrawal|handling|redelivery) (fee|tax|charge)\b"),
+    (0.6, "threatens to share private videos or photos",
+     r"\b(recorded|filmed|hacked) (you|your (webcam|camera|device|phone|computer))\b"
+     r"|\b(compromising|intimate|explicit|private) (video|videos|photos?|pictures?|recording|footage)\b"
+     # A threat to expose the reader to others: "pay or I'll send the video to all your
+     # contacts", not "can you send the photos" or "I'll send you the photos".
+     r"|\b(or|unless|otherwise|if you don'?t|i will|i'?ll|i am going to|i'?m going to)\b.{0,30}"
+     r"\b(send|share|leak|post|publish|release|forward)\b.{0,40}\b(video|photos?|pictures?|recording|footage)\b"
+     r".{0,40}\b(your (contacts|friends|family|colleagues|boss|employer|followers|address book)|"
+     r"all your|everyone you know)\b"),
+    # Honest employers don't charge you to start work: a job plus a payment ask is a strong tell.
+    (0.7, "asks you to pay to get or start a job",
+     r"\b(hired|job|role|position|vacancy|employment|start date|first (day|week|salary)|work(ing)? from home|remote work)\b"
+     r".{0,120}\b(pay|send|transfer)\b.{0,40}\b(fee|charge|deposit|upfront|up front|in advance|kit|equipment|materials)\b"
+     r"|\b(pay|send|transfer)\b.{0,40}\b(fee|charge|deposit|upfront|up front|in advance)\b"
+     r".{0,120}\b(hired|job|role|position|start date|first (day|week|salary)|salary)\b"
+     r"|\b(fee|charge|deposit)\b.{0,60}\bbefore (you|your) (start|first (day|shift)|begin)\b"
+     r"|\bbefore (you|your) (start|first (day|shift)|begin)\b.{0,60}\b(fee|charge|deposit)\b"),
+    (0.4, "asks for an upfront fee (to release money, a prize or a job)",
+     # Everyday fees (training, registration, joining) are left out: clubs and schools charge them.
+     r"\b(processing|release|clearance|administration|admin|withdrawal|handling|redelivery|background[- ]check|"
+     r"activation|onboarding|unlock(ing)?) (fee|tax|charge|deposit)s?\b"
+     r"|\bpay\b.{0,40}\b(upfront|up front|in advance|before (you|your) (start|first day))\b"),
 ]
 _FLAGS = [(e, reason, re.compile(p, re.IGNORECASE | re.DOTALL)) for e, reason, p in RED_FLAGS]
 
 # "Never share this code", "we will never ask you to move money": honest
 # messages warn about exactly the asks scammers make.
 _NEGATION = re.compile(
-    r"\b(never|will not|won'?t|do not|don'?t)\s+(ask|share|give|send|tell|move|transfer|request|disclose)\b[^.!?]{0,40}$",
+    r"\b(never|will not|won'?t|do not|don'?t)\s+(ask|share|give|send|tell|move|transfer|request|disclose|charge)\b[^.!?]{0,40}$",
     re.IGNORECASE)
 
 

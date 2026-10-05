@@ -20,6 +20,10 @@ def _score(text):
      "says the bank details have changed"),
     ("You owe unpaid tax and a warrant is out for your arrest, pay now.",
      "threatens arrest or legal action"),
+    ("I hacked your phone camera. Pay 900 in BTC or I'll leak the video to your colleagues.",
+     "threatens to share private videos or photos"),
+    ("You've got the remote role! Please transfer the 120 onboarding fee so we can set up your laptop.",
+     "asks you to pay to get or start a job"),
 ])
 def test_scam_asks_in_new_wording_score_high(text, reason):
     signal = _score(text)
@@ -35,6 +39,10 @@ def test_scam_asks_in_new_wording_score_high(text, reason):
     "Don't tell Tom but I got him concert tickets for his birthday!",
     "At A&E with Dad, he's fine, just a check-up. Will call later.",
     "Your parcel will arrive today between 1 and 3pm.",
+    "I'll send you the photos from the party tonight!",
+    "Can you send the wedding photos to the family group?",
+    "The football training fee for next term is 40, pay at the club.",
+    "Welcome to the team! We will never charge you a fee to start. Your first day is Monday.",
 ])
 def test_legit_messages_with_scam_vocabulary_score_low(text):
     assert _score(text).score < 0.5

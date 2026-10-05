@@ -95,6 +95,13 @@ SCAM_SCRIPTS = {
         "Congratulations on your new position. Please pay the background check fee before your start date.",
         "Our company needs a payment agent. Receive transfers into your account and send them on, keeping 10 percent commission.",
     ],
+    "blackmail or sextortion": [
+        "I hacked your device and recorded you through your camera. Pay 1000 in bitcoin or I will send the video to all your contacts.",
+        "I have compromising photos of you. Transfer the money within 48 hours or they go to your family and colleagues.",
+        "Your password is known to me and I installed software that filmed you. Send payment to the wallet below and I will delete everything.",
+        "If you don't pay I will post the pictures online and share them with your friends. Don't contact the police.",
+        "I know what you were watching. You have two days to pay or the recording goes to everyone in your address book.",
+    ],
 }
 
 LEGIT_MESSAGES = [
@@ -142,4 +149,8 @@ LEGIT_MESSAGES = [
     "Use code 3391 to sign in. If you didn't request this, ignore this message.",
     "Your bank will never ask you to move money to a safe account or share a one-time passcode.",
     "New phone, same me! This is Olu's new number, the old one is dead.",
+    "I recorded the match for you, come round and watch it on Saturday.",
+    "Grandma wants copies of the christening pictures for the family album, could you email them over?",
+    "Uploaded the holiday videos to the shared folder so everyone in the family can see them.",
+    "Reminder: the passport application fee is 88.50, pay it on the official gov.uk site.",
 ]
