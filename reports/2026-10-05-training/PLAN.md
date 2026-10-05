@@ -1,4 +1,10 @@
-# Training plan (for approval, nothing built yet)
+# Training plan
+
+**Approved 2026-10-05** with these answers:
+- **Branch:** stay on the current branch (`claude/new-session-ftqy5g`); nothing touches main.
+- **Final test:** the existing frozen test, scored once per final candidate, with the earlier viewing disclosed.
+- **Real UK SMS:** a check only, never used to set cut-offs.
+- **Scope:** Tracks B, C and A, in that order. Added adoption rule 5 (real-SMS false alarms) accepted with the plan.
 
 > All training and test data here is synthetic (AI-written). No result from this work is real-world accuracy.
 
