@@ -43,3 +43,13 @@ def test_final_test_refuses_a_second_look(tmp_path):
     (tmp_path / "final_test_demo.json").write_text("{}")
     with pytest.raises(SystemExit, match="already scored"):
         main(["demo", "--out", str(tmp_path)])
+
+
+def test_model_dir_variable_falls_back_to_models(tmp_path, monkeypatch):
+    from trustgraph.paths import model_path
+    monkeypatch.delenv("TRUSTGRAPH_MODEL_DIR", raising=False)
+    assert model_path("risk_bands.json") == "models/risk_bands.json"
+    (tmp_path / "risk_bands.json").write_text("{}")
+    monkeypatch.setenv("TRUSTGRAPH_MODEL_DIR", str(tmp_path))
+    assert model_path("risk_bands.json") == str(tmp_path / "risk_bands.json")
+    assert model_path("anomaly_isolation_forest.joblib") == "models/anomaly_isolation_forest.joblib"

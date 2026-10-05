@@ -1,0 +1,44 @@
+{
+  "name": "classifier_v1",
+  "created": "2026-10-05",
+  "training_data_sha256": "4c2ed0bec636e4781894fcbd2e6ca9c6bacd489b8104f147d081ba643e334ce2",
+  "training_rows": 1413,
+  "seeds": {
+    "cv_folds": 0,
+    "model": 0,
+    "bootstrap": 0
+  },
+  "library_versions": {
+    "python": "3.11.15",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.4.6",
+    "joblib": "1.6.0"
+  },
+  "files": {
+    "classifier.joblib": {
+      "target": "models/classifier.joblib",
+      "sha256": "2baf32723c4b3b09561960fb93e4d4c8f255847a56739b51e2f2040f64a3fdfa"
+    },
+    "risk_bands.json": {
+      "target": "models/risk_bands.json",
+      "sha256": "fab52b563aa019faaf760f82fa37be3378300b2a52ba6b23f5fd77b9bd988061"
+    }
+  },
+  "dev_metrics": {
+    "recall_caution": 0.9314159292035398,
+    "fpr_caution": 0.10013351134846461,
+    "fpr_high": 0.010013351134846462,
+    "loco_mean": 0.8278219864426761,
+    "real_sms_false_alarms": 0.31088082901554404,
+    "current_engine": {
+      "recall_caution": 0.911504424778761,
+      "fpr_caution": 0.10013351134846461,
+      "fpr_high": 0.010013351134846462,
+      "loco_mean": 0.7516504568228706,
+      "real_sms_false_alarms": 0.16683937823834197
+    },
+    "verdict": "reject"
+  },
+  "requires": "TRUSTGRAPH_CLASSIFIER=1 and similarity_v2 promoted first (its cut-offs assume both)",
+  "synthetic_data": true
+}

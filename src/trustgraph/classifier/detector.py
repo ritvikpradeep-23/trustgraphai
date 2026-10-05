@@ -12,6 +12,7 @@ import os
 import joblib
 
 from trustgraph.classifier.model import scores, top_terms
+from trustgraph.paths import model_path
 from trustgraph.signal import RiskSignal
 from trustgraph.textnorm import readable
 
@@ -28,7 +29,7 @@ def enabled() -> bool:
 def _load():
     global _bundle
     if _bundle is None:
-        path = os.environ.get("TRUSTGRAPH_CLASSIFIER_MODEL", MODEL_PATH)
+        path = os.environ.get("TRUSTGRAPH_CLASSIFIER_MODEL") or model_path("classifier.joblib")
         _bundle = joblib.load(path) if os.path.exists(path) else False
     return _bundle
 

@@ -22,6 +22,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import FeatureUnion
 
+from trustgraph.paths import model_path
 from trustgraph.signal import RiskSignal
 from trustgraph.similarity.corpus import LEGIT_MESSAGES, SCAM_SCRIPTS
 from trustgraph.textnorm import normalize
@@ -168,8 +169,10 @@ def build_index(scam_scripts: dict[str, list[str]], legit_messages: list[str], n
     }
 
 
-def load_corpus(path: str = CORPUS_PATH) -> tuple[dict[str, list[str]], list[str], bool]:
-    """(scam scripts, legit messages, normalized) from a promoted file, else the built-ins."""
+def load_corpus(path: str | None = None) -> tuple[dict[str, list[str]], list[str], bool]:
+    """(scam scripts, legit messages, normalized) from a promoted file (in
+    TRUSTGRAPH_MODEL_DIR or models/), else the built-ins."""
+    path = path or model_path("similarity_corpus.json")
     if not os.path.exists(path):
         return SCAM_SCRIPTS, LEGIT_MESSAGES, False
     with open(path, encoding="utf-8") as f:

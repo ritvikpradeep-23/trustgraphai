@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 from trustgraph.anomaly.features import RAW_FEATURES, circular_hour_distance, to_model_frame
-from trustgraph.anomaly.train import MODEL_PATH
+from trustgraph.paths import model_path
 from trustgraph.signal import RiskSignal
 
 Z_THRESHOLD = 2.0
@@ -44,7 +44,7 @@ _bundle = None
 def _load_bundle():
     global _bundle
     if _bundle is None:
-        _bundle = joblib.load(MODEL_PATH)
+        _bundle = joblib.load(model_path("anomaly_isolation_forest.joblib"))
     return _bundle
 
 

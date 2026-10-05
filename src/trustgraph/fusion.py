@@ -2,6 +2,7 @@
 import json
 import math
 
+from trustgraph.paths import model_path
 from trustgraph.signal import RiskSignal
 
 # Noisy-OR weight = how much we trust a signal (1.0 = take its score at face
@@ -57,7 +58,7 @@ def risk_band(score: float, bands: dict = None) -> str:
     global _bands
     if bands is None:
         if _bands is None:
-            with open(BANDS_PATH) as f:
+            with open(model_path("risk_bands.json")) as f:  # TRUSTGRAPH_MODEL_DIR or models/
                 _bands = json.load(f)
         bands = _bands
     if score >= bands["high"]:
