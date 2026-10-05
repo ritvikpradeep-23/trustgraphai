@@ -1,0 +1,79 @@
+{
+ "source": "UCI SMS Spam Collection (GitHub mirror of the public dataset)",
+ "thresholds": {
+  "caution": 0.28864565345398674,
+  "high": 0.6362381069323721
+ },
+ "legit": {
+  "n": 4827,
+  "caution": {
+   "value": 0.163455562461156,
+   "lo": 0.15268282577170084,
+   "hi": 0.17422829915061114,
+   "n": 4827
+  },
+  "high": {
+   "value": 0.00145017609281127,
+   "lo": 0.0004143360265175057,
+   "hi": 0.0026931841723637872,
+   "n": 4827
+  }
+ },
+ "spam": {
+  "n": 747,
+  "caution": {
+   "value": 0.23962516733601072,
+   "lo": 0.21281793842034807,
+   "hi": 0.26907630522088355,
+   "n": 747
+  },
+  "high": {
+   "value": 0.006693440428380187,
+   "lo": 0.0013386880856760374,
+   "hi": 0.013386880856760375,
+   "n": 747
+  }
+ },
+ "top_false_alarms": [
+  {
+   "score": 0.884,
+   "text": "Send me your id and password"
+  },
+  {
+   "score": 0.721,
+   "text": "Please protect yourself from e-threats. SIB never asks for sensitive information like Passwords,ATM/SMS PIN thru email. Never share your password with anybody."
+  },
+  {
+   "score": 0.721,
+   "text": "Please protect yourself from e-threats. SIB never asks for sensitive information like Passwords,ATM/SMS PIN thru email. Never share your password with anybody."
+  },
+  {
+   "score": 0.663,
+   "text": "I got arrested for possession at, I shit you not,  &lt;TIME&gt;  pm"
+  },
+  {
+   "score": 0.647,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.647,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.647,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.633,
+   "text": "Solve d Case : A Man Was Found Murdered On  &lt;DECIMAL&gt; . &lt;#&gt;  AfterNoon. 1,His wife called Police. 2,Police questioned everyone. 3,Wife: Sir,I was sleeping, when the murder took place. 4.Cook: I was cooking. 5.Gardener: I was picking vegetables. 6.House-Maid: I went 2 d post office. 7.Children: We went 2 play. 8.Neighbour: We went 2 a marriage. Police arrested d murderer Immediately. Who's It? Reply With Reason, If U r Brilliant."
+  },
+  {
+   "score": 0.633,
+   "text": "Solve d Case : A Man Was Found Murdered On  &lt;DECIMAL&gt; . &lt;#&gt;  AfterNoon. 1,His wife called Police. 2,Police questioned everyone. 3,Wife: Sir,I was sleeping, when the murder took place. 4.Cook: I was cooking. 5.Gardener: I was picking vegetables. 6.House-Maid: I went 2 d post office. 7.Children: We went 2 play. 8.Neighbour: We went 2 a marriage. Police arrested d murderer Immediately. Who's It? Reply With Reason, If U r Brilliant."
+  },
+  {
+   "score": 0.633,
+   "text": "Solve d Case : A Man Was Found Murdered On  &lt;DECIMAL&gt; . &lt;#&gt;  AfterNoon. 1,His wife called Police. 2,Police questioned everyone. 3,Wife: Sir,I was sleeping, when the murder took place. 4.Cook: I was cooking. 5.Gardener: I was picking vegetables. 6.House-Maid: I went 2 d post office. 7.Children: We went 2 play. 8.Neighbour: We went 2 a marriage. Police arrested d murderer Immediately. Who's It? Reply With Reason, If U r Brilliant."
+  }
+ ]
+}

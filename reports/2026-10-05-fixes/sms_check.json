@@ -1,0 +1,79 @@
+{
+ "source": "UCI SMS Spam Collection (GitHub mirror of the public dataset)",
+ "thresholds": {
+  "caution": 0.24350729460340323,
+  "high": 0.5702290680554974
+ },
+ "legit": {
+  "n": 4827,
+  "caution": {
+   "value": 0.19308058835715766,
+   "lo": 0.18168634762792624,
+   "hi": 0.20489434431323802,
+   "n": 4827
+  },
+  "high": {
+   "value": 0.033146882121400455,
+   "lo": 0.028589185829707892,
+   "hi": 0.03770975761342448,
+   "n": 4827
+  }
+ },
+ "spam": {
+  "n": 747,
+  "caution": {
+   "value": 0.29049531459170014,
+   "lo": 0.2610107095046854,
+   "hi": 0.32262382864792505,
+   "n": 747
+  },
+  "high": {
+   "value": 0.08835341365461848,
+   "lo": 0.07095046854082998,
+   "hi": 0.1111111111111111,
+   "n": 747
+  }
+ },
+ "top_false_alarms": [
+  {
+   "score": 0.884,
+   "text": "Send me your id and password"
+  },
+  {
+   "score": 0.644,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.644,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.644,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.62,
+   "text": "Solve d Case : A Man Was Found Murdered On  &lt;DECIMAL&gt; . &lt;#&gt;  AfterNoon. 1,His wife called Police. 2,Police questioned everyone. 3,Wife: Sir,I was sleeping, when the murder took place. 4.Cook: I was cooking. 5.Gardener: I was picking vegetables. 6.House-Maid: I went 2 d post office. 7.Children: We went 2 play. 8.Neighbour: We went 2 a marriage. Police arrested d murderer Immediately. Who's It? Reply With Reason, If U r Brilliant."
+  },
+  {
+   "score": 0.62,
+   "text": "Solve d Case : A Man Was Found Murdered On  &lt;DECIMAL&gt; . &lt;#&gt;  AfterNoon. 1,His wife called Police. 2,Police questioned everyone. 3,Wife: Sir,I was sleeping, when the murder took place. 4.Cook: I was cooking. 5.Gardener: I was picking vegetables. 6.House-Maid: I went 2 d post office. 7.Children: We went 2 play. 8.Neighbour: We went 2 a marriage. Police arrested d murderer Immediately. Who's It? Reply With Reason, If U r Brilliant."
+  },
+  {
+   "score": 0.62,
+   "text": "Solve d Case : A Man Was Found Murdered On  &lt;DECIMAL&gt; . &lt;#&gt;  AfterNoon. 1,His wife called Police. 2,Police questioned everyone. 3,Wife: Sir,I was sleeping, when the murder took place. 4.Cook: I was cooking. 5.Gardener: I was picking vegetables. 6.House-Maid: I went 2 d post office. 7.Children: We went 2 play. 8.Neighbour: We went 2 a marriage. Police arrested d murderer Immediately. Who's It? Reply With Reason, If U r Brilliant."
+  },
+  {
+   "score": 0.619,
+   "text": "So what u doing today?"
+  },
+  {
+   "score": 0.619,
+   "text": "I come n pick \u00fc up... Come out immediately aft ur lesson..."
+  },
+  {
+   "score": 0.619,
+   "text": "Geeeee ... Your internet is really bad today, eh ?"
+  }
+ ]
+}

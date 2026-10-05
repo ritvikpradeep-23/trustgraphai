@@ -1,0 +1,40 @@
+{
+  "name": "fast_r07",
+  "created": "2026-10-05",
+  "training_data_sha256": "09069e8b4245f1202e3a6c440409241b8582961dad4a34efbebc668e2ce3e1d5",
+  "training_rows": 323,
+  "seeds": {
+    "rounds_generator": 0
+  },
+  "library_versions": {
+    "python": "3.12.10",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.4.6",
+    "joblib": "1.6.0"
+  },
+  "files": {
+    "similarity_corpus.json": {
+      "target": "models/similarity_corpus.json",
+      "sha256": "8540643ca2ce2a0b314e9328d9ca3b725cf4fa247c4c1c73144146952b52a368"
+    },
+    "risk_bands.json": {
+      "target": "models/risk_bands.json",
+      "sha256": "2830846f9eec7fa54a01b4e3253df591a9adba56718d1cc1d08a3778b654e22b"
+    }
+  },
+  "dev_metrics": {
+    "recall_caution": 0.6333333333333333,
+    "recall_high": 0.3416666666666667,
+    "fpr_caution": 0.1,
+    "fpr_high": 0.0,
+    "current_engine": {
+      "recall_caution": 0.48333333333333334,
+      "recall_high": 0.275,
+      "fpr_caution": 0.1,
+      "fpr_high": 0.0
+    },
+    "verdict": "accepted"
+  },
+  "requires": "",
+  "synthetic_data": true
+}

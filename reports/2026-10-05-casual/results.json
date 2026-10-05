@@ -1,0 +1,808 @@
+{
+ "metrics": {
+  "setting": "text_only",
+  "headline": {
+   "thresholds": {
+    "caution": 0.2287150937277748,
+    "high": 0.5616549976549451
+   },
+   "n_scam": 894,
+   "n_legit": 1400,
+   "recall_caution": {
+    "value": 0.7404921700223713,
+    "lo": 0.7136465324384788,
+    "hi": 0.7696029082774049,
+    "n": 894
+   },
+   "fpr_caution": {
+    "value": 0.08642857142857142,
+    "lo": 0.07355357142857143,
+    "hi": 0.10142857142857142,
+    "n": 1400
+   },
+   "precision_caution": {
+    "value": 0.8454661558109834,
+    "lo": 0.8173690932311622,
+    "hi": 0.8697637292464878,
+    "note": "at 894 scam : 1400 legit in this synthetic test set"
+   },
+   "recall_caution_seen": {
+    "value": 0.9276485788113695,
+    "lo": 0.9018087855297158,
+    "hi": 0.9534883720930233,
+    "n": 387
+   },
+   "recall_caution_unseen": {
+    "value": 0.5976331360946746,
+    "lo": 0.5542406311637081,
+    "hi": 0.6390532544378699,
+    "n": 507
+   },
+   "recall_high": {
+    "value": 0.49105145413870244,
+    "lo": 0.4563758389261745,
+    "hi": 0.5234899328859061,
+    "n": 894
+   },
+   "fpr_high": {
+    "value": 0.01,
+    "lo": 0.005,
+    "hi": 0.015714285714285715,
+    "n": 1400
+   },
+   "precision_high": {
+    "value": 0.9690949227373068,
+    "lo": 0.9536423841059603,
+    "hi": 0.9845474613686535,
+    "note": "at 894 scam : 1400 legit in this synthetic test set"
+   },
+   "recall_high_seen": {
+    "value": 0.7984496124031008,
+    "lo": 0.7571059431524548,
+    "hi": 0.8372093023255814,
+    "n": 387
+   },
+   "recall_high_unseen": {
+    "value": 0.2564102564102564,
+    "lo": 0.21696252465483234,
+    "hi": 0.29191321499013806,
+    "n": 507
+   },
+   "roc_auc": 0.9013526685842124,
+   "pr_auc": 0.884052736662097,
+   "roc_auc_ci": [
+    0.8873853724404863,
+    0.9162298394007399
+   ],
+   "pr_auc_ci": [
+    0.8663834473853778,
+    0.9001795980966824
+   ]
+  },
+  "per_category": [
+   {
+    "category": "FASTag or toll balance",
+    "n": 38,
+    "novelty": "unseen",
+    "caution": 0.5,
+    "caution_lo": 0.34210526315789475,
+    "caution_hi": 0.6578947368421053,
+    "high": 0.23684210526315788,
+    "high_lo": 0.10526315789473684,
+    "high_hi": 0.39473684210526316
+   },
+   {
+    "category": "KYC or ID update expiry",
+    "n": 40,
+    "novelty": "unseen",
+    "caution": 0.675,
+    "caution_lo": 0.525,
+    "caution_hi": 0.825,
+    "high": 0.2,
+    "high_lo": 0.075,
+    "high_hi": 0.325
+   },
+   {
+    "category": "QR code scam",
+    "n": 39,
+    "novelty": "unseen",
+    "caution": 0.41025641025641024,
+    "caution_lo": 0.2564102564102564,
+    "caution_hi": 0.5641025641025641,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "UPI collect or accidental refund",
+    "n": 24,
+    "novelty": "unseen",
+    "caution": 0.2916666666666667,
+    "caution_lo": 0.125,
+    "caution_hi": 0.5,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "bank safe-account scam",
+    "n": 45,
+    "novelty": "seen",
+    "caution": 1.0,
+    "caution_lo": 1.0,
+    "caution_hi": 1.0,
+    "high": 1.0,
+    "high_lo": 1.0,
+    "high_hi": 1.0
+   },
+   {
+    "category": "blackmail or sextortion",
+    "n": 19,
+    "novelty": "seen",
+    "caution": 1.0,
+    "caution_lo": 1.0,
+    "caution_hi": 1.0,
+    "high": 1.0,
+    "high_lo": 1.0,
+    "high_hi": 1.0
+   },
+   {
+    "category": "crypto airdrop or wallet drainer",
+    "n": 35,
+    "novelty": "unseen",
+    "caution": 0.7142857142857143,
+    "caution_lo": 0.5428571428571428,
+    "caution_hi": 0.8571428571428571,
+    "high": 0.2857142857142857,
+    "high_lo": 0.14285714285714285,
+    "high_hi": 0.42857142857142855
+   },
+   {
+    "category": "deepfake CEO video call",
+    "n": 18,
+    "novelty": "unseen",
+    "caution": 0.7777777777777778,
+    "caution_lo": 0.5555555555555556,
+    "caution_hi": 0.9444444444444444,
+    "high": 0.2777777777777778,
+    "high_lo": 0.1111111111111111,
+    "high_hi": 0.5
+   },
+   {
+    "category": "digital arrest",
+    "n": 39,
+    "novelty": "unseen",
+    "caution": 0.5897435897435898,
+    "caution_lo": 0.4358974358974359,
+    "caution_hi": 0.7435897435897436,
+    "high": 0.3333333333333333,
+    "high_lo": 0.1794871794871795,
+    "high_hi": 0.48717948717948717
+   },
+   {
+    "category": "e-challan or traffic fine",
+    "n": 40,
+    "novelty": "unseen",
+    "caution": 0.5,
+    "caution_lo": 0.35,
+    "caution_hi": 0.65,
+    "high": 0.225,
+    "high_lo": 0.1,
+    "high_hi": 0.35
+   },
+   {
+    "category": "electricity disconnection",
+    "n": 22,
+    "novelty": "unseen",
+    "caution": 0.5454545454545454,
+    "caution_lo": 0.3181818181818182,
+    "caution_hi": 0.7727272727272727,
+    "high": 0.22727272727272727,
+    "high_lo": 0.09090909090909091,
+    "high_hi": 0.4090909090909091
+   },
+   {
+    "category": "fake CAPTCHA or paste-command",
+    "n": 34,
+    "novelty": "unseen",
+    "caution": 0.38235294117647056,
+    "caution_lo": 0.23529411764705882,
+    "caution_hi": 0.5588235294117647,
+    "high": 0.14705882352941177,
+    "high_lo": 0.029411764705882353,
+    "high_hi": 0.29411764705882354
+   },
+   {
+    "category": "fake customer-care helpline",
+    "n": 24,
+    "novelty": "unseen",
+    "caution": 0.5,
+    "caution_lo": 0.2916666666666667,
+    "caution_hi": 0.7083333333333334,
+    "high": 0.25,
+    "high_lo": 0.08333333333333333,
+    "high_hi": 0.4166666666666667
+   },
+   {
+    "category": "family emergency or new-number scam",
+    "n": 44,
+    "novelty": "seen",
+    "caution": 1.0,
+    "caution_lo": 1.0,
+    "caution_hi": 1.0,
+    "high": 0.8409090909090909,
+    "high_lo": 0.7272727272727273,
+    "high_hi": 0.9545454545454546
+   },
+   {
+    "category": "gift-card request from a boss or colleague",
+    "n": 25,
+    "novelty": "seen",
+    "caution": 0.96,
+    "caution_lo": 0.88,
+    "caution_hi": 1.0,
+    "high": 0.96,
+    "high_lo": 0.88,
+    "high_hi": 1.0
+   },
+   {
+    "category": "instant-loan app harassment",
+    "n": 40,
+    "novelty": "unseen",
+    "caution": 0.775,
+    "caution_lo": 0.65,
+    "caution_hi": 0.9,
+    "high": 0.6,
+    "high_lo": 0.45,
+    "high_hi": 0.75
+   },
+   {
+    "category": "investment or crypto scam",
+    "n": 25,
+    "novelty": "seen",
+    "caution": 0.72,
+    "caution_lo": 0.52,
+    "caution_hi": 0.88,
+    "high": 0.56,
+    "high_lo": 0.36,
+    "high_hi": 0.76
+   },
+   {
+    "category": "invoice or bank-details change",
+    "n": 24,
+    "novelty": "seen",
+    "caution": 0.7916666666666666,
+    "caution_lo": 0.625,
+    "caution_hi": 0.9583333333333334,
+    "high": 0.7083333333333334,
+    "high_lo": 0.5416666666666666,
+    "high_hi": 0.875
+   },
+   {
+    "category": "job or advance-fee scam",
+    "n": 23,
+    "novelty": "seen",
+    "caution": 1.0,
+    "caution_lo": 1.0,
+    "caution_hi": 1.0,
+    "high": 0.5652173913043478,
+    "high_lo": 0.34782608695652173,
+    "high_hi": 0.7391304347826086
+   },
+   {
+    "category": "one-time code or password request",
+    "n": 39,
+    "novelty": "seen",
+    "caution": 0.8461538461538461,
+    "caution_lo": 0.717948717948718,
+    "caution_hi": 0.9487179487179487,
+    "high": 0.8205128205128205,
+    "high_lo": 0.6923076923076923,
+    "high_hi": 0.9487179487179487
+   },
+   {
+    "category": "parcel or delivery fee",
+    "n": 25,
+    "novelty": "seen",
+    "caution": 1.0,
+    "caution_lo": 1.0,
+    "caution_hi": 1.0,
+    "high": 0.6,
+    "high_lo": 0.4,
+    "high_hi": 0.76
+   },
+   {
+    "category": "prize or lottery fee",
+    "n": 38,
+    "novelty": "seen",
+    "caution": 1.0,
+    "caution_lo": 1.0,
+    "caution_hi": 1.0,
+    "high": 0.8947368421052632,
+    "high_lo": 0.7894736842105263,
+    "high_hi": 0.9736842105263158
+   },
+   {
+    "category": "rental or booking deposit",
+    "n": 25,
+    "novelty": "unseen",
+    "caution": 0.76,
+    "caution_lo": 0.6,
+    "caution_hi": 0.92,
+    "high": 0.16,
+    "high_lo": 0.04,
+    "high_hi": 0.32
+   },
+   {
+    "category": "romance scam money request",
+    "n": 23,
+    "novelty": "seen",
+    "caution": 1.0,
+    "caution_lo": 1.0,
+    "caution_hi": 1.0,
+    "high": 0.9565217391304348,
+    "high_lo": 0.8695652173913043,
+    "high_hi": 1.0
+   },
+   {
+    "category": "social-media verify or copyright strike",
+    "n": 24,
+    "novelty": "unseen",
+    "caution": 0.5833333333333334,
+    "caution_lo": 0.375,
+    "caution_hi": 0.75,
+    "high": 0.4583333333333333,
+    "high_lo": 0.25,
+    "high_hi": 0.6666666666666666
+   },
+   {
+    "category": "student scholarship or exam scam",
+    "n": 40,
+    "novelty": "unseen",
+    "caution": 0.825,
+    "caution_lo": 0.7,
+    "caution_hi": 0.925,
+    "high": 0.425,
+    "high_lo": 0.275,
+    "high_hi": 0.575
+   },
+   {
+    "category": "task or like-and-earn scam",
+    "n": 25,
+    "novelty": "unseen",
+    "caution": 0.72,
+    "caution_lo": 0.52,
+    "caution_hi": 0.88,
+    "high": 0.16,
+    "high_lo": 0.04,
+    "high_hi": 0.32
+   },
+   {
+    "category": "tax or government threat",
+    "n": 34,
+    "novelty": "seen",
+    "caution": 0.8235294117647058,
+    "caution_lo": 0.6764705882352942,
+    "caution_hi": 0.9411764705882353,
+    "high": 0.6764705882352942,
+    "high_lo": 0.5294117647058824,
+    "high_hi": 0.8235294117647058
+   },
+   {
+    "category": "tech support remote-access scam",
+    "n": 23,
+    "novelty": "seen",
+    "caution": 0.8695652173913043,
+    "caution_lo": 0.6956521739130435,
+    "caution_hi": 1.0,
+    "high": 0.6086956521739131,
+    "high_lo": 0.43478260869565216,
+    "high_hi": 0.782608695652174
+   }
+  ],
+  "legit_by_category": [
+   {
+    "category": "OTP message with do-not-share",
+    "n": 216,
+    "novelty": "n/a",
+    "caution": 0.004629629629629629,
+    "caution_lo": 0.0,
+    "caution_hi": 0.013888888888888888,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "UPI payment confirmation",
+    "n": 70,
+    "novelty": "n/a",
+    "caution": 0.0,
+    "caution_lo": 0.0,
+    "caution_hi": 0.0,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "appointment reminder",
+    "n": 208,
+    "novelty": "n/a",
+    "caution": 0.0,
+    "caution_lo": 0.0,
+    "caution_hi": 0.0,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "bank transaction alert",
+    "n": 69,
+    "novelty": "n/a",
+    "caution": 0.0,
+    "caution_lo": 0.0,
+    "caution_hi": 0.0,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "college circular or exam-fee deadline",
+    "n": 65,
+    "novelty": "n/a",
+    "caution": 0.0,
+    "caution_lo": 0.0,
+    "caution_hi": 0.0,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "delivery update",
+    "n": 209,
+    "novelty": "n/a",
+    "caution": 0.27751196172248804,
+    "caution_lo": 0.22009569377990432,
+    "caution_hi": 0.3397129186602871,
+    "high": 0.06698564593301436,
+    "high_lo": 0.03827751196172249,
+    "high_hi": 0.10526315789473684
+   },
+   {
+    "category": "government notice",
+    "n": 206,
+    "novelty": "n/a",
+    "caution": 0.038834951456310676,
+    "caution_lo": 0.014563106796116505,
+    "caution_hi": 0.06796116504854369,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "group-admin notice",
+    "n": 60,
+    "novelty": "n/a",
+    "caution": 0.18333333333333332,
+    "caution_lo": 0.08333333333333333,
+    "caution_hi": 0.2833333333333333,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "real promotion",
+    "n": 56,
+    "novelty": "n/a",
+    "caution": 0.21428571428571427,
+    "caution_lo": 0.125,
+    "caution_hi": 0.32142857142857145,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "real urgent family message",
+    "n": 57,
+    "novelty": "n/a",
+    "caution": 0.3508771929824561,
+    "caution_lo": 0.22807017543859648,
+    "caution_hi": 0.45614035087719296,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "recruiter outreach",
+    "n": 60,
+    "novelty": "n/a",
+    "caution": 0.0,
+    "caution_lo": 0.0,
+    "caution_hi": 0.0,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "refund confirmation",
+    "n": 67,
+    "novelty": "n/a",
+    "caution": 0.16417910447761194,
+    "caution_lo": 0.07462686567164178,
+    "caution_hi": 0.2537313432835821,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   },
+   {
+    "category": "work message with deadline",
+    "n": 57,
+    "novelty": "n/a",
+    "caution": 0.0,
+    "caution_lo": 0.0,
+    "caution_hi": 0.0,
+    "high": 0.0,
+    "high_lo": 0.0,
+    "high_hi": 0.0
+   }
+  ],
+  "groups": {
+   "language": [
+    {
+     "language": "en",
+     "n": 771,
+     "caution": 0.7367055771725033,
+     "caution_lo": 0.708171206225681,
+     "caution_hi": 0.7665369649805448,
+     "high": 0.4708171206225681,
+     "high_lo": 0.4396887159533074,
+     "high_hi": 0.5058365758754864
+    },
+    {
+     "language": "hinglish",
+     "n": 65,
+     "caution": 0.8461538461538461,
+     "caution_lo": 0.7692307692307693,
+     "caution_hi": 0.9230769230769231,
+     "high": 0.7692307692307693,
+     "high_lo": 0.676923076923077,
+     "high_hi": 0.8615384615384616
+    },
+    {
+     "language": "manglish",
+     "n": 58,
+     "caution": 0.6724137931034483,
+     "caution_lo": 0.5517241379310345,
+     "caution_hi": 0.7762931034482755,
+     "high": 0.4482758620689655,
+     "high_lo": 0.3275862068965517,
+     "high_hi": 0.5689655172413793
+    }
+   ],
+   "evasion_type": [
+    {
+     "evasion_type": "emoji_padding",
+     "n": 73,
+     "caution": 0.684931506849315,
+     "caution_lo": 0.5753424657534246,
+     "caution_hi": 0.7945205479452054,
+     "high": 0.5342465753424658,
+     "high_lo": 0.4246575342465753,
+     "high_hi": 0.6438356164383562
+    },
+    {
+     "evasion_type": "leetspeak",
+     "n": 56,
+     "caution": 0.7321428571428571,
+     "caution_lo": 0.6071428571428571,
+     "caution_hi": 0.8397321428571425,
+     "high": 0.42857142857142855,
+     "high_lo": 0.30357142857142855,
+     "high_hi": 0.5535714285714286
+    },
+    {
+     "evasion_type": "none",
+     "n": 613,
+     "caution": 0.7536704730831973,
+     "caution_lo": 0.7210440456769984,
+     "caution_hi": 0.7862969004893964,
+     "high": 0.49429037520391517,
+     "high_lo": 0.4550978792822186,
+     "high_hi": 0.5367047308319739
+    },
+    {
+     "evasion_type": "obfuscated_link",
+     "n": 44,
+     "caution": 0.7045454545454546,
+     "caution_lo": 0.5681818181818182,
+     "caution_hi": 0.8187499999999995,
+     "high": 0.5681818181818182,
+     "high_lo": 0.4318181818181818,
+     "high_hi": 0.7272727272727273
+    },
+    {
+     "evasion_type": "spacing",
+     "n": 52,
+     "caution": 0.7115384615384616,
+     "caution_lo": 0.5769230769230769,
+     "caution_hi": 0.8269230769230769,
+     "high": 0.4230769230769231,
+     "high_lo": 0.28846153846153844,
+     "high_hi": 0.5576923076923077
+    },
+    {
+     "evasion_type": "split_phrasing",
+     "n": 56,
+     "caution": 0.7321428571428571,
+     "caution_lo": 0.6071428571428571,
+     "caution_hi": 0.8392857142857143,
+     "high": 0.4642857142857143,
+     "high_lo": 0.3392857142857143,
+     "high_hi": 0.5897321428571425
+    }
+   ],
+   "channel": [
+    {
+     "channel": "email",
+     "n": 139,
+     "caution": 0.7985611510791367,
+     "caution_lo": 0.7266187050359713,
+     "caution_hi": 0.8633093525179856,
+     "high": 0.5107913669064749,
+     "high_lo": 0.4244604316546763,
+     "high_hi": 0.5971223021582733
+    },
+    {
+     "channel": "instagram",
+     "n": 89,
+     "caution": 0.7078651685393258,
+     "caution_lo": 0.6179775280898876,
+     "caution_hi": 0.797752808988764,
+     "high": 0.42696629213483145,
+     "high_lo": 0.3258426966292135,
+     "high_hi": 0.5283707865168537
+    },
+    {
+     "channel": "messenger",
+     "n": 72,
+     "caution": 0.7638888888888888,
+     "caution_lo": 0.6666666666666666,
+     "caution_hi": 0.8611111111111112,
+     "high": 0.5416666666666666,
+     "high_lo": 0.4166666666666667,
+     "high_hi": 0.6527777777777778
+    },
+    {
+     "channel": "sms",
+     "n": 251,
+     "caution": 0.6972111553784861,
+     "caution_lo": 0.6414342629482072,
+     "caution_hi": 0.7569721115537849,
+     "high": 0.450199203187251,
+     "high_lo": 0.3904382470119522,
+     "high_hi": 0.5099601593625498
+    },
+    {
+     "channel": "whatsapp",
+     "n": 343,
+     "caution": 0.7521865889212828,
+     "caution_lo": 0.7055393586005831,
+     "caution_hi": 0.793002915451895,
+     "high": 0.5189504373177842,
+     "high_lo": 0.46938775510204084,
+     "high_hi": 0.5714285714285714
+    }
+   ],
+   "difficulty": [
+    {
+     "difficulty": "easy",
+     "n": 224,
+     "caution": 0.9330357142857143,
+     "caution_lo": 0.8973214285714286,
+     "caution_hi": 0.9642857142857143,
+     "high": 0.7633928571428571,
+     "high_lo": 0.7098214285714286,
+     "high_hi": 0.8169642857142857
+    },
+    {
+     "difficulty": "hard",
+     "n": 350,
+     "caution": 0.7542857142857143,
+     "caution_lo": 0.7114285714285714,
+     "caution_hi": 0.8028571428571428,
+     "high": 0.5228571428571429,
+     "high_lo": 0.4714285714285714,
+     "high_hi": 0.5742857142857143
+    },
+    {
+     "difficulty": "medium",
+     "n": 320,
+     "caution": 0.590625,
+     "caution_lo": 0.540625,
+     "caution_hi": 0.640625,
+     "high": 0.265625,
+     "high_lo": 0.215625,
+     "high_hi": 0.315625
+    }
+   ]
+  }
+ },
+ "sms": {
+  "source": "UCI SMS Spam Collection (GitHub mirror of the public dataset)",
+  "thresholds": {
+   "caution": 0.2287150937277748,
+   "high": 0.5616549976549451
+  },
+  "legit": {
+   "n": 4827,
+   "caution": {
+    "value": 0.09550445411228506,
+    "lo": 0.08721773358193495,
+    "hi": 0.10421068986948415,
+    "n": 4827
+   },
+   "high": {
+    "value": 0.013258752848560183,
+    "lo": 0.010358400662937643,
+    "hi": 0.016573441060700227,
+    "n": 4827
+   }
+  },
+  "spam": {
+   "n": 747,
+   "caution": {
+    "value": 0.25301204819277107,
+    "lo": 0.22356091030789826,
+    "hi": 0.2838018741633199,
+    "n": 747
+   },
+   "high": {
+    "value": 0.07764390896921017,
+    "lo": 0.060240963855421686,
+    "hi": 0.09772423025435073,
+    "n": 747
+   }
+  },
+  "top_false_alarms": [
+   {
+    "score": 0.84,
+    "text": "Send me your id and password"
+   },
+   {
+    "score": 0.645,
+    "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+   },
+   {
+    "score": 0.645,
+    "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+   },
+   {
+    "score": 0.645,
+    "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+   },
+   {
+    "score": 0.619,
+    "text": "Geeeee ... Your internet is really bad today, eh ?"
+   },
+   {
+    "score": 0.615,
+    "text": "You've always been the brainy one."
+   },
+   {
+    "score": 0.615,
+    "text": "Yeah but which is worse for i"
+   },
+   {
+    "score": 0.615,
+    "text": "X course it 2yrs. Just so her messages on messenger lik you r sending me"
+   },
+   {
+    "score": 0.615,
+    "text": "Who were those people ? Were you in a tour ? I thought you were doing that sofa thing you sent me ? Your curious sugar"
+   },
+   {
+    "score": 0.615,
+    "text": "Which channel:-):-):):-)."
+   }
+  ]
+ }
+}

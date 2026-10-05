@@ -2,10 +2,10 @@
   <img src="https://github.com/Runa8147/Hackathena_Readme_Template/blob/d0add823684f0ac28b76a99636c729f80b0ca8ff/hackathena_banner.png" alt="Hackathena '26 2.0" width="100%">
 </p>
 
-<h1 align="center">[PROJECT NAME]</h1>
+<h1 align="center">TrustGraph</h1>
 
 <p align="center">
-  <strong>[One-line description of your solution]</strong>
+  <strong>Scores a message, call or video for AI-assisted fraud, and explains why in plain words.</strong>
 </p>
 
 <p align="center">
@@ -35,32 +35,50 @@ The rapid advancement of generative AI has made it increasingly difficult to dis
 
 Deepfakes, cloned voices, synthetic images, fabricated documents, and other AI-assisted techniques can enable **impersonation, misinformation, identity theft, financial fraud, and social engineering attacks**.
 
-**[Describe the specific fraud/problem your project addresses in 2–3 concise sentences.]**
+Scammers now write convincing messages with AI (fake bank alerts, "digital arrest" threats, KYC expiry notices,
+boss gift-card requests, AI voice-clone family emergencies) in English, Hinglish and Manglish, and back them with
+deepfake video calls. People get little warning before they pay or share a code.
 
 ---
 
 ## 💡 Solution
 
-### [PROJECT NAME]
+### TrustGraph
 
-**[Project Name]** is a **[web/mobile/desktop/API]** solution designed to detect and/or prevent **[specific type of AI-based fraud]**.
+**TrustGraph** is a **web + API** solution designed to detect **AI-assisted scam messages, impersonation and
+deepfake videos**.
 
-The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification mechanism]**, and produces **[detection result/risk score/authenticity assessment/alert]** to help users identify potentially fraudulent content.
+The system takes **a message (plus optional call details or an MP4 video)**, analyzes it with **several independent
+signals (anomaly detection, identity continuity, scam-wording similarity, a report history and a deepfake video
+pipeline)**, and produces **a Low / Caution / High risk level with a plain-language explanation** to help users
+identify potentially fraudulent content.
 
 ### Key Features
 
-* 🔴 **[Feature 1]** — [Short description]
-* ⚪ **[Feature 2]** — [Short description]
-* ⚫ **[Feature 3]** — [Short description]
-* 🔴 **[Feature 4]** — [Short description]
-* ⚪ **[Feature 5]** — [Short description]
+* 🔴 **Explainable risk score**: every verdict names the signal that drove it ("asks for a one-time code", "reads like a known gift-card scam").
+* ⚪ **Identity continuity**: flags a contact whose bank account, email domain or phone number suddenly changed (look-alike domains too).
+* ⚫ **Scam-report matching**: a new message is compared with messages people already reported, without ever revealing another user's report.
+* 🔴 **Deepfake video check**: samples frames, finds the face, scores it with a pluggable model, and says "inconclusive" when no face is visible instead of guessing.
+* ⚪ **Hinglish and Manglish**: tested on Indian-English code-mixed scams, not just English.
 
 ---
 
 ## 🔄 How It Works
 
 ```text
-      provide architectural diagram here
+            website / browser extension / (future) messaging bots
+                                   |
+                                   v
+        +------------------- TrustGraph API (FastAPI) -------------------+
+        |                                                                 |
+        |  text ---> normalize ---> embed (MiniLM) ---> match reports ----+--> LOW / MEDIUM / HIGH + evidence ids
+        |                                                                 |
+        |  video --> validate MP4 -> 1 frame/s -> largest face -> model --+--> likely_fake / likely_real / inconclusive
+        +-----------------------------------------------------------------+
+
+        Detector engine (src/trustgraph), used by the demo website:
+          anomaly (Isolation Forest) + continuity (rules) + similarity (TF-IDF + red flags)
+          + precedent (report lookup)  --noisy-OR-->  Low / Caution / High + explanation
 ```
 
 ![System Architecture](ARCHITECTURE_IMAGE_URL)
@@ -73,21 +91,20 @@ The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification 
 
 ### Software
 
-| Layer          | Technologies                             |
-| -------------- | ---------------------------------------- |
-| **Frontend**   | [React / Next.js / HTML / CSS / etc.]    |
-| **Backend**    | [FastAPI / Flask / Node.js / etc.]       |
-| **AI / ML**    | [Model / Framework / API]                |
-| **Database**   | [PostgreSQL / MongoDB / Firebase / etc.] |
-| **Processing** | [OpenCV / NumPy / etc.]                  |
-| **Deployment** | [Vercel / Render / Railway / etc.]       |
+| Layer          | Technologies |
+| -------------- | ------------ |
+| **Frontend**   | HTML / CSS / JavaScript demo page (`src/trustgraph/web/index.html`) |
+| **Backend**    | FastAPI (`app/`), plus a small standard-library server for the demo page |
+| **AI / ML**    | scikit-learn (Isolation Forest, TF-IDF, logistic regression), sentence-transformers all-MiniLM-L6-v2, PyTorch (TorchScript deepfake model slot) |
+| **Database**   | JSON file behind a small repository interface (ready to swap for pgvector) |
+| **Processing** | OpenCV, NumPy, pandas |
+| **Deployment** | Local (`uvicorn`); no cloud deployment yet |
 
 ### Tools
 
 * Git & GitHub
-* [Development Tool]
-* [API / AI Service]
-* [Other Tools]
+* pytest (about 150 automated tests)
+* Claude Code
 
 ---
 
@@ -115,15 +132,19 @@ The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification 
 
 ## 📊 Results
 
-| Metric                 | Result                                      |
-| ---------------------- | ------------------------------------------- |
-| **Detection Accuracy** | [XX%]                                       |
-| **Precision**          | [XX%]                                       |
-| **Recall**             | [XX%]                                       |
-| **Response Time**      | [XX seconds]                                |
-| **Supported Input**    | [Images / Audio / Video / Documents / etc.] |
+> **All detection numbers below come from synthetic (AI-written) test messages**, except the real-SMS row. They show
+> how the engine behaves on that data, **not real-world accuracy**.
 
-> **Note:** Replace the above values with measured results from the final prototype. Remove metrics that are not applicable.
+| Metric | Result |
+| ------ | ------ |
+| **Scams caught, frozen synthetic test** (2,294 messages, 29 scam types, text only) | **74.0%**, with 8.6% of honest messages flagged |
+| **Scams caught, final test of the 10-round improvement routine** (rounds 13-14, used once) | **65.0%** (starting engine 51.7%), with 0.0% of honest messages flagged |
+| **Real UK text messages wrongly flagged** (4,827 honest SMS, public dataset) | **3.6-9.6%** depending on the version |
+| **Named demo scenarios** | 18/18 scams flagged, 6/6 honest controls kept Low |
+| **Supported input** | Text messages, call/interaction details, MP4 video (deepfake model must be supplied) |
+
+Full reports: `reports/2026-10-05-casual/CHANGES.md`, `reports/fast/final_summary.md`,
+`reports/2026-10-05-training/training_summary.md`.
 
 ---
 
@@ -131,38 +152,42 @@ The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification 
 
 ### Prerequisites
 
-* [Python 3.x / Node.js / etc.]
-* [Required API keys]
-* [Other dependencies]
+* Python 3.11 or newer
+* Internet on the first run (downloads the ~90 MB text-embedding model once)
+* No API keys
 
 ### Installation
 
 ```bash
-git clone [REPOSITORY_URL]
-cd [PROJECT_DIRECTORY]
+git clone https://github.com/ritvikpradeep-23/trustgraphai.git
+cd trustgraphai
 
-[INSTALL_COMMAND]
+pip install -r requirements.txt
 ```
 
 ### Environment Variables
 
-Create a `.env` file:
+All optional. Copy `.env.example` to `.env` to change them:
 
 ```env
-[VARIABLE_NAME]=[VALUE]
-[API_KEY]=[YOUR_API_KEY]
+SCAM_HIGH_THRESHOLD=0.82
+SCAM_MEDIUM_THRESHOLD=0.68
+DEEPFAKE_MODEL_PATH=models/deepfake.pt
+CORS_ORIGINS=http://localhost:3000,chrome-extension://<your extension id>
 ```
 
 ### Run
 
 ```bash
-[RUN_COMMAND]
+python run_website.py                       # demo page: http://127.0.0.1:8000
+python scripts/seed_reports.py              # 10 example scam reports for the API
+python -m uvicorn app.main:app --port 8001   # API: http://127.0.0.1:8001/docs
 ```
 
 The application will be available at:
 
 ```text
-[LOCALHOST / DEPLOYMENT URL]
+http://127.0.0.1:8000 (demo page)   http://127.0.0.1:8001/docs (API)
 ```
 
 ---
@@ -186,21 +211,23 @@ The application will be available at:
 **Input**
 
 ```text
-[Example input provided to the system]
+Hi, it's the CEO. I'm in a board meeting and can't talk. Buy four Apple gift cards for a client
+and send me the codes on the back. Keep this between us.
 ```
 
 **System Analysis**
 
 ```text
-[Brief representation of the analysis]
+Combined score 0.93; driven by 'similarity' (score 0.93): reads like a known gift-card request from a
+boss or colleague script (similarity 0.48); asks for gift-card codes; asks to keep it secret
 ```
 
 **Result**
 
 ```text
-[AUTHENTIC / SUSPICIOUS / AI-GENERATED / FRAUDULENT]
-Confidence: [XX%]
-Risk Level: [LOW / MEDIUM / HIGH]
+SUSPICIOUS
+Score: 0.93
+Risk Level: HIGH
 ```
 
 ---
@@ -209,25 +236,22 @@ Risk Level: [LOW / MEDIUM / HIGH]
 
 The system is designed with user privacy and responsible AI usage in mind.
 
-* [No permanent storage of uploaded content]
-* [Secure processing]
-* [Minimal collection of user data]
-* [API credentials stored through environment variables]
-* [Other relevant privacy measure]
-
-> Replace the above points with the actual privacy and security mechanisms implemented in the project.
+* Uploaded videos go to a temporary file and are deleted after analysis, even when analysis fails.
+* Analyzing a message never stores it. Only messages a user explicitly reports are kept.
+* The API never returns another user's report text: matches come back as id, similarity and source only.
+* Logs record ids, lengths and sources, never message text.
+* No deepfake score is ever invented: without a model the API says `model_not_configured`, and the demo mock labels every answer `"mock": true`.
+* No API keys or credentials are needed; settings come from environment variables.
 
 ---
 
 ## 🔮 Future Scope
 
-* [ ] Improve detection accuracy with larger and more diverse datasets
-* [ ] Support additional types of AI-generated content
-* [ ] Add real-time detection capabilities
-* [ ] Improve explainability of detection results
-* [ ] Deploy scalable inference infrastructure
-* [ ] Integrate with [relevant platform/system]
-* [ ] Add [future feature]
+* [ ] Train and add a real deepfake model (EfficientNet-B0 backbone; see `docs/TRUSTGRAPH_DETAILS.md`)
+* [ ] Replace synthetic test data with real reported scams and real honest messages
+* [ ] Browser extension and Telegram/WhatsApp adapters (interface ready in `app/integrations/base.py`)
+* [ ] Move scam reports to PostgreSQL + pgvector
+* [ ] Voice-clone detection for calls
 
 ---
 
@@ -254,17 +278,23 @@ The project focuses on addressing emerging forms of fraud enabled or amplified b
 
 ## 📄 Repository Structure
 
+The code keeps the layout it was built and tested in. This is how it maps to the template's folders:
+
 ```text
 .
-├── frontend/              # Frontend application
-├── backend/               # Backend services
-├── models/                # AI/ML models
-├── data/                  # Datasets / sample data
-├── docs/                  # Documentation
-├── screenshots/           # Project screenshots
+├── app/                   # Backend: TrustGraph API (FastAPI): text matching + deepfake video
+├── src/trustgraph/        # Detector engine (four signals + fusion)
+│   └── web/               # Frontend: demo page (index.html) and its small server
+├── models/                # AI/ML models (detector files, candidate bundles, deepfake model slot)
+├── data/                  # Sample / synthetic data (incl. data/rounds for the improvement routine)
+├── eval/                  # Synthetic evaluation set, generator, metrics
+├── training/  routine/    # Training experiments and the 10-round improvement routine
+├── reports/               # Results (all marked synthetic where they are)
+├── docs/                  # Documentation (TRUSTGRAPH_DETAILS.md)
+├── scripts/               # Seed, promote/rollback, round and final-test scripts
+├── tests/                 # Automated tests (pytest)
 ├── .env.example           # Environment variables template
 ├── requirements.txt       # Python dependencies
-├── package.json           # Node dependencies
 └── README.md
 ```
 
@@ -277,7 +307,7 @@ For questions, collaboration, or further information:
 **Team:** [TEAM NAME]
 **Team Lead:** [NAME]
 **Email:** [EMAIL]
-**GitHub:** [GITHUB REPOSITORY]
+**GitHub:** https://github.com/ritvikpradeep-23/trustgraphai
 
 ---
 

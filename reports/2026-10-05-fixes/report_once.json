@@ -1,0 +1,581 @@
+{
+ "summary": {
+  "seed_a": 101,
+  "seed_b": 202,
+  "reported": 68,
+  "categories_reported": 25,
+  "legit_added_in_plus_legit": 63,
+  "batch_b_scams": 1569,
+  "batch_b_dropped_as_near_copies": 0,
+  "thresholds_before": {
+   "caution": 0.24350729460340323,
+   "high": 0.5702290680554974
+  },
+  "variants": {
+   "scam_reports_only": {
+    "thresholds_after": {
+     "caution": 0.5663970888437213,
+     "high": 0.6146772080531456
+    },
+    "recall_before": {
+     "value": 0.8119821542383684,
+     "lo": 0.7922243467176545,
+     "hi": 0.8311026131293817,
+     "n": 1569
+    },
+    "recall_after": {
+     "value": 0.7501593371574251,
+     "lo": 0.7284894837476099,
+     "hi": 0.7705544933078394,
+     "n": 1569
+    },
+    "dev_false_alarms_after": 0.10013351134846461,
+    "dev_legit_at_wording_cap_after": 0.06742323097463285
+   },
+   "plus_legit": {
+    "thresholds_after": {
+     "caution": 0.16684216446295508,
+     "high": 0.5242502500855091
+    },
+    "recall_before": {
+     "value": 0.8119821542383684,
+     "lo": 0.7909337157425111,
+     "hi": 0.8323932441045252,
+     "n": 1569
+    },
+    "recall_after": {
+     "value": 0.9120458891013384,
+     "lo": 0.8973868706182282,
+     "hi": 0.9260675589547482,
+     "n": 1569
+    },
+    "dev_false_alarms_after": 0.10080106809078772,
+    "dev_legit_at_wording_cap_after": 0.0033377837116154874
+   }
+  }
+ },
+ "table": [
+  {
+   "variant": "scam_reports_only",
+   "category": "FASTag or toll balance",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.5925925925925926,
+   "recall_after": 0.6666666666666666,
+   "change_points": 7.4
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "KYC or ID update expiry",
+   "reported_examples": 3,
+   "n_batch_b": 49,
+   "recall_before": 0.6530612244897959,
+   "recall_after": 0.6938775510204082,
+   "change_points": 4.1
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "QR code scam",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.5740740740740741,
+   "recall_after": 0.4074074074074074,
+   "change_points": -16.7
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "UPI collect or accidental refund",
+   "reported_examples": 3,
+   "n_batch_b": 59,
+   "recall_before": 0.4406779661016949,
+   "recall_after": 0.576271186440678,
+   "change_points": 13.6
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "bank safe-account scam",
+   "reported_examples": 0,
+   "n_batch_b": 79,
+   "recall_before": 1.0,
+   "recall_after": 0.9873417721518988,
+   "change_points": -1.3
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "blackmail or sextortion",
+   "reported_examples": 0,
+   "n_batch_b": 63,
+   "recall_before": 1.0,
+   "recall_after": 1.0,
+   "change_points": 0.0
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "crypto airdrop or wallet drainer",
+   "reported_examples": 3,
+   "n_batch_b": 43,
+   "recall_before": 0.7906976744186046,
+   "recall_after": 0.627906976744186,
+   "change_points": -16.3
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "deepfake CEO video call",
+   "reported_examples": 3,
+   "n_batch_b": 37,
+   "recall_before": 0.7837837837837838,
+   "recall_after": 0.7027027027027027,
+   "change_points": -8.1
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "digital arrest",
+   "reported_examples": 3,
+   "n_batch_b": 51,
+   "recall_before": 0.8235294117647058,
+   "recall_after": 0.5686274509803921,
+   "change_points": -25.5
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "e-challan or traffic fine",
+   "reported_examples": 3,
+   "n_batch_b": 45,
+   "recall_before": 0.8444444444444444,
+   "recall_after": 0.9777777777777777,
+   "change_points": 13.3
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "electricity disconnection",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.3888888888888889,
+   "recall_after": 0.37037037037037035,
+   "change_points": -1.9
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "fake CAPTCHA or paste-command",
+   "reported_examples": 3,
+   "n_batch_b": 40,
+   "recall_before": 0.5,
+   "recall_after": 0.7,
+   "change_points": 20.0
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "fake customer-care helpline",
+   "reported_examples": 3,
+   "n_batch_b": 48,
+   "recall_before": 0.5625,
+   "recall_after": 0.5208333333333334,
+   "change_points": -4.2
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "family emergency or new-number scam",
+   "reported_examples": 3,
+   "n_batch_b": 65,
+   "recall_before": 0.9230769230769231,
+   "recall_after": 0.8,
+   "change_points": -12.3
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "gift-card request from a boss or colleague",
+   "reported_examples": 1,
+   "n_batch_b": 64,
+   "recall_before": 0.984375,
+   "recall_after": 0.984375,
+   "change_points": 0.0
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "instant-loan app harassment",
+   "reported_examples": 3,
+   "n_batch_b": 55,
+   "recall_before": 0.8909090909090909,
+   "recall_after": 0.6909090909090909,
+   "change_points": -20.0
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "investment or crypto scam",
+   "reported_examples": 3,
+   "n_batch_b": 48,
+   "recall_before": 0.9375,
+   "recall_after": 0.7291666666666666,
+   "change_points": -20.8
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "invoice or bank-details change",
+   "reported_examples": 3,
+   "n_batch_b": 42,
+   "recall_before": 1.0,
+   "recall_after": 0.8571428571428571,
+   "change_points": -14.3
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "job or advance-fee scam",
+   "reported_examples": 3,
+   "n_batch_b": 46,
+   "recall_before": 0.9782608695652174,
+   "recall_after": 0.782608695652174,
+   "change_points": -19.6
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "one-time code or password request",
+   "reported_examples": 2,
+   "n_batch_b": 62,
+   "recall_before": 0.9516129032258065,
+   "recall_after": 0.9032258064516129,
+   "change_points": -4.8
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "parcel or delivery fee",
+   "reported_examples": 3,
+   "n_batch_b": 49,
+   "recall_before": 1.0,
+   "recall_after": 0.7959183673469388,
+   "change_points": -20.4
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "prize or lottery fee",
+   "reported_examples": 0,
+   "n_batch_b": 68,
+   "recall_before": 1.0,
+   "recall_after": 0.9264705882352942,
+   "change_points": -7.4
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "rental or booking deposit",
+   "reported_examples": 3,
+   "n_batch_b": 47,
+   "recall_before": 0.7446808510638298,
+   "recall_after": 0.5106382978723404,
+   "change_points": -23.4
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "romance scam money request",
+   "reported_examples": 1,
+   "n_batch_b": 64,
+   "recall_before": 1.0,
+   "recall_after": 0.78125,
+   "change_points": -21.9
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "social-media verify or copyright strike",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.5740740740740741,
+   "recall_after": 0.7592592592592593,
+   "change_points": 18.5
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "student scholarship or exam scam",
+   "reported_examples": 3,
+   "n_batch_b": 53,
+   "recall_before": 0.8301886792452831,
+   "recall_after": 0.9056603773584906,
+   "change_points": 7.5
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "task or like-and-earn scam",
+   "reported_examples": 3,
+   "n_batch_b": 60,
+   "recall_before": 0.5333333333333333,
+   "recall_after": 0.4166666666666667,
+   "change_points": -11.7
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "tax or government threat",
+   "reported_examples": 1,
+   "n_batch_b": 49,
+   "recall_before": 0.9591836734693877,
+   "recall_after": 0.8367346938775511,
+   "change_points": -12.2
+  },
+  {
+   "variant": "scam_reports_only",
+   "category": "tech support remote-access scam",
+   "reported_examples": 0,
+   "n_batch_b": 67,
+   "recall_before": 1.0,
+   "recall_after": 0.9552238805970149,
+   "change_points": -4.5
+  },
+  {
+   "variant": "plus_legit",
+   "category": "FASTag or toll balance",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.5925925925925926,
+   "recall_after": 0.8518518518518519,
+   "change_points": 25.9
+  },
+  {
+   "variant": "plus_legit",
+   "category": "KYC or ID update expiry",
+   "reported_examples": 3,
+   "n_batch_b": 49,
+   "recall_before": 0.6530612244897959,
+   "recall_after": 0.8979591836734694,
+   "change_points": 24.5
+  },
+  {
+   "variant": "plus_legit",
+   "category": "QR code scam",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.5740740740740741,
+   "recall_after": 0.8333333333333334,
+   "change_points": 25.9
+  },
+  {
+   "variant": "plus_legit",
+   "category": "UPI collect or accidental refund",
+   "reported_examples": 3,
+   "n_batch_b": 59,
+   "recall_before": 0.4406779661016949,
+   "recall_after": 0.864406779661017,
+   "change_points": 42.4
+  },
+  {
+   "variant": "plus_legit",
+   "category": "bank safe-account scam",
+   "reported_examples": 0,
+   "n_batch_b": 79,
+   "recall_before": 1.0,
+   "recall_after": 1.0,
+   "change_points": 0.0
+  },
+  {
+   "variant": "plus_legit",
+   "category": "blackmail or sextortion",
+   "reported_examples": 0,
+   "n_batch_b": 63,
+   "recall_before": 1.0,
+   "recall_after": 1.0,
+   "change_points": 0.0
+  },
+  {
+   "variant": "plus_legit",
+   "category": "crypto airdrop or wallet drainer",
+   "reported_examples": 3,
+   "n_batch_b": 43,
+   "recall_before": 0.7906976744186046,
+   "recall_after": 0.7674418604651163,
+   "change_points": -2.3
+  },
+  {
+   "variant": "plus_legit",
+   "category": "deepfake CEO video call",
+   "reported_examples": 3,
+   "n_batch_b": 37,
+   "recall_before": 0.7837837837837838,
+   "recall_after": 0.972972972972973,
+   "change_points": 18.9
+  },
+  {
+   "variant": "plus_legit",
+   "category": "digital arrest",
+   "reported_examples": 3,
+   "n_batch_b": 51,
+   "recall_before": 0.8235294117647058,
+   "recall_after": 0.9215686274509803,
+   "change_points": 9.8
+  },
+  {
+   "variant": "plus_legit",
+   "category": "e-challan or traffic fine",
+   "reported_examples": 3,
+   "n_batch_b": 45,
+   "recall_before": 0.8444444444444444,
+   "recall_after": 1.0,
+   "change_points": 15.6
+  },
+  {
+   "variant": "plus_legit",
+   "category": "electricity disconnection",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.3888888888888889,
+   "recall_after": 0.7962962962962963,
+   "change_points": 40.7
+  },
+  {
+   "variant": "plus_legit",
+   "category": "fake CAPTCHA or paste-command",
+   "reported_examples": 3,
+   "n_batch_b": 40,
+   "recall_before": 0.5,
+   "recall_after": 0.8,
+   "change_points": 30.0
+  },
+  {
+   "variant": "plus_legit",
+   "category": "fake customer-care helpline",
+   "reported_examples": 3,
+   "n_batch_b": 48,
+   "recall_before": 0.5625,
+   "recall_after": 0.6458333333333334,
+   "change_points": 8.3
+  },
+  {
+   "variant": "plus_legit",
+   "category": "family emergency or new-number scam",
+   "reported_examples": 3,
+   "n_batch_b": 65,
+   "recall_before": 0.9230769230769231,
+   "recall_after": 0.9538461538461539,
+   "change_points": 3.1
+  },
+  {
+   "variant": "plus_legit",
+   "category": "gift-card request from a boss or colleague",
+   "reported_examples": 1,
+   "n_batch_b": 64,
+   "recall_before": 0.984375,
+   "recall_after": 1.0,
+   "change_points": 1.6
+  },
+  {
+   "variant": "plus_legit",
+   "category": "instant-loan app harassment",
+   "reported_examples": 3,
+   "n_batch_b": 55,
+   "recall_before": 0.8909090909090909,
+   "recall_after": 0.9454545454545454,
+   "change_points": 5.5
+  },
+  {
+   "variant": "plus_legit",
+   "category": "investment or crypto scam",
+   "reported_examples": 3,
+   "n_batch_b": 48,
+   "recall_before": 0.9375,
+   "recall_after": 0.8541666666666666,
+   "change_points": -8.3
+  },
+  {
+   "variant": "plus_legit",
+   "category": "invoice or bank-details change",
+   "reported_examples": 3,
+   "n_batch_b": 42,
+   "recall_before": 1.0,
+   "recall_after": 1.0,
+   "change_points": 0.0
+  },
+  {
+   "variant": "plus_legit",
+   "category": "job or advance-fee scam",
+   "reported_examples": 3,
+   "n_batch_b": 46,
+   "recall_before": 0.9782608695652174,
+   "recall_after": 0.9782608695652174,
+   "change_points": 0.0
+  },
+  {
+   "variant": "plus_legit",
+   "category": "one-time code or password request",
+   "reported_examples": 2,
+   "n_batch_b": 62,
+   "recall_before": 0.9516129032258065,
+   "recall_after": 0.967741935483871,
+   "change_points": 1.6
+  },
+  {
+   "variant": "plus_legit",
+   "category": "parcel or delivery fee",
+   "reported_examples": 3,
+   "n_batch_b": 49,
+   "recall_before": 1.0,
+   "recall_after": 0.9387755102040817,
+   "change_points": -6.1
+  },
+  {
+   "variant": "plus_legit",
+   "category": "prize or lottery fee",
+   "reported_examples": 0,
+   "n_batch_b": 68,
+   "recall_before": 1.0,
+   "recall_after": 0.9852941176470589,
+   "change_points": -1.5
+  },
+  {
+   "variant": "plus_legit",
+   "category": "rental or booking deposit",
+   "reported_examples": 3,
+   "n_batch_b": 47,
+   "recall_before": 0.7446808510638298,
+   "recall_after": 0.7021276595744681,
+   "change_points": -4.3
+  },
+  {
+   "variant": "plus_legit",
+   "category": "romance scam money request",
+   "reported_examples": 1,
+   "n_batch_b": 64,
+   "recall_before": 1.0,
+   "recall_after": 0.984375,
+   "change_points": -1.6
+  },
+  {
+   "variant": "plus_legit",
+   "category": "social-media verify or copyright strike",
+   "reported_examples": 3,
+   "n_batch_b": 54,
+   "recall_before": 0.5740740740740741,
+   "recall_after": 0.9629629629629629,
+   "change_points": 38.9
+  },
+  {
+   "variant": "plus_legit",
+   "category": "student scholarship or exam scam",
+   "reported_examples": 3,
+   "n_batch_b": 53,
+   "recall_before": 0.8301886792452831,
+   "recall_after": 0.9622641509433962,
+   "change_points": 13.2
+  },
+  {
+   "variant": "plus_legit",
+   "category": "task or like-and-earn scam",
+   "reported_examples": 3,
+   "n_batch_b": 60,
+   "recall_before": 0.5333333333333333,
+   "recall_after": 0.8,
+   "change_points": 26.7
+  },
+  {
+   "variant": "plus_legit",
+   "category": "tax or government threat",
+   "reported_examples": 1,
+   "n_batch_b": 49,
+   "recall_before": 0.9591836734693877,
+   "recall_after": 0.8775510204081632,
+   "change_points": -8.2
+  },
+  {
+   "variant": "plus_legit",
+   "category": "tech support remote-access scam",
+   "reported_examples": 0,
+   "n_batch_b": 67,
+   "recall_before": 1.0,
+   "recall_after": 1.0,
+   "change_points": 0.0
+  }
+ ]
+}
