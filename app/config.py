@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     frame_fake_threshold: float = 0.5    # a frame counts as "fake" at or above this score
     video_fake_ratio_threshold: float = 0.5  # video is likely_fake if this share of face frames are fake
 
+    # --- AI-written text (model trained by train_text.py) ---------------------
+    ai_text_model_dir: str = "models/text_detector"  # empty or missing = not configured (503, no made-up score)
+    ai_text_threshold: float = 0.5       # ai_score at or above this -> "likely_ai"
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

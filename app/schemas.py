@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 RiskLevel = Literal["LOW", "MEDIUM", "HIGH"]
 VideoResult = Literal["likely_fake", "likely_real", "inconclusive"]
+AiTextResult = Literal["likely_ai", "likely_human"]
 
 
 class TextIn(BaseModel):
@@ -54,3 +55,14 @@ class HealthOut(BaseModel):
     embedding_model_loaded: bool  # false until the first text request (the model loads lazily)
     deepfake_model: Literal["configured", "mock", "not_configured"]
     deepfake_mode: str
+    ai_text_model: Literal["configured", "not_configured"]
+
+
+class AiCheckIn(BaseModel):
+    text: str = Field(min_length=1, max_length=20000, examples=["Certainly! Here is a summary of the key points."])
+
+
+class AiCheckOut(BaseModel):
+    """Whether a text reads as AI-written. This is NOT a scam verdict."""
+    result: AiTextResult
+    ai_score: float  # 0-1, from the fine-tuned text model

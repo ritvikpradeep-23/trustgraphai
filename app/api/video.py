@@ -22,7 +22,9 @@ def analyze(request: Request, file: UploadFile = File(...)) -> dict:
     # Without a model we can't give an answer, and we never make one up.
     if state.deepfake_model is None:
         raise ApiError(503, "model_not_configured",
-                       "set DEEPFAKE_MODEL_PATH to a TorchScript model (see models/README.md)")
+                       f"no deepfake model for DEEPFAKE_MODE={settings.deepfake_mode}: train one with "
+                       "train_video.py and set DEEPFAKE_MODE=efficientnet, or set DEEPFAKE_MODEL_PATH "
+                       "to your TorchScript model (see models/README.md)")
     check_name(file.filename)
 
     # The upload goes to a temporary file (OpenCV reads from a path) and is

@@ -15,37 +15,22 @@ default), the same file the API uses with DEEPFAKE_MODE=efficientnet.
 import argparse
 import sys
 
-import cv2
 import numpy as np
 import torch
 
 from app.deepfake_engine import efficientnet_wrapper as effnet
 from app.deepfake_engine.combined_model import EfficientNetDeepfakeModel
 from app.deepfake_engine.face_detector import FaceDetector
+from app.deepfake_engine.frame_extractor import extract_evenly
 from detection_common import best_device, load_config, resolve
 
 FACE_MARGIN = 0.2  # same as the API (app/config.py face_margin)
 
 
 def sample_frames(path: str, n: int) -> list[np.ndarray]:
-    """n frames spread evenly from start to end (not just the first seconds)."""
-    cap = cv2.VideoCapture(str(path))
-    try:
-        total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
-        wanted = set(np.linspace(0, max(total - 1, 0), num=n).round().astype(int).tolist()) if total else None
-        frames, index = [], 0
-        # Read in order and keep the wanted ones: seeking in MP4 files is unreliable in OpenCV.
-        while cap.grab():
-            if wanted is None or index in wanted:
-                ok, frame = cap.retrieve()
-                if ok:
-                    frames.append(frame)
-                if wanted is None and len(frames) >= n:  # frame count unknown: take the first n
-                    break
-            index += 1
-        return frames
-    finally:
-        cap.release()
+    """n frames spread evenly from start to end (not just the first seconds).
+    Same function the API uses, so the routine measures what the API does."""
+    return extract_evenly(path, n)
 
 
 def center_crop(frame: np.ndarray) -> np.ndarray:

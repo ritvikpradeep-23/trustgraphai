@@ -194,11 +194,17 @@ node test/rules.test.js && node test/verdict.test.js && node test/result.test.js
 
 ```bash
 pip install -r requirements.txt               # from the repository root
-python run_website.py                         # 4-signal demo page: http://127.0.0.1:8000
+python run_server.py                          # ONE local service at http://127.0.0.1:8000 (or double-click start_server.bat)
 python scripts/seed_reports.py                # 10 example scam reports for the API
-python -m uvicorn app.main:app --port 8001    # API docs: http://127.0.0.1:8001/docs
-python -m pytest tests/                       # Python tests
+python -m pytest                              # Python tests (or double-click run_tests.bat)
 ```
+
+`run_server.py` serves everything the extension and website need: the test page (`/`), the scam check
+(`POST /api/score`, which the extension already calls), the AI-written text check (`POST /api/text/ai-check`; also
+added to `/api/score` replies as `ai_written` once the text model is trained), deepfake video
+(`POST /api/video/analyze`), similar-report search (`/api/text/report`, `/api/text/analyze`) and the accuracy
+routine's latest results (`GET /api/accuracy`). All endpoints are listed at `/docs`. The older
+`python run_website.py` (scam check + page only) still works; don't run both, they use the same port.
 
 Settings for the API (thresholds, video limits, `DEEPFAKE_MODE` = mine / efficientnet / both, CORS origins) are listed in
 `.env.example`. The deepfake endpoint answers `503 model_not_configured` until a trained model is installed

@@ -51,6 +51,19 @@ Where things are written (all on your laptop, never committed):
 
 `reports/history.csv` and `reports/latest.md` are yours to commit or not.
 
+## Using the trained detectors from the extension or website
+
+`python run_server.py` (or double-click `start_server.bat`) starts one local service at http://127.0.0.1:8000:
+
+- `POST /api/text/ai-check`: AI-written text check, using `models/text_detector`. `/api/score` replies (the
+  extension's scam check) also get an `ai_written` field.
+- `POST /api/video/analyze`: deepfake video check, using `models/efficientnet_head.pt` once `.env` has
+  `DEEPFAKE_MODE=efficientnet`. The server picks frames spread over the whole video, the same way the routine
+  measures it.
+- `GET /api/accuracy`: the latest routine results and how many unused test batches are left.
+
+Until a model is trained, its endpoint answers `503 model_not_configured`. It never makes up a score.
+
 ## Step 3: data plan
 
 Only public datasets are used. A script never downloads anything over 1 GB on its own: it prints the name, source and
@@ -156,6 +169,10 @@ The folder needs a `real\` and a `fake\` sub-folder. For Celeb-DF, put `Celeb-re
 - **The model doesn't change between runs** unless you retrain. So identical-model runs only show how much the score
   varies from batch to batch. The routine becomes useful after you retrain: did the new model do better on batches it
   has never seen?
+- **Video verdict rule:** the routine counts a video as fake when its **average** face score is 0.5 or more. The API's
+  `likely_fake` / `likely_real` answer instead needs at least half the faces to score as fake
+  (`VIDEO_FAKE_RATIO_THRESHOLD`). The two usually agree, but not always. The routine's numbers describe the score
+  itself, which the API returns too.
 - **They are not real-world accuracy:**
   - Celeb-DF, FaceForensics++ and DFDC deepfakes come from specific older methods. Newer deepfakes, phone videos,
     heavy compression and side-on faces can score much worse.
