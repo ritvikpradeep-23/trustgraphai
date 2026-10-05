@@ -1,0 +1,43 @@
+<!doctype html>
+<!--
+  Welcome (first run, #welcome) and Settings (default) in one page, styled
+  like the web app's auth screens: a gradient panel with the headline on the
+  left, the content on the right.
+-->
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrustGraph</title>
+  <script src="../shared/constants.js"></script>
+  <script src="../shared/icons.js"></script>
+  <script src="../shared/design.js"></script>
+  <script src="../shared/ui.js"></script>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body class="tg-root">
+  <div class="split">
+    <aside class="brand tg-grid-bg" aria-label="TrustGraph">
+      <div id="brand-logo"></div>
+      <div class="brand-mid">
+        <p class="tg-eyebrow blue">Privacy-first detection workspace</p>
+        <h1 class="tg-h big">Read the signal.<br><em>Keep the trust.</em></h1>
+        <p class="brand-lead">TrustGraph checks the messages you choose for scam signals, right where they are. Only the verdict comes home. The message stays where it was detected.</p>
+      </div>
+      <div class="graph" aria-hidden="true">
+        <span class="tg-node blue" style="left:12%;top:30%"></span>
+        <span class="tg-node" style="left:34%;top:62%"></span>
+        <span class="tg-node amber" style="left:58%;top:22%"></span>
+        <span class="tg-node green" style="left:80%;top:58%"></span>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M12 30 L34 62 L58 22 L80 58" /></svg>
+      </div>
+      <p class="tg-mono brand-foot">No message text stored · Results only</p>
+    </aside>
+    <main id="main" class="content" tabindex="-1"></main>
+  </div>
+  <script src="../shared/verdict.js"></script>
+  <script src="../content/panel.js"></script>
+  <script src="settings-form.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
