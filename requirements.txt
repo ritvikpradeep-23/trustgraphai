@@ -17,6 +17,7 @@ transformers==5.18.0
 torchvision==0.29.1
 pillow==12.3.0
 # --- Deepfake video + AI-text detectors and the accuracy routine ---
-# (torch, torchvision, transformers, scikit-learn, pillow and OpenCV are above.
-#  OpenCV stays the "headless" build: installing opencv-python next to it breaks cv2.)
-datasets==5.1.0
+# Nothing extra: torch, torchvision, transformers (with huggingface_hub, used to fetch HC3), scikit-learn,
+# pillow and OpenCV are above. OpenCV stays the "headless" build: opencv-python next to it breaks cv2.
+# The `datasets` package is deliberately NOT used: it installs pyarrow, which pandas then loads
+# automatically, and pyarrow + torch in one process crashes Python on Windows.
