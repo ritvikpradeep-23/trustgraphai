@@ -21,8 +21,17 @@ def hits(scores, threshold: float):
 
 
 def calibrate(legit_scores) -> dict:
+    """Thresholds that flag at most ~10% / ~1% of legit. If many legit scores tie
+    exactly at the cut-off (e.g. a near-constant score), move the cut-off just
+    above the tie, so ties don't silently flag far more than the target."""
     s = np.asarray(legit_scores, dtype=float)
-    return {"caution": float(np.quantile(s, 1 - CAUTION_FPR)), "high": float(np.quantile(s, 1 - HIGH_FPR))}
+    out = {}
+    for band, target in (("caution", CAUTION_FPR), ("high", HIGH_FPR)):
+        thr = float(np.quantile(s, 1 - target))
+        if np.mean(hits(s, thr)) > target + 0.02:
+            thr = float(np.nextafter(thr, np.inf))
+        out[band] = thr
+    return out
 
 
 def _ci(values, rng, stat, n=N_BOOT) -> tuple[float, float]:

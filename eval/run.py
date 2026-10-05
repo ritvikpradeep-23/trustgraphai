@@ -130,6 +130,45 @@ def loco_section(run):
 
 Run.section_loco = loco_section
 
+ABLATION = [("similarity", "similarity signal (wording match + red flags)"), ("flags", "red-flag rules only"),
+            ("wording", "wording match only"), ("anomaly", "anomaly only"), ("fused", "all four signals fused")]
+
+
+def _score_table(run, setting: str, keys) -> list[dict]:
+    """Each score calibrated on its own dev legit scores (matched false-alarm rate), measured on test."""
+    rows = []
+    dev_s, test_s = run.scores("dev", setting), run.scores("test", setting)
+    for key, label in keys:
+        bands = metrics.calibrate([sc[key] for sc, r in zip(dev_s, run.dev) if r["label"] == "legit"])
+        m = metrics.evaluate(run.test, test_s, key, bands, run.seed)
+        rows.append({"setting": setting, "score": key, "what": label,
+                     "recall_caution": m["recall_caution"]["value"], "recall_caution_lo": m["recall_caution"]["lo"],
+                     "recall_caution_hi": m["recall_caution"]["hi"], "recall_high": m["recall_high"]["value"],
+                     "recall_caution_unseen": m["recall_caution_unseen"]["value"],
+                     "test_false_alarms_caution": m["fpr_caution"]["value"], "test_false_alarms_high": m["fpr_high"]["value"],
+                     "roc_auc": m["roc_auc"], "pr_auc": m["pr_auc"]})
+    return rows
+
+
+def ablation_section(run):
+    table = _score_table(run, "text_only", ABLATION)
+    run.write_csv("ablation.csv", table)
+    meta = []
+    for setting in engine.SETTINGS:
+        meta += _score_table(run, setting, [("fused", "all four signals fused"), ("anomaly", "anomaly only")])
+    run.write_csv("metadata_settings.csv", meta)
+    run.results["ablation"] = table
+    run.results["metadata_settings"] = meta
+    for t in table:
+        run.note(f"[ablation] {t['what']:<45s} recall@Caution {t['recall_caution']:.1%}  ROC-AUC {t['roc_auc']:.3f}")
+    for t in meta:
+        if t["score"] == "fused":
+            run.note(f"[metadata] {t['setting']:<16s} recall@Caution {t['recall_caution']:.1%}  "
+                     f"false alarms {t['test_false_alarms_caution']:.1%}  ROC-AUC {t['roc_auc']:.3f}")
+
+
+Run.section_ablation = ablation_section
+
 
 def main():
     ap = argparse.ArgumentParser()
