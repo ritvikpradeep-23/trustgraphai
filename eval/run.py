@@ -217,6 +217,83 @@ def errors_section(run, worst: int = 25):
 Run.section_errors = errors_section
 
 
+def report_once_section(run, seed_a: int = 101, seed_b: int = 202, per_category: int = 3):
+    """Experiment only: what if users had reported a few missed scams?
+
+    Batch A (fresh) -> find scams the engine misses -> add up to 3 per category
+    to a COPY of the reference corpus (never written to disk) -> recalibrate on
+    dev legit -> measure on a different fresh batch B. B drops anything from the
+    same template family as an added message, or more than 0.9 similar to one.
+
+    Two variants:
+      scam_reports_only  just the reported scams (what a naive report button does)
+      plus_legit         the same reports plus up to 3 legit messages per legit
+                         category and language from the corpus split, so the legit
+                         side also covers the reported languages
+    """
+    from eval.generate import generate
+    from eval.leakage import filter_leaks
+    from trustgraph.similarity.corpus import LEGIT_MESSAGES, SCAM_SCRIPTS
+    rng = np.random.default_rng(run.seed)
+    setting = "text_only"
+    bands = run.bands(setting)
+
+    batch_a = [r for r in generate(seed_a) if r["label"] == "scam"]
+    scores_a = engine.score_rows(batch_a, setting)
+    missed = [(r, sc) for r, sc in zip(batch_a, scores_a) if not metrics.hits([sc["fused"]], bands["caution"])[0]]
+    added, used_families = {}, set()
+    for r, sc in sorted(missed, key=lambda p: p[1]["fused"]):
+        if r["template_family"] in used_families or len(added.get(r["category"], [])) >= per_category:
+            continue
+        added.setdefault(r["category"], []).append(r["text"])
+        used_families.add(r["template_family"])
+    added_texts = [t for ts in added.values() for t in ts]
+    legit_extra, taken = [], {}
+    for r in run.corpus_split:
+        key = (r["category"], r["language"])
+        if r["label"] == "legit" and taken.get(key, 0) < 3:
+            legit_extra.append(r["text"])
+            taken[key] = taken.get(key, 0) + 1
+    run.note(f"[report_once] batch A: {len(batch_a)} scams, {len(missed)} missed; reporting {len(added_texts)} "
+             f"across {len(added)} categories; variant plus_legit also adds {len(legit_extra)} corpus-split legit messages")
+
+    batch_b = [r for r in generate(seed_b) if r["label"] == "scam" and r["template_family"] not in used_families]
+    batch_b, dropped = filter_leaks(batch_b, added_texts)
+    scores_b = engine.score_rows(batch_b, setting)
+    dev_legit = [(sc, r) for sc, r in zip(run.scores("dev", setting), run.dev) if r["label"] == "legit"]
+    reported = {**SCAM_SCRIPTS, **{k: SCAM_SCRIPTS.get(k, []) + v for k, v in added.items()}}
+
+    variants, table = {}, []
+    for name, legit in (("scam_reports_only", LEGIT_MESSAGES), ("plus_legit", list(LEGIT_MESSAGES) + legit_extra)):
+        with engine.corpus(reported, legit):
+            dev_after = engine.refuse([sc for sc, _ in dev_legit], [r for _, r in dev_legit])
+            bands_after = metrics.calibrate([sc["fused"] for sc in dev_after])
+            after = engine.refuse(scores_b, batch_b)
+        for cat in sorted({r["category"] for r in batch_b}):
+            idx = [i for i, r in enumerate(batch_b) if r["category"] == cat]
+            b4 = metrics.hits([scores_b[i]["fused"] for i in idx], bands["caution"]).mean()
+            af = metrics.hits([after[i]["fused"] for i in idx], bands_after["caution"]).mean()
+            table.append({"variant": name, "category": cat, "reported_examples": len(added.get(cat, [])),
+                          "n_batch_b": len(idx), "recall_before": float(b4), "recall_after": float(af),
+                          "change_points": round(100 * (af - b4), 1)})
+        all_b4 = metrics.rate(metrics.hits([s["fused"] for s in scores_b], bands["caution"]), rng)
+        all_af = metrics.rate(metrics.hits([s["fused"] for s in after], bands_after["caution"]), rng)
+        variants[name] = {"thresholds_after": bands_after, "recall_before": all_b4, "recall_after": all_af,
+                          "dev_false_alarms_after": float(metrics.hits([s["fused"] for s in dev_after], bands_after["caution"]).mean()),
+                          "dev_legit_at_wording_cap_after": float(np.mean([s["wording"] >= 0.6 for s in dev_after]))}
+        run.note(f"[report_once] {name:<18s} batch B recall {all_b4['value']:.1%} -> {all_af['value']:.1%} "
+                 f"[{all_af['lo']:.1%}, {all_af['hi']:.1%}] at dev false alarms {variants[name]['dev_false_alarms_after']:.1%}")
+    run.write_csv("report_once.csv", table)
+    summary = {"seed_a": seed_a, "seed_b": seed_b, "reported": len(added_texts), "categories_reported": len(added),
+               "legit_added_in_plus_legit": len(legit_extra), "batch_b_scams": len(batch_b),
+               "batch_b_dropped_as_near_copies": len(dropped), "thresholds_before": bands, "variants": variants}
+    run.results["report_once"] = {"summary": summary, "table": table}
+    (run.out / "report_once.json").write_text(json.dumps({"summary": summary, "table": table}, indent=1, default=float))
+
+
+Run.section_report_once = report_once_section
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=SECTIONS, action="append")
