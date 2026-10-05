@@ -12,6 +12,14 @@ HIGH_FPR = 0.01
 N_BOOT = 1000
 
 
+def hits(scores, threshold: float):
+    """Flagged = at or above the threshold AND above zero. Without the second
+    part, a score that is 0 for most legit messages would get a threshold of 0
+    and flag everything."""
+    scores = np.asarray(scores, dtype=float)
+    return (scores >= threshold) & (scores > 0)
+
+
 def calibrate(legit_scores) -> dict:
     s = np.asarray(legit_scores, dtype=float)
     return {"caution": float(np.quantile(s, 1 - CAUTION_FPR)), "high": float(np.quantile(s, 1 - HIGH_FPR))}
@@ -63,7 +71,7 @@ def evaluate(rows: list[dict], scores: list[dict], key: str, bands: dict, seed: 
     is_scam = np.array([r["label"] == "scam" for r in rows])
     out = {"thresholds": bands, "n_scam": int(is_scam.sum()), "n_legit": int((~is_scam).sum())}
     for band in ("caution", "high"):
-        hit = s >= bands[band]
+        hit = hits(s, bands[band])
         out[f"recall_{band}"] = rate(hit[is_scam], rng)
         out[f"fpr_{band}"] = rate(hit[~is_scam], rng)
         out[f"precision_{band}"] = precision(int(hit[is_scam].sum()), int(hit[~is_scam].sum()), rng,
@@ -91,7 +99,7 @@ def by_group(rows: list[dict], scores: list[dict], key: str, bands: dict, field:
         if field == "category":
             row["novelty"] = rows[idx[0]]["novelty"]
         for band in ("caution", "high"):
-            r_ = rate(s[idx] >= bands[band], rng)
+            r_ = rate(hits(s[idx], bands[band]), rng)
             row[f"{band}"] = r_["value"]
             row[f"{band}_lo"], row[f"{band}_hi"] = r_["lo"], r_["hi"]
         table.append(row)

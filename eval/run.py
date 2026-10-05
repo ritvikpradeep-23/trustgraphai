@@ -84,6 +84,53 @@ class Run:
                   f"false alarms {f['value']:.1%}, ROC-AUC {head['roc_auc']:.3f}")
 
 
+def loco_section(run):
+    """Leave-one-category-out for every category the engine has reference examples for."""
+    from trustgraph.similarity.corpus import SCAM_SCRIPTS
+    rng = np.random.default_rng(run.seed)
+    setting = "text_only"
+    dev_scores, test_scores = run.scores("dev", setting), run.scores("test", setting)
+    full_bands = run.bands(setting)
+    dev_legit = [(sc, r) for sc, r in zip(dev_scores, run.dev) if r["label"] == "legit"]
+    table = []
+    for cat in sorted({r["category"] for r in run.test if r["label"] == "scam"}):
+        idx = [i for i, r in enumerate(run.test) if r["category"] == cat]
+        rows_c, scores_c = [run.test[i] for i in idx], [test_scores[i] for i in idx]
+        base = metrics.rate(metrics.hits([s["fused"] for s in scores_c], full_bands["caution"]), rng)
+        row = {"category": cat, "n": len(idx), "in_reference_corpus": cat in SCAM_SCRIPTS,
+               "recall_full_corpus": base["value"]}
+        if cat in SCAM_SCRIPTS:
+            reduced = {k: v for k, v in SCAM_SCRIPTS.items() if k != cat}
+            with engine.corpus(reduced):
+                dev_re = engine.refuse([sc for sc, _ in dev_legit], [r for _, r in dev_legit])
+                test_re = engine.refuse(scores_c, rows_c)
+            for key in ("fused", "wording"):
+                bands = metrics.calibrate([s[key] for s in dev_re])
+                r = metrics.rate(metrics.hits([s[key] for s in test_re], bands["caution"]), rng)
+                row[f"loco_{key}"], row[f"loco_{key}_lo"], row[f"loco_{key}_hi"] = r["value"], r["lo"], r["hi"]
+        else:
+            row["loco_fused"] = base["value"]  # never in the corpus: already a held-out category
+            row["loco_fused_lo"], row["loco_fused_hi"] = base["lo"], base["hi"]
+            row["loco_wording"] = row["loco_wording_lo"] = row["loco_wording_hi"] = float("nan")
+        table.append(row)
+    run.write_csv("loco.csv", table)
+    seen = [t for t in table if t["in_reference_corpus"]]
+    summary = {
+        "seen_full_corpus_mean": float(np.mean([t["recall_full_corpus"] for t in seen])),
+        "seen_left_out_mean": float(np.mean([t["loco_fused"] for t in seen])),
+        "seen_left_out_wording_only_mean": float(np.mean([t["loco_wording"] for t in seen])),
+        "unseen_mean": float(np.mean([t["loco_fused"] for t in table if not t["in_reference_corpus"]])),
+    }
+    run.results["loco"] = {"table": table, "summary": summary}
+    run.note(f"[loco] known types: {summary['seen_full_corpus_mean']:.1%} with their examples, "
+             f"{summary['seen_left_out_mean']:.1%} with them removed "
+             f"(wording match alone {summary['seen_left_out_wording_only_mean']:.1%}); "
+             f"never-seen types {summary['unseen_mean']:.1%}")
+
+
+Run.section_loco = loco_section
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=SECTIONS, action="append")
