@@ -9,33 +9,37 @@ TrustGraph checks what people receive in chats for three things:
 Everything runs **on your own laptop**. No accounts, no API keys, no cloud service; message text never leaves the
 computer.
 
-> Status: the scam check is built and connected to the browser extension. The deepfake video and AI-text
-> detectors are built and tested, but **not trained on real data yet** and **not connected to the extension yet**.
+> Status: everything runs as **one local service** (`python run_server.py`, http://127.0.0.1:8000). The scam check
+> is connected to the browser extension. The AI-text and deepfake video checks have their own endpoints, and the
+> AI-text result is added to the extension's scam answers, but both detectors are **not trained on real data yet**, and
+> the extension doesn't show them yet.
 
 ---
 
 ## 1. The big picture
 
 ```
- Browser extension (WhatsApp / Gmail / … pages)
-        │  HTTP + JSON:  POST /api/score  {message_text, channel}
-        ▼
- Local service A: python run_website.py      →  http://127.0.0.1:8000
-        └─ Scam engine (Python modules in src/trustgraph)
-
- Local service B: python -m uvicorn app.main:app --port 8001   (FastAPI)
-        ├─ /api/text/report, /api/text/analyze   similar-report search (sentence embeddings)
-        └─ /api/video/analyze                    deepfake check (EfficientNet-B0 + your head)
+ Browser extension (WhatsApp / Gmail / … pages)          Test page in your browser
+        │  HTTP + JSON:  POST /api/score                        │  GET /
+        ▼                                                       ▼
+ ONE local service:  python run_server.py   →   http://127.0.0.1:8000   (FastAPI, Python)
+   ├─ POST /api/score            scam check (4-signal engine in src/trustgraph)
+   │                             + "ai_written" once the AI-text model is trained
+   ├─ POST /api/text/ai-check    AI-written text? (fine-tuned distilroberta)
+   ├─ POST /api/video/analyze    deepfake video (EfficientNet-B0 + your head)
+   ├─ POST /api/text/report, /api/text/analyze   similar scam reports (sentence embeddings)
+   ├─ GET  /api/accuracy         latest results of the accuracy routine
+   └─ GET  /health, /docs        what is configured, list of all endpoints
 
  Stand-alone Python (no server):
-        ├─ video_detector.py / train_video.py    deepfake video detector
-        ├─ text_detector.py  / train_text.py     AI-written text detector
-        └─ run_cycle.py   ← started by Task Scheduler every 2 hours (accuracy routine)
+   ├─ train_video.py / train_text.py      training
+   └─ run_cycle.py   ← started by Task Scheduler every 2 hours (accuracy routine)
 ```
 
-**How the pieces talk:** the extension calls a **local service** through an **HTTP API** (JSON in, JSON out). The
-service is written in Python and loads the AI as **Python modules**. If the service doesn't answer within 3 seconds,
-the extension uses its own built-in rules instead.
+**How the pieces talk:** the extension calls the **local service** through an **HTTP API** (JSON in, JSON out). The
+service is written in Python and loads the AI as **Python modules**. If it doesn't answer within 3 seconds the
+extension uses its built-in rules instead. `python run_website.py` (the older server with only the scam check and the
+page) still works; don't run both, they use the same port.
 
 ---
 
@@ -48,8 +52,8 @@ the extension uses its own built-in rules instead.
 | **Output** | Low / Caution / High + score + explanation | Fake score 0–1 per video (average of frame scores) | AI score 0–1 per text |
 | **Trained on** | Synthetic scam/legit messages (labelled as synthetic) | Not yet. Plan: Celeb-DF v2 | Not yet. Plan: HC3 |
 | **Code** | `src/trustgraph/` | `video_detector.py`, `train_video.py`, `app/deepfake_engine/` | `text_detector.py`, `train_text.py` |
-| **Reachable over HTTP** | ✅ `POST /api/score` (port 8000) | ⚠️ `POST /api/video/analyze` (port 8001), after training | ❌ not yet |
-| **Used by the extension** | ✅ yes | ❌ no | ❌ no |
+| **Reachable over HTTP** | ✅ `POST /api/score` | ✅ `POST /api/video/analyze` (after training, with `DEEPFAKE_MODE=efficientnet`) | ✅ `POST /api/text/ai-check`, and `ai_written` in `/api/score` (after training) |
+| **Shown by the extension** | ✅ yes | ❌ not yet | ❌ not yet (the field arrives; the extension ignores it) |
 
 ### Your own model's role (deepfake video)
 
@@ -141,8 +145,7 @@ Every `INTERVAL_HOURS` (default 2, set in `detection_config.json`):
 
 ```
 python -m pip install -r requirements.txt
-python run_website.py                         # scam check + demo page, port 8000 (extension uses this)
-python -m uvicorn app.main:app --port 8001    # backend API with the video endpoint
+python run_server.py                          # the one local service, port 8000 (extension uses this)
 python check_gpu.py                           # is the GPU usable?
 python prepare_data.py text --hc3             # then: video --folder <Celeb-DF folder>
 python train_video.py ; python train_text.py
@@ -157,13 +160,8 @@ Details: `docs/DETECTION_ROUTINE.md`. Model setup: `models/README.md`.
 
 ## 8. What's next
 
-1. **One local service:**
-   - Move `/api/score` into the FastAPI app, so everything runs at `127.0.0.1:8000`.
-   - Add `POST /api/text/ai-check`, and an `ai_written` field in `/api/score` replies (older extensions ignore it).
-   - Make `/api/video/analyze` use `video_detector.py`, so the API scores videos exactly the way the routine measures
-     them.
-   - Add `GET /api/accuracy` with the latest routine results.
-2. **Extension:** a "check a video" button and an "AI-written?" line on verdicts. These are interface changes, so they
-   need your decision.
-3. **Train on real data:** HC3 and Celeb-DF, then let the routine measure.
-4. **Later:** late fusion across modalities, and checking audio for cloned voices.
+1. **Train on real data** (on your laptop): HC3 and Celeb-DF, then let the routine measure. After training the video
+   model, put `DEEPFAKE_MODE=efficientnet` in `.env` so the server uses it.
+2. **Extension** (needs your decision, it changes what users see): show the `ai_written` result on verdicts, and a
+   "check a video" button that calls `/api/video/analyze`.
+3. **Later:** late fusion across modalities, checking audio for cloned voices.
