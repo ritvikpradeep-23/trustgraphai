@@ -1,0 +1,40 @@
+# Run log
+
+- 11:34:14 frozen test set verified: sha256 6fc6fd2858a5bb33...
+- 11:34:37 scored dev (1950 messages, text_only) in 23s
+- 11:35:06 scored test (2294 messages, text_only) in 29s
+- 11:35:12 [metrics] text only: recall@Caution 70.5% [67.4%, 73.7%], false alarms 10.5%, ROC-AUC 0.867
+- 11:35:58 [loco] known types: 92.7% with their examples, 61.5% with them removed (wording match alone 40.0%); never-seen types 53.3%
+- 11:36:53 scored dev (1950 messages, metadata_same) in 23s
+- 11:37:22 scored test (2294 messages, metadata_same) in 30s
+- 11:37:58 scored dev (1950 messages, metadata_skewed) in 27s
+- 11:38:26 scored test (2294 messages, metadata_skewed) in 28s
+- 11:38:35 [ablation] similarity signal (wording match + red flags) recall@Caution 70.1%  ROC-AUC 0.863
+- 11:38:35 [ablation] red-flag rules only                           recall@Caution 23.2%  ROC-AUC 0.610
+- 11:38:35 [ablation] wording match only                            recall@Caution 68.3%  ROC-AUC 0.856
+- 11:38:35 [ablation] anomaly only                                  recall@Caution 22.1%  ROC-AUC 0.597
+- 11:38:35 [ablation] all four signals fused                        recall@Caution 70.5%  ROC-AUC 0.867
+- 11:38:35 [metadata] text_only        recall@Caution 70.5%  false alarms 10.5%  ROC-AUC 0.867
+- 11:38:35 [metadata] metadata_same    recall@Caution 54.4%  false alarms 11.6%  ROC-AUC 0.829
+- 11:38:35 [metadata] metadata_skewed  recall@Caution 94.6%  false alarms 11.1%  ROC-AUC 0.979
+- 11:38:36 [errors] 264 missed scams, 147 false alarms on the frozen test set (text only)
+- 11:38:36 [errors]   missed scam language=en               213/771 (28%)
+- 11:38:36 [errors]   missed scam evasion_type=none             174/613 (28%)
+- 11:38:36 [errors]   missed scam language=manglish         33/58 (57%)
+- 11:38:36 [errors]   missed scam evasion_type=emoji_padding    24/73 (33%)
+- 11:38:36 [errors]   missed scam evasion_type=leetspeak        20/56 (36%)
+- 11:38:36 [errors]   missed scam language=hinglish         18/65 (28%)
+- 11:38:36 [errors]   missed scam evasion_type=split_phrasing   18/56 (32%)
+- 11:38:36 [errors]   missed scam evasion_type=obfuscated_link  14/44 (32%)
+- 11:38:36 [errors]   missed scam evasion_type=spacing          14/52 (27%)
+- 11:38:36 [errors]   false alarm evasion_type=none             119/1173 (10%)
+- 11:38:36 [errors]   false alarm language=en               112/1275 (9%)
+- 11:38:36 [errors]   false alarm language=hinglish         20/61 (33%)
+- 11:38:36 [errors]   false alarm evasion_type=emoji_padding    16/109 (15%)
+- 11:38:36 [errors]   false alarm language=manglish         15/64 (23%)
+- 11:38:36 [errors]   false alarm evasion_type=casual_lowercase 12/118 (10%)
+- 11:39:02 [report_once] batch A: 1996 scams, 687 missed; reporting 75 across 28 categories; variant plus_legit also adds 63 corpus-split legit messages
+- 11:39:30 [report_once] scam_reports_only  batch B recall 75.1% -> 37.7% [35.3%, 40.1%] at dev false alarms 1.4%
+- 11:39:38 [report_once] plus_legit         batch B recall 75.1% -> 87.9% [86.4%, 89.5%] at dev false alarms 10.0%
+- 11:40:47 [sms] real honest texts flagged at Caution: 16.3% [15.3%, 17.4%] of 4827; marketing spam flagged 24.0%
+- 11:41:38 [fresh batch 7] 1412 scams / 2295 legit after dropping 1942 near-copies: recall@Caution 67.4%, false alarms 11.2%
