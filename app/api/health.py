@@ -9,4 +9,5 @@ router = APIRouter()
 @router.get("/health", response_model=HealthOut)
 def health(request: Request) -> HealthOut:
     service = request.app.state.scam_service
-    return HealthOut(reports_stored=service.repository.count(), embedding_model_loaded=service.embedder.is_loaded)
+    return HealthOut(reports_stored=service.repository.count(), embedding_model_loaded=service.embedder.is_loaded,
+                     deepfake_model=request.app.state.deepfake_status)

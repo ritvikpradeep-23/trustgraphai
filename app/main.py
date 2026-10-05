@@ -11,8 +11,10 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api import health, text
+from app.api import health, text, video
 from app.config import Settings, get_settings
+from app.deepfake_engine.face_detector import FaceDetector
+from app.deepfake_engine.model import load_deepfake_model
 from app.errors import ApiError
 from app.scam_engine.embedder import Embedder
 from app.scam_engine.repository import InMemoryReportRepository
@@ -30,6 +32,9 @@ def create_app(settings: Settings | None = None, embedder=None) -> FastAPI:
     app.state.settings = settings
     app.state.scam_service = ScamService(embedder or Embedder(settings.embedding_model_name),
                                          InMemoryReportRepository(settings.reports_path), settings)
+    # The deepfake model (if any) and face detector are loaded once at startup.
+    app.state.deepfake_model, app.state.deepfake_status = load_deepfake_model(settings)
+    app.state.face_detector = FaceDetector(settings.face_margin)
 
     # Browsers block cross-site calls unless the server allows the caller's
     # origin, so the website and the extension must be listed in CORS_ORIGINS.
@@ -56,6 +61,7 @@ def create_app(settings: Settings | None = None, embedder=None) -> FastAPI:
 
     app.include_router(health.router)
     app.include_router(text.router)
+    app.include_router(video.router)
     return app
 
 
