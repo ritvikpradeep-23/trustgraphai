@@ -28,12 +28,14 @@ computer.
    ├─ POST /api/text/ai-check    AI-written text? (fine-tuned distilroberta)
    ├─ POST /api/video/analyze    deepfake video (EfficientNet-B0 + your head)
    ├─ POST /api/text/report, /api/text/analyze   similar scam reports (sentence embeddings)
-   ├─ GET  /api/accuracy         latest results of the accuracy routine
+   ├─ GET  /api/accuracy         latest results of the accuracy and learning routines
+   ├─ POST /api/feedback         "this is a scam" / "wrongly flagged" → learning inbox
    └─ GET  /health, /docs        what is configured, list of all endpoints
 
  Stand-alone Python (no server):
    ├─ train_video.py / train_text.py      training
-   └─ run_cycle.py   ← started by Task Scheduler every 2 hours (accuracy routine)
+   ├─ run_cycle.py   ← Task Scheduler every 2 hours (accuracy routine)
+   └─ learn_cycle.py ← Task Scheduler every hour (new-scam learning routine)
 ```
 
 **How the pieces talk:** the extension calls the **local service** through an **HTTP API** (JSON in, JSON out). The
@@ -126,6 +128,19 @@ Every `INTERVAL_HOURS` (default 2, set in `detection_config.json`):
 - `python show_report.py` prints the latest run and the trend.
 
 ---
+
+## 5b. Learning new scams (hourly)
+
+`learn_cycle.py` runs every hour:
+1. It takes new examples: scams reported through `POST /api/feedback`, `POST /api/text/report` or `add_examples.py`,
+   plus honest messages that were wrongly flagged.
+2. It first records how many of the new scams the engine **already** caught. That's the live new-scam catch rate.
+3. It learns the misses, then runs the same safety gate as the improvement rounds.
+4. An accepted version waits in `models/candidate/learn_<time>/` until you promote it (or `AUTO_PROMOTE`).
+
+Chance of catching a brand-new scam type: about **6 in 10 on synthetic data**; unknown in real life, probably lower.
+Rewordings are caught far better once a few reports of that scam have been learned. Details:
+`docs/NEW_SCAM_LEARNING.md`.
 
 ## 6. What the numbers mean, and what they don't
 

@@ -33,4 +33,19 @@ def accuracy() -> dict:
                       **{k: int(r[k]) for k in ("tn", "fp", "fn", "tp")}}
         out[kind] = {"latest": latest, "runs": len(mine),
                      "unused_batches": len(manifest["batches"]) - len(used_batches(kind)) if manifest else None}
+    out["new_scam_learning"] = learning_summary(HISTORY.parent / "learning" / "history.csv")
     return out
+
+
+def learning_summary(path) -> dict:
+    """Totals from the hourly learning routine: new scams caught BEFORE the engine learned them."""
+    rows = []
+    if path.exists():
+        with open(path, newline="", encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+    total = sum(int(r["new_scams"] or 0) for r in rows)
+    caught = sum(round(float(r["caught_before"]) * int(r["new_scams"] or 0)) for r in rows if r["caught_before"])
+    return {"runs": len(rows), "new_scams_seen": total, "caught_before_learning": caught,
+            "catch_rate_before_learning": round(caught / total, 4) if total else None,
+            "versions_accepted": sum(r["gate"] == "accepted" for r in rows),
+            "latest_version": next((r["new_version"] for r in reversed(rows) if r["new_version"]), None)}

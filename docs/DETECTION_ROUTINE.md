@@ -133,7 +133,8 @@ The folder needs a `real\` and a `fake\` sub-folder. For Celeb-DF, put `Celeb-re
 
 ## The routine and the schedule
 
-- `python install_schedule.py` installs the schedule:
+- `python install_schedule.py` installs the schedule. It also installs the hourly new-scam learning routine
+  (`learn_cycle.py`, see `docs/NEW_SCAM_LEARNING.md`); `--only accuracy` installs just this one.
   - **Windows:** a Task Scheduler task called `TrustGraphAccuracyRoutine`. It runs `run_cycle.py` every
     `INTERVAL_HOURS` with `pythonw.exe`, so no window pops up.
   - **macOS/Linux:** one marked crontab line.

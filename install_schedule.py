@@ -1,17 +1,21 @@
-"""Step 8: run run_cycle.py every INTERVAL_HOURS (detection_config.json, default 2).
+"""Step 8: install both routines on a schedule (settings in detection_config.json):
 
-    python install_schedule.py            # install (or update) the schedule
-    python install_schedule.py --show     # check it exists
-    python install_schedule.py --remove   # delete it
-    python install_schedule.py --dry-run  # print what would be installed, change nothing
+  accuracy  run_cycle.py   every INTERVAL_HOURS (default 2): scores one unused test batch
+  learning  learn_cycle.py every learning.LEARN_INTERVAL_HOURS (default 1): learns new scams
 
-Windows: a Task Scheduler task named "TrustGraphAccuracyRoutine".
-macOS / Linux: one line in your crontab, marked "# trustgraph-accuracy-routine".
+    python install_schedule.py                  # install (or update) both
+    python install_schedule.py --show           # check they exist
+    python install_schedule.py --remove         # delete both
+    python install_schedule.py --only learning  # just one of them (accuracy or learning)
+    python install_schedule.py --dry-run        # print what would be installed, change nothing
+
+Windows: Task Scheduler tasks "TrustGraphAccuracyRoutine" and "TrustGraphLearningRoutine".
+macOS / Linux: one crontab line each, marked "# trustgraph-accuracy-routine" / "# trustgraph-learning-routine".
 
 Missed runs are skipped, never piled up: if the laptop is off or asleep at
 run time, nothing catches up later (Task Scheduler "run as soon as possible
-after a missed start" is OFF; cron never catches up). The lock file in
-run_cycle.py also stops a run from starting while another is still going.
+after a missed start" is OFF; cron never catches up). Each script's lock
+file also stops a run from starting while another of the same kind is still going.
 """
 import argparse
 import platform
@@ -24,9 +28,21 @@ from xml.sax.saxutils import escape
 
 from detection_common import LOGS_DIR, ROOT, load_config
 
-TASK_NAME = "TrustGraphAccuracyRoutine"
-CRON_MARK = "# trustgraph-accuracy-routine"
-SCRIPT = ROOT / "run_cycle.py"
+ROUTINES = {
+    "accuracy": {"task": "TrustGraphAccuracyRoutine", "mark": "# trustgraph-accuracy-routine",
+                 "script": ROOT / "run_cycle.py", "what": "accuracy routine (scores one unused test batch)"},
+    "learning": {"task": "TrustGraphLearningRoutine", "mark": "# trustgraph-learning-routine",
+                 "script": ROOT / "learn_cycle.py", "what": "new-scam learning routine"},
+}
+TASK_NAME, CRON_MARK, SCRIPT = (ROUTINES["accuracy"][k] for k in ("task", "mark", "script"))
+
+
+def intervals() -> dict:
+    """{routine: hours}. Both must be whole hours from 1 to 23 (anything below 1 is rejected)."""
+    from detection_common import check_interval
+    cfg = load_config()
+    return {"accuracy": cfg["INTERVAL_HOURS"],
+            "learning": check_interval(cfg.get("learning", {}).get("LEARN_INTERVAL_HOURS", 1))}
 
 
 def python_for_schedule() -> str:
@@ -40,7 +56,7 @@ def python_for_schedule() -> str:
 
 
 # ---------------------------------------------------------------- Windows
-def task_xml(hours: int, python: str, start: datetime) -> str:
+def task_xml(hours: int, python: str, start: datetime, routine: dict = ROUTINES["accuracy"]) -> str:
     """Task Scheduler definition. The settings that matter:
     StartWhenAvailable=false  a missed run (laptop off) is skipped, not run late
     IgnoreNew                 never a second copy while one is running
@@ -48,7 +64,7 @@ def task_xml(hours: int, python: str, start: datetime) -> str:
     ExecutionTimeLimit        a stuck run is stopped before the next one is due"""
     return f"""<?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
-  <RegistrationInfo><Description>TrustGraph accuracy routine: runs run_cycle.py every {hours} hour(s).</Description></RegistrationInfo>
+  <RegistrationInfo><Description>TrustGraph {routine['what']}: runs {routine['script'].name} every {hours} hour(s).</Description></RegistrationInfo>
   <Triggers>
     <TimeTrigger>
       <StartBoundary>{start.strftime('%Y-%m-%dT%H:%M:%S')}</StartBoundary>
@@ -69,7 +85,7 @@ def task_xml(hours: int, python: str, start: datetime) -> str:
   <Actions Context="Author">
     <Exec>
       <Command>{escape(python)}</Command>
-      <Arguments>"{escape(str(SCRIPT))}"</Arguments>
+      <Arguments>"{escape(str(routine['script']))}"</Arguments>
       <WorkingDirectory>{escape(str(ROOT))}</WorkingDirectory>
     </Exec>
   </Actions>
@@ -77,22 +93,22 @@ def task_xml(hours: int, python: str, start: datetime) -> str:
 """
 
 
-def windows(action: str, hours: int, dry_run: bool):
-    xml_file = None
+def windows(action: str, hours: int, dry_run: bool, routine: dict = ROUTINES["accuracy"]):
+    xml_file, name = None, routine["task"]
     if action == "install":
         xml = task_xml(hours, python_for_schedule(), datetime.now().replace(second=0, microsecond=0)
-                       + timedelta(minutes=5))
+                       + timedelta(minutes=5), routine)
         if dry_run:
             print(xml)
             return
         with tempfile.NamedTemporaryFile("wb", suffix=".xml", delete=False) as f:
             f.write(xml.encode("utf-16"))  # Task Scheduler wants UTF-16 XML
             xml_file = f.name
-        cmd = ["schtasks", "/Create", "/TN", TASK_NAME, "/XML", xml_file, "/F"]
+        cmd = ["schtasks", "/Create", "/TN", name, "/XML", xml_file, "/F"]
     elif action == "remove":
-        cmd = ["schtasks", "/Delete", "/TN", TASK_NAME, "/F"]
+        cmd = ["schtasks", "/Delete", "/TN", name, "/F"]
     else:
-        cmd = ["schtasks", "/Query", "/TN", TASK_NAME, "/V", "/FO", "LIST"]
+        cmd = ["schtasks", "/Query", "/TN", name, "/V", "/FO", "LIST"]
     if dry_run:
         print(" ".join(cmd))
         return
@@ -103,15 +119,15 @@ def windows(action: str, hours: int, dry_run: bool):
     if result.returncode != 0:
         raise SystemExit(f"schtasks failed ({result.returncode})")
     if action == "install":
-        windows("show", hours, False)
+        windows("show", hours, False, routine)
 
 
 # ---------------------------------------------------------------- macOS / Linux
-def cron_line(hours: int, python: str) -> str:
+def cron_line(hours: int, python: str, routine: dict = ROUTINES["accuracy"]) -> str:
     """Every `hours` hours on the hour. With a value that doesn't divide 24 the
     gap across midnight is shorter (cron restarts counting each day)."""
-    log = LOGS_DIR / "cron.log"
-    return f"0 */{hours} * * * cd '{ROOT}' && '{python}' '{SCRIPT}' >> '{log}' 2>&1 {CRON_MARK}"
+    log = LOGS_DIR / f"cron_{routine['script'].stem}.log"
+    return f"0 */{hours} * * * cd '{ROOT}' && '{python}' '{routine['script']}' >> '{log}' 2>&1 {routine['mark']}"
 
 
 def read_crontab() -> list[str]:
@@ -122,14 +138,15 @@ def read_crontab() -> list[str]:
     return result.stdout.splitlines() if result.returncode == 0 else []  # "no crontab" -> empty
 
 
-def cron(action: str, hours: int, dry_run: bool):
-    lines = [ln for ln in read_crontab() if CRON_MARK not in ln]  # drop our old line, keep everything else
+def cron(action: str, hours: int, dry_run: bool, routine: dict = ROUTINES["accuracy"]):
+    mark = routine["mark"]
+    lines = [ln for ln in read_crontab() if mark not in ln]  # drop our old line, keep everything else
     if action == "show":
-        mine = [ln for ln in read_crontab() if CRON_MARK in ln]
-        print("\n".join(mine) if mine else "No schedule installed.")
+        mine = [ln for ln in read_crontab() if mark in ln]
+        print("\n".join(mine) if mine else f"No schedule installed for {routine['script'].name}.")
         return
     if action == "install":
-        lines.append(cron_line(hours, python_for_schedule()))
+        lines.append(cron_line(hours, python_for_schedule(), routine))
     if dry_run:
         print("New crontab would be:\n" + "\n".join(lines))
         return
@@ -140,7 +157,7 @@ def cron(action: str, hours: int, dry_run: bool):
         raise SystemExit("The 'crontab' command was not found. Install cron (e.g. sudo apt install cron).") from None
     print("Removed." if action == "remove" else "Installed:")
     if action == "install":
-        cron("show", hours, False)
+        cron("show", hours, False, routine)
 
 
 def main(argv=None):
@@ -148,16 +165,19 @@ def main(argv=None):
     group = ap.add_mutually_exclusive_group()
     group.add_argument("--show", action="store_true")
     group.add_argument("--remove", action="store_true")
+    ap.add_argument("--only", choices=sorted(ROUTINES), help="just this routine (default: both)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args(argv)
     try:
-        hours = load_config()["INTERVAL_HOURS"]
+        hours = intervals()
     except ValueError as exc:  # below 1, or not whole hours: refuse to install
         raise SystemExit(f"detection_config.json: {exc}") from None
     action = "show" if args.show else "remove" if args.remove else "install"
     system = platform.system()
-    print(f"{system}: {action}" + (f", every {hours} hour(s)" if action == "install" else ""))
-    (windows if system == "Windows" else cron)(action, hours, args.dry_run)
+    for name in ([args.only] if args.only else list(ROUTINES)):
+        print(f"\n{system}: {action} the {ROUTINES[name]['what']}"
+              + (f", every {hours[name]} hour(s)" if action == "install" else ""))
+        (windows if system == "Windows" else cron)(action, hours[name], args.dry_run, ROUTINES[name])
 
 
 if __name__ == "__main__":

@@ -47,6 +47,7 @@ def env(tmp_path, monkeypatch):
     monkeypatch.setattr(run_cycle, "LATEST", tmp_path / "reports" / "latest.md")
     monkeypatch.setattr(show_report, "HISTORY", tmp_path / "reports" / "history.csv")
     monkeypatch.setattr(show_report, "LATEST", tmp_path / "reports" / "latest.md")
+    monkeypatch.setattr(show_report, "LEARNING_HISTORY", tmp_path / "reports" / "learning" / "history.csv")
     monkeypatch.setattr(effnet, "_loaded", {})
     try_efficientnet_modes.use_random_weights(effnet.MODEL_ID)  # no download
     return {"cfg": cfg, "tmp": tmp_path}
@@ -196,7 +197,8 @@ def test_stale_lock_is_taken_over(env):
 
 def test_show_report(env, capsys):
     show_report.main([])
-    assert "No runs yet" in capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert "No accuracy runs yet" in out and "No learning runs yet" in out
     run_cycle.main()
     show_report.main([])
     out = capsys.readouterr().out

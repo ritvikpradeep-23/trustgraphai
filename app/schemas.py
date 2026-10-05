@@ -66,3 +66,15 @@ class AiCheckOut(BaseModel):
     """Whether a text reads as AI-written. This is NOT a scam verdict."""
     result: AiTextResult
     ai_score: float  # 0-1, from the fine-tuned text model
+
+
+class FeedbackIn(BaseModel):
+    """A user's explicit correction, for the learning routine (learn_cycle.py)."""
+    text: str = Field(min_length=1, max_length=20000)
+    label: Literal["scam", "not_scam"]  # not_scam = an honest message that was wrongly flagged
+    scam_type: str | None = Field(default=None, max_length=100)
+    source: str = Field(default="api", min_length=1, max_length=50)
+
+
+class FeedbackOut(BaseModel):
+    status: Literal["queued"] = "queued"
