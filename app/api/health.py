@@ -1,5 +1,5 @@
-"""GET /health: is the server up. Loads nothing heavy."""
-from fastapi import APIRouter
+"""GET /health: is the server up, and what is configured. Loads nothing heavy."""
+from fastapi import APIRouter, Request
 
 from app.schemas import HealthOut
 
@@ -7,5 +7,6 @@ router = APIRouter()
 
 
 @router.get("/health", response_model=HealthOut)
-def health() -> HealthOut:
-    return HealthOut()
+def health(request: Request) -> HealthOut:
+    service = request.app.state.scam_service
+    return HealthOut(reports_stored=service.repository.count(), embedding_model_loaded=service.embedder.is_loaded)
