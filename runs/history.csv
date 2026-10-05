@@ -1,2 +1,3 @@
 round,time,candidate_before,scams,honest,prefix_recall_caution,prefix_recall_high,prefix_false_alarms_caution,misses,false_alarms,added_scam,added_honest,dev_recall_before,dev_recall_after,real_sms_false_alarms_after,gate,failed_checks,candidate_after
 3,2026-10-05 19:50,demo-safe,60,120,0.4167,0.0333,0.0,35,0,35,0,0.4833,0.4833,0.0114,accepted,,fast_r03
+4,2026-10-05 19:53,fast_r03,60,120,0.4167,0.2667,0.1417,35,17,35,17,0.4833,0.575,0.0599,accepted,,fast_r04
