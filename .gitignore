@@ -14,3 +14,9 @@ training/.cache/
 # Backend: user-submitted reports are private data, never committed
 data/scam_reports.json
 .env
+
+# Detectors + accuracy routine: datasets, caches, trained weights and logs stay on your laptop
+data/detection/
+logs/
+models/efficientnet_head.pt
+models/text_detector/

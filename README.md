@@ -204,6 +204,10 @@ Settings for the API (thresholds, video limits, `DEEPFAKE_MODE` = mine / efficie
 `.env.example`. The deepfake endpoint answers `503 model_not_configured` until a trained model is installed
 (`models/README.md`); it never makes up a score.
 
+**Deepfake video + AI-text detectors with a scheduled accuracy routine:** `train_video.py`, `train_text.py`,
+`run_cycle.py` (scores one fresh, never-reused test batch every `INTERVAL_HOURS`) and `show_report.py`. Setup,
+datasets and what the numbers mean: [`docs/DETECTION_ROUTINE.md`](docs/DETECTION_ROUTINE.md).
+
 The welcome page opens on install. To try it without real chats, open the toolbar popup → **Use without account** → Settings → **Demo data**, or serve the test chat:
 
 ```text
