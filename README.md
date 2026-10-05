@@ -5,7 +5,7 @@
 <h1 align="center">TrustGraph</h1>
 
 <p align="center">
-  <strong>Scores a message, call or video for AI-assisted fraud, and explains why in plain words.</strong>
+  <strong>A privacy-first browser extension that checks any message for scam signals, right where you read it. Only the verdict comes home.</strong>
 </p>
 
 <p align="center">
@@ -35,9 +35,7 @@ The rapid advancement of generative AI has made it increasingly difficult to dis
 
 Deepfakes, cloned voices, synthetic images, fabricated documents, and other AI-assisted techniques can enable **impersonation, misinformation, identity theft, financial fraud, and social engineering attacks**.
 
-Scammers now write convincing messages with AI (fake bank alerts, "digital arrest" threats, KYC expiry notices,
-boss gift-card requests, AI voice-clone family emergencies) in English, Hinglish and Manglish, and back them with
-deepfake video calls. People get little warning before they pay or share a code.
+**Scammers now write fluent, personalised messages at scale: fake bank KYC alerts, "Hi Mum, this is my new number", OTP and UPI-PIN requests, task-job and investment offers, "digital arrest" threats. They arrive in the chat and email apps people already use, in English and in regional languages, and people have no quick, private way to check a message before they reply, pay or share a code.**
 
 ---
 
@@ -45,45 +43,49 @@ deepfake video calls. People get little warning before they pay or share a code.
 
 ### TrustGraph
 
-**TrustGraph** is a **web + API** solution designed to detect **AI-assisted scam messages, impersonation and
-deepfake videos**.
+**TrustGraph** is a **Chrome extension (Manifest V3)** that detects and explains **AI-assisted and social-engineering scam messages**.
 
-The system takes **a message (plus optional call details or an MP4 video)**, analyzes it with **several independent
-signals (anomaly detection, identity continuity, scam-wording similarity, a report history and a deepfake video
-pipeline)**, and produces **a Low / Caution / High risk level with a plain-language explanation** to help users
-identify potentially fraudulent content.
+The user hovers a message on Gmail, WhatsApp Web, LinkedIn, Telegram, Discord, Slack, Messenger or Instagram (or selects text anywhere) and clicks a shield. A **scoring engine** analyses the text in memory and returns a **risk verdict (Low / Caution / High), a 0–100 score, a plain-language explanation and the signals behind it**. Only that verdict and its metadata are ever stored or synced. The message text never is.
 
 ### Key Features
 
-* 🔴 **Explainable risk score**: every verdict names the signal that drove it ("asks for a one-time code", "reads like a known gift-card scam").
-* ⚪ **Identity continuity**: flags a contact whose bank account, email domain or phone number suddenly changed (look-alike domains too).
-* ⚫ **Scam-report matching**: a new message is compared with messages people already reported, without ever revealing another user's report.
-* 🔴 **Deepfake video check**: samples frames, finds the face, scores it with a pluggable model, and says "inconclusive" when no face is visible instead of guessing.
-* ⚪ **Hinglish and Manglish**: tested on Indian-English code-mixed scams, not just English.
+* 🔴 **One-click checks where you read** — a shield on each message, a whole-chat scan in a side panel that pushes the page aside instead of covering it, and right-click "Check with TrustGraph" on any site.
+* ⚪ **Explainable verdicts** — a score ring, a one-paragraph explanation, and eight signal types (urgency, money/gift-card/crypto requests, OTP/credential requests, lookalike links, sender mismatch, impersonation, continuity break, known-pattern similarity), each with the exact words that matched.
+* ⚫ **Multilingual rules** — English, Malayalam, Manglish, Hinglish and Hindi, with leetspeak and spacing tricks normalised and negation understood ("we will never ask for your OTP").
+* 🔴 **Conversation awareness** — scores runs of messages from one sender together and flags a sender whose ordinary messages suddenly turn into requests (a hacked or impersonated account).
+* ⚪ **Privacy by construction** — the stored record has no text field (a unit test fails if one is added); history export / delete anytime; no scam-report database in the extension; works offline.
+* ⚫ **Python detection engine and API (optional server)** — a four-signal scoring engine (anomaly, identity continuity, scam-wording similarity, report precedent) with a demo page, and a FastAPI backend that matches messages against reported scams and checks MP4 videos for deepfakes (EfficientNet-B0 backbone + a trainable real/fake layer).
 
 ---
 
 ## 🔄 How It Works
 
 ```text
-            website / browser extension / (future) messaging bots
-                                   |
-                                   v
-        +------------------- TrustGraph API (FastAPI) -------------------+
-        |                                                                 |
-        |  text ---> normalize ---> embed (MiniLM) ---> match reports ----+--> LOW / MEDIUM / HIGH + evidence ids
-        |                                                                 |
-        |  video --> validate MP4 -> 1 frame/s -> largest face -> model --+--> likely_fake / likely_real / inconclusive
-        +-----------------------------------------------------------------+
-
-        Detector engine (src/trustgraph), used by the demo website:
-          anomaly (Isolation Forest) + continuity (rules) + similarity (TF-IDF + red flags)
-          + precedent (report lookup)  --noisy-OR-->  Low / Caution / High + explanation
+  Web page (Gmail, WhatsApp, ...)          Extension service worker               Web app (optional)
+ ┌───────────────────────────────┐   typed   ┌──────────────────────────────┐    ┌──────────────────────┐
+ │ 1. EXTENSION DETECTS          │ messages  │ 2. ENGINE THINKS             │    │ 3. SHOWS & MANAGES   │
+ │ site adapter finds messages   │──────────▶│ LocalEngine: on-device rules │    │ history, export,     │
+ │ shield / chat scan / select   │  (text,   │ RemoteEngine: scoring server │    │ workspace view       │
+ │ side panel (closed shadow DOM)│  memory   │   + local rules, higher wins │    │                      │
+ │ text kept in memory only      │◀──────────│ -> Verdict {riskLevel, score,│    │                      │
+ └───────────────────────────────┘  Verdict  │    explanation, signals}     │    │                      │
+                                             │ -> Result (NO TEXT) ─────────┼───▶│ POST /api/results    │
+                                             │    chrome.storage history    │    │ (verdict + metadata) │
+                                             └──────────────────────────────┘    └──────────────────────┘
 ```
 
-![System Architecture](ARCHITECTURE_IMAGE_URL)
+Optional Python server (this repository's `app/` and `src/trustgraph/`):
 
-*System architecture and processing workflow.*
+```text
+  text  -> normalize -> embed (MiniLM) -> match explicitly reported scams -> LOW / MEDIUM / HIGH + evidence ids
+  video -> validate MP4 -> ~1 frame/s -> largest face -> EfficientNet-B0 (frozen) + real/fake layer
+        -> per-face scores -> likely_fake / likely_real / inconclusive
+  detector engine: anomaly + continuity + similarity + precedent --noisy-OR--> Low / Caution / High + explanation
+```
+
+![System Architecture](docs/screenshots/panel-chat-scan.png)
+
+*Whole-chat scan: verdict, signals with evidence, continuity and similarity.*
 
 ---
 
@@ -91,20 +93,20 @@ identify potentially fraudulent content.
 
 ### Software
 
-| Layer          | Technologies |
-| -------------- | ------------ |
-| **Frontend**   | HTML / CSS / JavaScript demo page (`src/trustgraph/web/index.html`) |
-| **Backend**    | FastAPI (`app/`), plus a small standard-library server for the demo page |
-| **AI / ML**    | scikit-learn (Isolation Forest, TF-IDF, logistic regression), sentence-transformers all-MiniLM-L6-v2, PyTorch (TorchScript deepfake model slot) |
-| **Database**   | JSON file behind a small repository interface (ready to swap for pgvector) |
-| **Processing** | OpenCV, NumPy, pandas |
-| **Deployment** | Local (`uvicorn`); no cloud deployment yet |
+| Layer          | Technologies                             |
+| -------------- | ---------------------------------------- |
+| **Frontend**   | Chrome extension, Manifest V3, plain JavaScript (no build step), Shadow DOM, Lucide icons, bundled Space Grotesk / DM Sans / JetBrains Mono |
+| **Backend**    | Optional TrustGraph scoring server (`POST /api/score`); Python standard-library mock in `trustgraph_extension/scripts/mock_server.py`; FastAPI backend in `app/` (`/api/text/*`, `/api/video/analyze`) |
+| **AI / ML**    | Explainable weighted rule engine (`score = 1 − ∏(1 − w)` plus combination rules); pluggable `RemoteEngine` for a model server; Python engine: scikit-learn (Isolation Forest, TF-IDF), sentence-transformers all-MiniLM-L6-v2, PyTorch + Hugging Face `google/efficientnet-b0`, OpenCV face detection |
+| **Database**   | `chrome.storage.local` (verdict history only); web-app sync through an `ApiClient` with a built-in mock |
+| **Processing** | Unicode/leetspeak normalisation, URL heuristics (lookalike brands, punycode, shorteners, raw IPs, risky TLDs) |
+| **Deployment** | Chrome Web Store package via `scripts/build_zip.py` |
 
 ### Tools
 
 * Git & GitHub
-* pytest (about 150 automated tests)
-* Claude Code
+* Node.js (unit tests), Playwright + Chromium (in-browser tests and screenshots)
+* Python 3 (mock scoring server, icon and zip builders)
 
 ---
 
@@ -112,39 +114,48 @@ identify potentially fraudulent content.
 
 ### Main Interface
 
-![Main Interface](SCREENSHOT_1_URL)
+![Main Interface](docs/screenshots/popup-overview.png)
 
-*Main interface of the application.*
+*Toolbar popup: today's verdicts, 7-day risk trend and risk per channel.*
 
 ### Detection / Analysis
 
-![Detection](SCREENSHOT_2_URL)
+![Detection](docs/screenshots/panel-single-high.png)
 
-*AI fraud detection and analysis workflow.*
+*Checking one message: the side panel shows the verdict, score and signals with the words that matched.*
 
 ### Results
 
-![Results](SCREENSHOT_3_URL)
+![Results](docs/screenshots/popup-history.png)
 
-*Detection result, risk assessment, and supporting information.*
+*History keeps verdicts and metadata only, never the message.*
 
 ---
 
 ## 📊 Results
 
-> **All detection numbers below come from synthetic (AI-written) test messages**, except the real-SMS row. They show
-> how the engine behaves on that data, **not real-world accuracy**.
+| Metric                 | Result                                      |
+| ---------------------- | ------------------------------------------- |
+| **Detection Accuracy** | 100% on the 52-message test set (27 scams, 25 benign) |
+| **Precision**          | 100% (same set)                                       |
+| **Recall**             | 100% (same set)                                       |
+| **Response Time**      | ~0.08 ms per message for the on-device engine (Node, measured); remote engine bounded by a 3 s timeout with local fallback |
+| **Supported Input**    | Text messages and emails (English, Malayalam, Manglish, Hinglish, Hindi), including links |
+
+> **Note:** The test set (`trustgraph_extension/test/rules.test.js`) was written by the team, including tricky benign cases (bank alerts, developer chats about OTP flows). It is not a real-world benchmark; expect lower numbers on live traffic.
+
+**Python detection engine** (`src/trustgraph`, the 4-signal server). **All numbers come from synthetic (AI-written) messages**,
+except the real-SMS row; they are not real-world accuracy:
 
 | Metric | Result |
 | ------ | ------ |
-| **Scams caught, frozen synthetic test** (2,294 messages, 29 scam types, text only) | **74.0%**, with 8.6% of honest messages flagged |
-| **Scams caught, final test of the 10-round improvement routine** (rounds 13-14, used once) | **65.0%** (starting engine 51.7%), with 0.0% of honest messages flagged |
-| **Real UK text messages wrongly flagged** (4,827 honest SMS, public dataset) | **3.6-9.6%** depending on the version |
-| **Named demo scenarios** | 18/18 scams flagged, 6/6 honest controls kept Low |
-| **Supported input** | Text messages, call/interaction details, MP4 video (deepfake model must be supplied) |
+| Scams caught, frozen synthetic test (2,294 messages, 29 scam types, text only) | 74.0%, with 8.6% of honest messages flagged |
+| Scams caught, final test of the 10-round improvement routine (used once) | 65.0% (starting engine 51.7%), 0.0% of honest messages flagged |
+| Real UK text messages wrongly flagged (4,827 honest SMS, public dataset) | 3.6–9.6% depending on the version |
+| Named demo scenarios | 18/18 scams flagged, 6/6 honest controls kept Low |
+| Deepfake video | Pipeline built and tested; no trained real/fake model yet, so no accuracy to report |
 
-Full reports: `reports/2026-10-05-casual/CHANGES.md`, `reports/fast/final_summary.md`,
-`reports/2026-10-05-training/training_summary.md`.
+Reports: `reports/2026-10-05-casual/CHANGES.md`, `reports/fast/final_summary.md`, `reports/2026-10-05-training/training_summary.md`.
 
 ---
 
@@ -152,42 +163,52 @@ Full reports: `reports/2026-10-05-casual/CHANGES.md`, `reports/fast/final_summar
 
 ### Prerequisites
 
-* Python 3.11 or newer
-* Internet on the first run (downloads the ~90 MB text-embedding model once)
-* No API keys
+* Google Chrome (or any Chromium browser, version 110+)
+* Optional: Python 3 for the mock scoring server, Node.js 18+ to run the tests
 
 ### Installation
 
 ```bash
-git clone https://github.com/ritvikpradeep-23/trustgraphai.git
-cd trustgraphai
-
-pip install -r requirements.txt
+git clone https://github.com/ritvikpradeep-23/trustgraphai
+cd trustgraphai/trustgraph_extension
 ```
+
+1. Open `chrome://extensions` and turn on **Developer mode**.
+2. Click **Load unpacked** and choose the `trustgraph_extension/` folder.
 
 ### Environment Variables
 
-All optional. Copy `.env.example` to `.env` to change them:
-
-```env
-SCAM_HIGH_THRESHOLD=0.82
-SCAM_MEDIUM_THRESHOLD=0.68
-DEEPFAKE_MODEL_PATH=models/deepfake.pt
-CORS_ORIGINS=http://localhost:3000,chrome-extension://<your extension id>
-```
+None. The scoring server and web app addresses are set in the extension's Settings page (defaults: `http://127.0.0.1:8000` and a built-in demo web app).
 
 ### Run
 
 ```bash
-python run_website.py                       # demo page: http://127.0.0.1:8000
-python scripts/seed_reports.py              # 10 example scam reports for the API
-python -m uvicorn app.main:app --port 8001   # API: http://127.0.0.1:8001/docs
+# optional: a stand-in scoring server
+python3 scripts/mock_server.py --new-shape
+
+# tests
+node test/rules.test.js && node test/verdict.test.js && node test/result.test.js && node test/background.test.js && node test/tokens.test.js
 ```
 
-The application will be available at:
+**Python engine and API (optional):**
+
+```bash
+pip install -r requirements.txt               # from the repository root
+python run_website.py                         # 4-signal demo page: http://127.0.0.1:8000
+python scripts/seed_reports.py                # 10 example scam reports for the API
+python -m uvicorn app.main:app --port 8001    # API docs: http://127.0.0.1:8001/docs
+python -m pytest tests/                       # Python tests
+```
+
+Settings for the API (thresholds, video limits, `DEEPFAKE_MODE` = mine / efficientnet / both, CORS origins) are listed in
+`.env.example`. The deepfake endpoint answers `503 model_not_configured` until a trained model is installed
+(`models/README.md`); it never makes up a score.
+
+The welcome page opens on install. To try it without real chats, open the toolbar popup → **Use without account** → Settings → **Demo data**, or serve the test chat:
 
 ```text
-http://127.0.0.1:8000 (demo page)   http://127.0.0.1:8001/docs (API)
+cd trustgraph_extension && python3 -m http.server 5500
+http://localhost:5500/test/test-chat.html
 ```
 
 ---
@@ -211,22 +232,25 @@ http://127.0.0.1:8000 (demo page)   http://127.0.0.1:8001/docs (API)
 **Input**
 
 ```text
-Hi, it's the CEO. I'm in a board meeting and can't talk. Buy four Apple gift cards for a client
-and send me the codes on the back. Keep this between us.
+Dear customer your SBI KYC is pending and your account will be blocked today.
+Share the OTP sent to you at http://sbi-kyc-update.xyz urgently
 ```
 
 **System Analysis**
 
 ```text
-Combined score 0.93; driven by 'similarity' (score 0.93): reads like a known gift-card request from a
-boss or colleague script (similarity 0.48); asks for gift-card codes; asks to keep it secret
+Credential or OTP request            HIGH   "Share the OTP"
+Suspicious link or lookalike domain  HIGH   "http://sbi-kyc-update.xyz"  (bank name on an unofficial .xyz domain,
+                                                                          plus official warning + suspicious link)
+Impersonation of a contact or brand  HIGH   "KYC is pending"
+Urgency pressure                     LOW    "urgently"
 ```
 
 **Result**
 
 ```text
-SUSPICIOUS
-Score: 0.93
+FRAUDULENT (likely scam)
+Score: 95 / 100
 Risk Level: HIGH
 ```
 
@@ -236,22 +260,27 @@ Risk Level: HIGH
 
 The system is designed with user privacy and responsible AI usage in mind.
 
-* Uploaded videos go to a temporary file and are deleted after analysis, even when analysis fails.
-* Analyzing a message never stores it. Only messages a user explicitly reports are kept.
-* The API never returns another user's report text: matches come back as id, similarity and source only.
-* Logs record ids, lengths and sources, never message text.
-* No deepfake score is ever invented: without a model the API says `model_not_configured`, and the demo mock labels every answer `"mock": true`.
-* No API keys or credentials are needed; settings come from environment variables.
+* **No message text is stored, synced or logged.** It lives in memory for the length of a check. The only stored record (`shared/result.js`) is `id, timestamp, riskLevel, score, signalIds, channel, domain, hash?`, and `test/result.test.js` fails if a field is added or any word of a message reaches storage.
+* **Nothing is read until the user clicks** (auto-scan is opt-in); the user's own messages are never checked.
+* **No scam-report or public submission database in the extension.** "Mark as wrong verdict" sends only a verdict id. (The optional Python API keeps only messages a user explicitly *reports*, never ones that are just checked, and never returns one user's report text to another.)
+* **Uploaded videos (Python API)** are written to a temporary file and deleted right after analysis, even when it fails.
+* **No passwords in the extension.** Sign-in happens on the web app, which hands the extension a one-time pairing code.
+* **Isolation:** all in-page UI is in closed shadow roots and built with `textContent` (never `innerHTML`), so message text can't inject markup. No remote code, analytics or ads. Fonts are bundled.
+* **Minimum permissions:** `activeTab`, `storage`, `contextMenus`, `scripting`; all-sites and notifications access are optional and requested only when the user turns them on.
 
 ---
 
 ## 🔮 Future Scope
 
-* [ ] Train and add a real deepfake model (EfficientNet-B0 backbone; see `docs/TRUSTGRAPH_DETAILS.md`)
-* [ ] Replace synthetic test data with real reported scams and real honest messages
-* [ ] Browser extension and Telegram/WhatsApp adapters (interface ready in `app/integrations/base.py`)
-* [ ] Move scam reports to PostgreSQL + pgvector
-* [ ] Voice-clone detection for calls
+* [ ] Improve detection accuracy with larger and more diverse datasets
+* [ ] Support additional types of AI-generated content
+* [ ] Add real-time detection capabilities
+* [ ] Improve explainability of detection results
+* [ ] Deploy scalable inference infrastructure
+* [ ] Calibrate the LinkedIn, Telegram, Discord, Slack, Gmail, Messenger and Instagram adapters against live pages
+* [ ] Connect the production web app and model server (`/api/results`, `/api/score`)
+* [ ] Learn from "Mark as wrong verdict" feedback
+* [ ] Voice-note and image (screenshot) scam detection
 
 ---
 
@@ -278,25 +307,35 @@ The project focuses on addressing emerging forms of fraud enabled or amplified b
 
 ## 📄 Repository Structure
 
-The code keeps the layout it was built and tested in. This is how it maps to the template's folders:
-
 ```text
 .
-├── app/                   # Backend: TrustGraph API (FastAPI): text matching + deepfake video
-├── src/trustgraph/        # Detector engine (four signals + fusion)
-│   └── web/               # Frontend: demo page (index.html) and its small server
-├── models/                # AI/ML models (detector files, candidate bundles, deepfake model slot)
-├── data/                  # Sample / synthetic data (incl. data/rounds for the improvement routine)
-├── eval/                  # Synthetic evaluation set, generator, metrics
-├── training/  routine/    # Training experiments and the 10-round improvement routine
-├── reports/               # Results (all marked synthetic where they are)
-├── docs/                  # Documentation (TRUSTGRAPH_DETAILS.md)
-├── scripts/               # Seed, promote/rollback, round and final-test scripts
-├── tests/                 # Automated tests (pytest)
-├── .env.example           # Environment variables template
-├── requirements.txt       # Python dependencies
+├── trustgraph_extension/   # The Chrome extension (Manifest V3, no build step)
+│   ├── background.js       # Service worker: engines, history, account, network
+│   ├── content/            # Shield, side panel, chat scan
+│   ├── adapters/           # Per-site message readers (+ config-driven sites)
+│   ├── shared/             # Design system, Verdict + Result, rules engine, ApiClient
+│   ├── ui/                 # Popup, welcome + settings, privacy, demo web app
+│   ├── test/               # Unit + in-browser tests and fixtures
+│   ├── dev/                # Component gallery
+│   ├── store/              # Chrome Web Store listing and policies
+│   └── scripts/            # Mock server, icon and zip builders
+├── app/                    # Python API (FastAPI): text matching, deepfake video, adapter interface
+├── src/trustgraph/         # Python 4-signal detection engine + demo page (web/)
+├── models/                 # Engine model files, candidate bundles, deepfake model slot (see models/README.md)
+├── data/  eval/            # Synthetic sample data and the evaluation set
+├── training/  routine/     # Training experiments and the 10-round improvement routine
+├── reports/                # Results (marked synthetic where they are)
+├── scripts/                # Seeding, promote/rollback, rounds, EfficientNet training and demo scripts
+├── tests/                  # Python tests (pytest)
+├── docs/
+│   ├── screenshots/        # Screenshots of every surface
+│   ├── redesign-handoff.md # Notes on the UI redesign
+│   └── TRUSTGRAPH_DETAILS.md # Python engine and API details
+├── requirements.txt  .env.example
 └── README.md
 ```
+
+Full developer documentation: [`trustgraph_extension/README.md`](trustgraph_extension/README.md).
 
 ---
 
