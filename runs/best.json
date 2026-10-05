@@ -1,7 +1,7 @@
 {
- "name": "fast_r08",
- "dir": "models\\candidate\\fast_r08",
- "round": 8,
- "dev_recall_caution": 0.6416666666666667,
- "real_sms_false_alarms": 0.03751295336787565
+ "name": "fast_r11",
+ "dir": "models\\candidate\\fast_r11",
+ "round": 11,
+ "dev_recall_caution": 0.6666666666666666,
+ "real_sms_false_alarms": 0.038134715025906735
 }
