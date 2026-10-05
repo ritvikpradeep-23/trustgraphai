@@ -38,7 +38,8 @@ def live_bands() -> dict:
 
 
 def _sha(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    from eval.leakage import sha256 as line_ending_safe_sha256
+    return line_ending_safe_sha256(path)
 
 
 def write_bundle(name: str, files: dict[str, Path], targets: dict[str, str], bands: dict, *,

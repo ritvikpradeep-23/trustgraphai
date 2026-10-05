@@ -22,8 +22,19 @@ import time
 from pathlib import Path
 
 
+# Text files are hashed with Windows line endings (\r\n) turned into \n:
+# Git on Windows rewrites line endings on checkout, which changes the bytes
+# but not the content. Binary files are hashed exactly as they are.
+TEXT_SUFFIXES = {".json", ".jsonl", ".md", ".csv", ".txt", ".tsv"}
+
+
+def _bytes_for_hash(path) -> bytes:
+    data = Path(path).read_bytes()
+    return data.replace(b"\r\n", b"\n") if Path(path).suffix in TEXT_SUFFIXES else data
+
+
 def _sha(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashlib.sha256(_bytes_for_hash(path)).hexdigest()
 
 
 def _pct(x):

@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pytest
 
@@ -48,8 +49,18 @@ def test_final_test_refuses_a_second_look(tmp_path):
 def test_model_dir_variable_falls_back_to_models(tmp_path, monkeypatch):
     from trustgraph.paths import model_path
     monkeypatch.delenv("TRUSTGRAPH_MODEL_DIR", raising=False)
-    assert model_path("risk_bands.json") == "models/risk_bands.json"
+    assert model_path("risk_bands.json") == os.path.join("models", "risk_bands.json")
     (tmp_path / "risk_bands.json").write_text("{}")
     monkeypatch.setenv("TRUSTGRAPH_MODEL_DIR", str(tmp_path))
     assert model_path("risk_bands.json") == str(tmp_path / "risk_bands.json")
-    assert model_path("anomaly_isolation_forest.joblib") == "models/anomaly_isolation_forest.joblib"
+    assert model_path("anomaly_isolation_forest.joblib") == os.path.join("models", "anomaly_isolation_forest.joblib")
+
+
+def test_hash_ignores_windows_line_endings(tmp_path):
+    from eval.leakage import sha256
+    unix, windows = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
+    unix.write_bytes(b'{"id": 1}\n{"id": 2}\n')
+    windows.write_bytes(b'{"id": 1}\r\n{"id": 2}\r\n')
+    assert sha256(unix) == sha256(windows)
+    windows.write_bytes(b'{"id": 1}\r\n{"id": 3}\r\n')
+    assert sha256(unix) != sha256(windows)

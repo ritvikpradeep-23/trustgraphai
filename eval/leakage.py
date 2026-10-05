@@ -45,12 +45,19 @@ def filter_leaks(candidates: list[dict], reference: list[str], threshold: float 
     return kept, removed
 
 
+# Text files are hashed with Windows line endings (\r\n) turned into \n:
+# Git on Windows rewrites line endings on checkout, which changes the bytes
+# but not the content. Binary files are hashed exactly as they are.
+TEXT_SUFFIXES = {".json", ".jsonl", ".md", ".csv", ".txt", ".tsv"}
+
+
+def _bytes_for_hash(path) -> bytes:
+    data = Path(path).read_bytes()
+    return data.replace(b"\r\n", b"\n") if Path(path).suffix in TEXT_SUFFIXES else data
+
+
 def sha256(path) -> str:
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 16), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    return hashlib.sha256(_bytes_for_hash(path)).hexdigest()
 
 
 def write_manifest(test_path, seed: int, counts: dict, removed: int, path=MANIFEST):
