@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(./**)",
+      "Edit(./**)",
+      "Bash(python check_gpu.py)",
+      "Bash(python prepare_data.py *)",
+      "Bash(python train_video.py *)",
+      "Bash(python train_video.py)",
+      "Bash(python train_text.py *)",
+      "Bash(python train_text.py)",
+      "Bash(python video_detector.py *)",
+      "Bash(python text_detector.py *)",
+      "Bash(python run_cycle.py)",
+      "Bash(python show_report.py)",
+      "Bash(python show_report.py *)",
+      "Bash(python install_schedule.py)",
+      "Bash(python install_schedule.py *)",
+      "Bash(python -m pytest *)",
+      "Bash(pip install -r requirements.txt)",
+      "Bash(python -m pip install -r requirements.txt)",
+      "PowerShell(python check_gpu.py)",
+      "PowerShell(python prepare_data.py *)",
+      "PowerShell(python train_video.py *)",
+      "PowerShell(python train_video.py)",
+      "PowerShell(python train_text.py *)",
+      "PowerShell(python train_text.py)",
+      "PowerShell(python video_detector.py *)",
+      "PowerShell(python text_detector.py *)",
+      "PowerShell(python run_cycle.py)",
+      "PowerShell(python show_report.py)",
+      "PowerShell(python show_report.py *)",
+      "PowerShell(python install_schedule.py)",
+      "PowerShell(python install_schedule.py *)",
+      "PowerShell(python -m pytest *)",
+      "PowerShell(pip install -r requirements.txt)",
+      "PowerShell(python -m pip install -r requirements.txt)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Edit(./.env)"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "_help": "Settings for the deepfake-video + AI-text detectors and the accuracy routine. See docs/DETECTION_ROUTINE.md.",
+  "INTERVAL_HOURS": 2,
+  "LOCK_STALE_HOURS": 6,
+  "MAX_DOWNLOAD_GB": 1,
+  "split": {"train": 0.6, "val": 0.1, "test": 0.3, "seed": 0},
+  "video": {
+    "test_batch_size": 50,
+    "frames_per_video": 16,
+    "model_path": "models/efficientnet_head.pt"
+  },
+  "text": {
+    "test_batch_size": 200,
+    "base_model": "distilroberta-base",
+    "max_length": 256,
+    "model_dir": "models/text_detector"
+  }
+}
