@@ -103,24 +103,30 @@ def _flag_hits(text: str) -> list[tuple[float, str]]:
 _index = None
 
 
+def build_index(scam_scripts: dict[str, list[str]], legit_messages: list[str]) -> dict:
+    """Fit the TF-IDF index on a reference corpus. The live signal uses the
+    built-in corpus; the evaluation harness passes modified copies."""
+    scam_texts, scam_labels = [], []
+    for category, texts in scam_scripts.items():
+        scam_texts += texts
+        scam_labels += [category] * len(texts)
+    vectorizer = FeatureUnion([
+        ("words", TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True)),
+        ("chars", TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5), sublinear_tf=True)),
+    ])
+    vectorizer.fit(scam_texts + list(legit_messages))
+    return {
+        "vectorizer": vectorizer,
+        "scam": vectorizer.transform(scam_texts),
+        "scam_labels": scam_labels,
+        "legit": vectorizer.transform(list(legit_messages)),
+    }
+
+
 def _build_index():
     global _index
     if _index is None:
-        scam_texts, scam_labels = [], []
-        for category, texts in SCAM_SCRIPTS.items():
-            scam_texts += texts
-            scam_labels += [category] * len(texts)
-        vectorizer = FeatureUnion([
-            ("words", TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True)),
-            ("chars", TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5), sublinear_tf=True)),
-        ])
-        vectorizer.fit(scam_texts + LEGIT_MESSAGES)
-        _index = {
-            "vectorizer": vectorizer,
-            "scam": vectorizer.transform(scam_texts),
-            "scam_labels": scam_labels,
-            "legit": vectorizer.transform(LEGIT_MESSAGES),
-        }
+        _index = build_index(SCAM_SCRIPTS, LEGIT_MESSAGES)
     return _index
 
 
@@ -142,16 +148,20 @@ def _script_match(text: str) -> tuple[float, str | None, float]:
     return min(score, MATCH_CAP), index["scam_labels"][best], scam_sim
 
 
+def components(text: str) -> tuple[float, str | None, float, list[tuple[float, str]], float]:
+    """(wording-match score, closest scam category, its similarity, red flags, combined score)."""
+    match_score, category, sim = _script_match(text)
+    flags = _flag_hits(text)
+    score = 1.0 - (1.0 - match_score) * math.prod(1.0 - e for e, _ in flags)
+    return match_score, category, sim, flags, score
+
+
 def similarity_score(interaction: dict) -> RiskSignal:
     text = interaction.get("message_text")
     if not isinstance(text, str) or not text.strip():
         return RiskSignal(signal_name="similarity", score=0.0, explanation="No message text to compare")
     text = " ".join(text.split())[:MAX_CHARS]
-
-    match_score, category, sim = _script_match(text)
-    flags = _flag_hits(text)
-
-    score = 1.0 - (1.0 - match_score) * math.prod(1.0 - e for e, _ in flags)
+    match_score, category, sim, flags, score = components(text)
 
     reasons = []
     if match_score >= MATCH_CAP * 0.75:
