@@ -1,0 +1,23 @@
+{
+  "test_file": "eval/data/test.jsonl",
+  "test_sha256": "6fc6fd2858a5bb33681a207401862d24eda9651cfed888d98e25b95202183238",
+  "generator_seed": 0,
+  "created": "2026-10-05",
+  "leakage_threshold": 0.9,
+  "removed_by_leakage_filter": 1,
+  "counts": {
+    "corpus": {
+      "scam": 655,
+      "legit": 758
+    },
+    "dev": {
+      "scam": 452,
+      "legit": 1498
+    },
+    "test": {
+      "scam": 894,
+      "legit": 1400
+    }
+  },
+  "note": "Synthetic, AI-written data. Frozen: never tune anything against this file."
+}

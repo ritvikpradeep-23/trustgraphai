@@ -155,18 +155,29 @@ def _families():
 
 
 def _assign_splits(families, rng):
-    """Group-aware: shuffle each category's families and deal them into splits."""
+    """Group-aware: shuffle each category's units and deal them into splits.
+
+    A unit is one hand-written seed, or ALL templates of a category together:
+    a category's templates share slot phrases, so splitting them apart would
+    leak near-identical wording between dev and test.
+    """
+    units = {}
+    for i, (label, cat, _, kind, *_rest) in enumerate(families):
+        key = (label, cat, "templates") if kind == "template" else (label, cat, i)
+        units.setdefault(key, []).append(i)
     by_cat = {}
-    for i, f in enumerate(families):
-        by_cat.setdefault((f[0], f[1]), []).append(i)
+    for key, ids in units.items():
+        by_cat.setdefault(key[:2], []).append(ids)
     split_of = {}
-    for ids in by_cat.values():
-        ids = list(rng.permutation(ids))
-        n = len(ids)
+    for unit_list in by_cat.values():
+        order = rng.permutation(len(unit_list))
+        n = len(unit_list)
         n_test = max(1, round(n * SPLIT_SHARES["test"]))
         n_dev = max(1, round(n * SPLIT_SHARES["dev"]))
-        for j, fid in enumerate(ids):
-            split_of[fid] = "test" if j < n_test else "dev" if j < n_test + n_dev else "corpus"
+        for j, u in enumerate(order):
+            split = "test" if j < n_test else "dev" if j < n_test + n_dev else "corpus"
+            for fid in unit_list[u]:
+                split_of[fid] = split
     return split_of
 
 
