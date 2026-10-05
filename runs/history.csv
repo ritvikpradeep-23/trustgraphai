@@ -4,3 +4,4 @@ round,time,candidate_before,scams,honest,prefix_recall_caution,prefix_recall_hig
 5,2026-10-05 19:55,fast_r04,60,120,0.7667,0.2667,0.0417,14,5,14,5,0.575,0.65,0.1051,reverted,real-SMS false alarms at most +2 points over demo-safe,fast_r04
 6,2026-10-05 20:02,fast_r04,60,120,0.75,0.25,0.125,15,15,15,15,0.575,0.5417,0.0288,reverted,dev recall at Caution not lower,fast_r04
 7,2026-10-05 20:08,fast_r04,60,120,0.55,0.35,0.0,27,0,27,0,0.575,0.6333,0.0564,accepted,,fast_r07
+8,2026-10-05 20:08,fast_r07,60,120,0.6667,0.2167,0.0,20,0,20,0,0.6333,0.6417,0.0375,accepted,,fast_r08
