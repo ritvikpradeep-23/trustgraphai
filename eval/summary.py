@@ -125,7 +125,10 @@ def write_summary(run):
           "- Hinglish and Manglish were written by a non-native writer and may read unnaturally.",
           "- A few honest code messages contain an invoice-style number where the code should be (a generator slip); "
           "left in place because the test set is frozen.",
-          "- Text only: continuity and precedent have nothing to work with unless account, number or history data are supplied.", "",
+          "- Text only: continuity and precedent have nothing to work with unless account, number or history data are supplied.",
+          "- The negation and Hinglish/Manglish fixes (after the first report, reports/2026-10-05/) were found by reading "
+          "that report's test-set errors and real-SMS false alarms, so later numbers on those two sets are slightly optimistic. "
+          "A fresh batch from a never-used seed is the cleaner before/after comparison.", "",
           "## Re-run", "", "```", "PYTHONPATH=src python -m eval.run                    # all sections",
           "PYTHONPATH=src python -m eval.run --batch-seed 7     # plus a fresh batch", "```", ""]
     (run.out / "summary.md").write_text("\n".join(L), encoding="utf-8")

@@ -43,9 +43,26 @@ def test_scam_asks_in_new_wording_score_high(text, reason):
     "Can you send the wedding photos to the family group?",
     "The football training fee for next term is 40, pay at the club.",
     "Welcome to the team! We will never charge you a fee to start. Your first day is Monday.",
+    # Warnings with "asks", or "never" right before the ask
+    "Stay safe online: Kestrel Bank never asks for your PIN by email. Never share your password with anybody.",
+    # Hinglish and Manglish put the "don't" after the verb
+    "319204 aapka login OTP hai. Ise kisi se share na karein.",
+    "Apna OTP kisi ko bhi mat share karo, bank wale kabhi nahi poochte.",
+    "602118 aanu ningalude OTP. Ithu aarumaayi share cheyyaruthu.",
 ])
 def test_legit_messages_with_scam_vocabulary_score_low(text):
     assert _score(text).score < 0.5
+
+
+@pytest.mark.parametrize("text", [
+    # A secrecy demand isn't a warning: "don't tell your family" must not cancel the ask after it.
+    "Do not tell your family about this, send me the OTP now.",
+    # "share na?" asks ("share it, ok?"), it doesn't forbid.
+    "Share na? Send me the verification code you just got.",
+    "Bhai jaldi share karo the OTP code sent to your phone.",
+])
+def test_negation_guard_doesnt_hide_real_asks(text):
+    assert "asks for a one-time code, PIN or password" in _score(text).explanation
 
 
 def test_wording_alone_is_capped():

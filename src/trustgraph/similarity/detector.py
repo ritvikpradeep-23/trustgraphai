@@ -85,17 +85,44 @@ RED_FLAGS = [
 ]
 _FLAGS = [(e, reason, re.compile(p, re.IGNORECASE | re.DOTALL)) for e, reason, p in RED_FLAGS]
 
-# "Never share this code", "we will never ask you to move money": honest
-# messages warn about exactly the asks scammers make.
+# "Never share this code", "we will never ask you to move money", "the bank
+# never asks for your PIN": honest messages warn about exactly the asks
+# scammers make. Covers every form of the verb (ask, asks, asked, asking).
+# The "never" can sit right before the flagged words ("Never share your
+# password") or before an earlier verb ("never ask you to share your password").
 _NEGATION = re.compile(
-    r"\b(never|will not|won'?t|do not|don'?t)\s+(ask|share|give|send|tell|move|transfer|request|disclose|charge)\b[^.!?]{0,40}$",
+    r"\b(never|will not|won'?t|do not|don'?t|does not|doesn'?t|must not|mustn'?t|should not|shouldn'?t)\s+"
+    r"((ask|share|give|send|tell|move|transfer|request|disclose|charge)(s|es|ed|ing)?\b"
+    # "Don't tell anyone, send me the code" is a secrecy demand, not a warning.
+    r"(?!\s+(anyone|anybody|your (family|bank|wife|husband)|the (bank|branch|police)|police|mum|mom|dad))"
+    r"[^.!?]{0,40})?$",
     re.IGNORECASE)
+# Hinglish and Manglish put the "don't" after the verb: "share na karein",
+# "share mat karo", "share cheyyaruthu" (Malayalam: must not do), "share cheyyalle".
+# "mat share karo" puts it before.
+_NEGATION_AFTER = re.compile(
+    r"\w+\s+(na|nahi|nahin|mat|cheyyaruth\w*|cheyyall?e|cheyyenda|cheyyathe)\b(?!\s*\?)",  # "share na?" asks, not forbids
+    re.IGNORECASE)
+_NEGATION_BEFORE = re.compile(r"\b(mat|kabhi (bhi )?(na|nahi|nahin))\s+$", re.IGNORECASE)
+
+
+def _negated(text: str, start: int) -> bool:
+    before = text[:start]
+    return bool(_NEGATION.search(before) or _NEGATION_BEFORE.search(before) or _NEGATION_AFTER.match(text, start))
+
+
+_WORD_START = re.compile(r"\b\w")
 
 
 def _flag_hits(text: str) -> list[tuple[float, str]]:
     hits = []
     for evidence, reason, pattern in _FLAGS:
-        if any(not _NEGATION.search(text[:m.start()]) for m in pattern.finditer(text)):
+        if not pattern.search(text):
+            continue
+        # Try every word the ask could start at, not just the first match: in
+        # "Share na? Send me the code" the first candidate looks negated, the second isn't.
+        starts = (m.start() for m in _WORD_START.finditer(text))
+        if any(pattern.match(text, i) and not _negated(text, i) for i in starts):
             hits.append((evidence, reason))
     return hits
 

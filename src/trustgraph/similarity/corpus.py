@@ -6,6 +6,10 @@ including ones that share scam vocabulary (invoices, bank notices, a family
 emergency with no money ask, a new number with no ask), so that sounding
 like "business" or "family" isn't enough to score high.
 
+Each scam type also has one Hinglish and one Manglish script, and the
+legit list has messages in both, so a message's language alone doesn't
+make it look more like a scam or more like an honest message.
+
 Everything here is hand-written stand-in data: a real deployment would load
 reported scam messages and its own legit traffic instead.
 """
@@ -17,6 +21,8 @@ SCAM_SCRIPTS = {
         "Hello, calling from your bank's security team. Criminals have access to your account, so move your funds into this new protected account before they empty it.",
         "Your card has been cloned. For your protection we need you to transfer your savings to a temporary safe account while we investigate.",
         "This is the police working with your bank. A staff member there is corrupt, so do not speak to the branch; withdraw the cash and move it to the account we give you.",
+        "Main bank ki fraud team se bol raha hoon. Aapke account mein hacking hui hai, saare paise abhi is surakshit account mein transfer kar dijiye.",
+        "Bank security team aanu. Ningalude account hack aayi, ella panavum njan tharunna safe account ilekku ippol thanne maattuka.",
     ],
     "gift-card request from a boss or colleague": [
         "Are you available? I need you to buy some gift cards for a client quickly. I'm in a meeting and can't talk, just send me the codes by email.",
@@ -24,6 +30,8 @@ SCAM_SCRIPTS = {
         "Can you get Google Play cards for the staff reward today? Keep it confidential, it's a surprise. Send the card numbers to me directly.",
         "Quick task: purchase Amazon gift cards worth 500 and text me the redemption codes. Don't mention it to anyone else in the office.",
         "I'm stuck in a conference and need iTunes cards for a vendor, please buy them at the nearest shop and send me the numbers asap.",
+        "Main meeting mein hoon, call nahi kar sakta. Client ke liye 5 Amazon gift cards le aao aur codes ki photo mujhe bhej do.",
+        "Njan meeting il aanu, vilikkan pattilla. Client nu vendi Google Play cards vangi codes ente number il ayakku, aarodum parayanda.",
     ],
     "invoice or bank-details change": [
         "Please note our bank details have changed. Kindly make this and all future payments to the new account below.",
@@ -31,6 +39,8 @@ SCAM_SCRIPTS = {
         "We have switched banks. Use the new sort code and account number attached for the payment due today, not the one on file.",
         "Our finance team has updated our payment details. Please update your records and pay invoice 4471 to the account in this email.",
         "Important: do not pay to the previous account. Our banking details have changed, the correct account details are below.",
+        "Hamare bank details badal gaye hain. Is invoice ka payment aur aage ke saare payment naye account mein bhejiye.",
+        "Njangalude bank details maari. Ee invoice um iniyulla ella payment um puthiya account ilekku ayakkuka.",
     ],
     "family emergency or new-number scam": [
         "Hi Mum, this is my new number, I dropped my phone in the toilet. Can you help me pay a bill urgently, I can't log into my banking app.",
@@ -38,6 +48,8 @@ SCAM_SCRIPTS = {
         "Hey Dad, lost my phone so using a friend's. I need to pay rent today or I'll be evicted, can you transfer it to this account and I'll pay you back.",
         "Mum it's me on a new number, save this one. I've got an urgent payment to make and my card isn't working, could you send it for me?",
         "I've had an accident abroad and the hospital won't treat me until I pay. Please send money to this account, and please don't tell anyone yet.",
+        "Papa, yeh mera naya number hai, phone kho gaya. Ek urgent payment karna hai, abhi is account mein paise bhej do please, mummy ko mat batana.",
+        "Amma, ithu ente puthiya number aanu, phone poyi. Urgent aayi oru payment cheyyanam, ee account ilekku paisa ayakku, achanodu parayanda.",
     ],
     "tech support remote-access scam": [
         "This is Microsoft support. Your computer is sending us error messages and is infected. Please install AnyDesk so our technician can fix it.",
@@ -45,6 +57,8 @@ SCAM_SCRIPTS = {
         "Your internet will be disconnected today because your router has been hacked. Let me connect remotely to your computer to secure it.",
         "Warning: your PC is blocked. Call this number immediately and allow our engineer screen sharing access to restore your files.",
         "To process your refund I need remote access to your computer. Log in to your online banking while I am connected so I can check it.",
+        "Aapke computer mein virus mila hai. AnyDesk download kijiye aur code bataiye, hamara technician abhi theek kar dega.",
+        "Ningalude computer il virus undu. AnyDesk install cheythu code parayu, njangalude technician remote aayi sheriyakkum.",
     ],
     "tax or government threat": [
         "This is HMRC. You owe unpaid tax and a warrant has been issued for your arrest. Pay today to avoid legal action.",
@@ -52,6 +66,8 @@ SCAM_SCRIPTS = {
         "Your National Insurance number has been suspended due to suspicious activity. Press 1 to speak to an officer and avoid arrest.",
         "The tax office has found an error in your return. You must pay the penalty now by bank transfer or face court proceedings.",
         "This is the immigration department. Your visa has an issue and you will be deported unless you pay the processing fee today.",
+        "Income tax vibhag se notice: aapka tax baaki hai. Aaj payment nahi kiya to aapke naam par warrant jaari hoga aur arrest ho sakta hai.",
+        "Income tax department il ninnu: ningalkku tax kudishika undu. Innu adachillenkil warrant varum, arrest cheyyum.",
     ],
     "parcel or delivery fee": [
         "Your parcel is on hold due to an unpaid shipping fee of 1.99. Pay now via this link to reschedule delivery.",
@@ -59,6 +75,8 @@ SCAM_SCRIPTS = {
         "Your package could not be delivered because of incomplete address information. Update your details and pay the customs charge here.",
         "DHL: customs duty is owed on your item. Pay within 24 hours or the parcel will be returned to sender.",
         "Your order is waiting at the depot. A small handling fee must be paid before we can release it, follow the link.",
+        "Aapka parcel warehouse mein ruka hua hai. Redelivery fee Rs 49 is link par bharein warna parcel wapas chala jayega: [LINK]",
+        "Ningalude parcel warehouse il kudungi. Redelivery fee Rs 49 ee link il adachillenkil parcel thirichu pokum: [LINK]",
     ],
     "investment or crypto scam": [
         "I made thousands with this crypto trading platform, my mentor guarantees 20 percent returns a week. Send bitcoin to this wallet to start.",
@@ -66,6 +84,8 @@ SCAM_SCRIPTS = {
         "Your trading account has profits waiting but you must pay a withdrawal tax first before we can release your funds.",
         "Join our investment group, we use AI trading bots with no risk. Transfer USDT to the wallet address below to open your account.",
         "The coin is about to launch, get in now before the price explodes. Send your crypto to my wallet and I will buy it for you.",
+        "Hamare crypto trading group mein judiye, roz 10% guaranteed munafa. Shuru karne ke liye USDT is wallet address par bhejein.",
+        "Njangalude crypto trading group il chernnal divasavum 10% laabham urappu. Thudangan USDT ee wallet address ilekku ayakkuka.",
     ],
     "romance scam money request": [
         "My love, I want to come and see you but I cannot afford the flight. Could you send me the money for the ticket and I will pay you back when I arrive.",
@@ -73,6 +93,8 @@ SCAM_SCRIPTS = {
         "Darling, customs are holding my package with the gold inside and I need to pay the release fee. Can you send it and we can finally be together.",
         "I have never felt this way about anyone. My daughter is in hospital and I need help with the bill, please send what you can by transfer.",
         "We will be married soon so what is mine is yours. I just need you to receive a payment into your account and send it on for me.",
+        "Jaan, main airport par phans gaya hoon, customs wale paise maang rahe hain. Abhi thode paise bhej do, milte hi lauta dunga.",
+        "Darling, njan airport il kudungi, customs paisa chodikkunnu. Ippol kurachu paisa ayakku, kaanumbol thirichu tharam.",
     ],
     "one-time code or password request": [
         "We've sent a verification code to your phone, please read it back to me to confirm your identity.",
@@ -80,6 +102,8 @@ SCAM_SCRIPTS = {
         "To stop the fraudulent transaction I need the one-time passcode your bank just texted you.",
         "Please confirm your PIN and the code from your card reader so I can cancel the payment.",
         "Your account will be locked. Reply with the security code we sent and your password to keep it active.",
+        "Galti se aapke number par mera verification code chala gaya. Please woh 6 digit code mujhe bhej do, urgent hai.",
+        "Abaddhathil ente verification code ningalude phone il vannu. Aa 6 digit code onnu ayachu tharamo, urgent aanu.",
     ],
     "prize or lottery fee": [
         "Congratulations, you have won 50,000 in our international lottery. To claim your prize, pay the processing fee today.",
@@ -87,6 +111,8 @@ SCAM_SCRIPTS = {
         "Your email address won our annual draw. Contact our claims agent and pay the release fee to get your winnings.",
         "You're our lucky winner of a new iPhone, just pay the delivery charge at the link to claim it.",
         "Good news, an inheritance of 2 million is waiting for you. We need an administration fee to transfer the money.",
+        "Badhai ho! Aapne Rs 25 lakh ki lottery jeeti hai. Inaam paane ke liye pehle Rs 5,000 processing fee jama karein.",
+        "Abhinandanangal! Ningal 25 lakh lottery jayichu. Sammanam kittan aadyam Rs 5,000 processing fee adakkuka.",
     ],
     "job or advance-fee scam": [
         "You've been hired for our remote job, but you need to pay for your training materials and equipment upfront, which we'll refund.",
@@ -94,6 +120,8 @@ SCAM_SCRIPTS = {
         "We'll send you a cheque to buy office equipment. Deposit it and transfer the leftover amount to our supplier.",
         "Congratulations on your new position. Please pay the background check fee before your start date.",
         "Our company needs a payment agent. Receive transfers into your account and send them on, keeping 10 percent commission.",
+        "Aapka selection ho gaya hai! Joining se pehle Rs 2,500 registration aur kit fee bhejein, phir offer letter milega.",
+        "Ningalkku joli kitti! Join cheyyunnathinu munpu Rs 2,500 kit fee ayakkuka, ennittu offer letter tharam.",
     ],
     "blackmail or sextortion": [
         "I hacked your device and recorded you through your camera. Pay 1000 in bitcoin or I will send the video to all your contacts.",
@@ -101,6 +129,8 @@ SCAM_SCRIPTS = {
         "Your password is known to me and I installed software that filmed you. Send payment to the wallet below and I will delete everything.",
         "If you don't pay I will post the pictures online and share them with your friends. Don't contact the police.",
         "I know what you were watching. You have two days to pay or the recording goes to everyone in your address book.",
+        "Maine aapka private video record kiya hai. Paise nahi bheje to yeh video aapke saare contacts aur family ko bhej dunga.",
+        "Ningalude private video ente kayyil undu. Paisa ayachillenkil ee video ningalude ella contacts num family kkum ayakkum.",
     ],
 }
 
@@ -153,4 +183,37 @@ LEGIT_MESSAGES = [
     "Grandma wants copies of the christening pictures for the family album, could you email them over?",
     "Uploaded the holiday videos to the shared folder so everyone in the family can see them.",
     "Reminder: the passport application fee is 88.50, pay it on the official gov.uk site.",
+    # Hinglish and Manglish honest messages. Without them, any message in those
+    # languages sits far from every honest example, so a scam report in the same
+    # language pulls honest messages toward "scam" (seen in the evaluation).
+    "Aapke savings account mein Rs 4,200 credit hue hain. Balance dekhne ke liye app kholein.",
+    "Card se Rs 650 ka payment hua hai grocery store pe. Agar aapne nahi kiya to bank ki helpline pe call karein.",
+    "Aapka login code 551903 hai. Yeh code kisi ko na batayein, hum kabhi phone pe code nahi maangte.",
+    "Aapka parcel aaj shaam 6 baje tak pahunch jayega. Ghar pe koi na ho to padosi ko de denge.",
+    "Beta, main station pahunch gaya hoon, gaadi bhej dena jab free ho. Koi jaldi nahi hai.",
+    "Kal ki meeting 11 baje shift ho gayi hai, presentation ready rakhna please.",
+    "Doctor ke saath aapka appointment shukravar ko subah 10 baje hai. Confirm karne ke liye Y bhejein.",
+    "Rs 300 aapke UPI se kirana store ko bhej diye gaye hain. Transaction safal raha.",
+    "Semester exam form bharne ki aakhri tareekh 20 tareekh hai, fees college portal pe hi jama karein.",
+    "Aapka refund Rs 899 aapke original payment method mein 5 din mein aa jayega. Kuch karne ki zaroorat nahi.",
+    "Group mein sirf society ki baatein karein. Pani ki tanki ki safai kal subah 9 baje hogi.",
+    "Namaste, humne aapka resume dekha, kya aap agle hafte interview ke liye office aa sakte hain?",
+    "Bijli bill is mahine ka Rs 1,240 hai, aakhri tareekh 15 hai. Official app ya counter pe hi bharein.",
+    "Diwali sale shuru! Store pe sabhi kapdon pe 30% chhoot, offer sirf is weekend tak.",
+    "Mummy ka phone band hai, unse bolna mujhe call kar lein. Sab theek hai, bas baat karni hai.",
+    "Ningalude account il Rs 3,500 credit aayi. Balance app il nokkam.",
+    "Card upayogichu Rs 820 supermarket il payment aayi. Ningal alla enkil bank helpline il vilikkuka.",
+    "Ningalude login code 774120 aanu. Ee code aarodum parayaruthu, njangal orikkalum phone il code chodikkilla.",
+    "Ningalude parcel innu vaikunneram ethum. Veetil aarum illenkil aduthulla veetil kodukkam.",
+    "Mole, njan station il ethi, free aakumbol vandi ayakku. Thirakkilla.",
+    "Naale meeting 11 manikku maatti, presentation ready aakki vekkanam.",
+    "Doctor appointment velliyazhcha raavile 10 manikku aanu. Confirm cheyyan Y ayakkuka.",
+    "Rs 450 ningalude UPI il ninnu kadayilekku ayachu. Transaction vijayichu.",
+    "Exam fee adakkenda avasana theeyathi 20 aanu, college portal il maathram adakkuka.",
+    "Ningalude refund Rs 1,099 anchu divasathinullil account il varum. Onnum cheyyendathilla.",
+    "Group il association karyangal maathram post cheyyuka. Naale raavile vellam mudangum.",
+    "Namaskaram, ningalude resume kandu, adutha aazhcha interview nu office il varan pattumo?",
+    "Ee maasathe current bill Rs 980 aanu, avasana theeyathi 15. Official app il maathram adakkuka.",
+    "Onam offer! Kadayil ella saadhanangalkkum 25% kurav, ee aazhcha maathram.",
+    "Ammayude phone off aanu, ennodu vilikkan parayu. Prashnam onnumilla, verthe samsarikkan aanu.",
 ]
