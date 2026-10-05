@@ -1,0 +1,30 @@
+category,n,unseen_in_evaluation,classifier_alone,engine_with_classifier,engine_without
+FASTag or toll balance,15,True,1.0,1.0,1.0
+KYC or ID update expiry,15,True,1.0,1.0,0.9333333333333333
+QR code scam,13,True,0.6153846153846154,0.6923076923076923,0.5384615384615384
+UPI collect or accidental refund,30,True,0.8333333333333334,0.9,0.9
+bank safe-account scam,15,False,0.8,0.9333333333333333,0.9333333333333333
+blackmail or sextortion,10,False,1.0,1.0,1.0
+crypto airdrop or wallet drainer,9,True,0.5555555555555556,0.8888888888888888,0.8888888888888888
+deepfake CEO video call,9,True,1.0,1.0,1.0
+digital arrest,15,True,1.0,1.0,1.0
+e-challan or traffic fine,15,True,1.0,1.0,0.9333333333333333
+electricity disconnection,15,True,0.7333333333333333,0.8,0.5333333333333333
+fake CAPTCHA or paste-command,10,True,0.0,1.0,1.0
+fake customer-care helpline,15,True,0.4,0.7333333333333333,0.7333333333333333
+family emergency or new-number scam,13,False,1.0,1.0,0.6153846153846154
+gift-card request from a boss or colleague,13,False,0.38461538461538464,0.38461538461538464,0.23076923076923078
+instant-loan app harassment,15,True,1.0,0.8666666666666667,0.8
+investment or crypto scam,15,False,0.26666666666666666,0.6666666666666666,0.6666666666666666
+invoice or bank-details change,30,False,0.36666666666666664,0.5666666666666667,0.5333333333333333
+job or advance-fee scam,14,False,0.0,0.2857142857142857,0.5
+one-time code or password request,13,False,0.15384615384615385,0.6153846153846154,0.5384615384615384
+parcel or delivery fee,15,False,0.3333333333333333,0.6666666666666666,0.4666666666666667
+prize or lottery fee,15,False,1.0,1.0,0.8666666666666667
+rental or booking deposit,15,True,0.6666666666666666,0.6,0.4666666666666667
+romance scam money request,14,False,1.0,1.0,0.7142857142857143
+social-media verify or copyright strike,13,True,0.6153846153846154,0.6923076923076923,0.7692307692307693
+student scholarship or exam scam,15,True,0.6666666666666666,1.0,1.0
+task or like-and-earn scam,28,True,0.8928571428571429,0.8214285714285714,0.6428571428571429
+tax or government threat,10,False,0.5,1.0,0.7
+tech support remote-access scam,28,False,0.5,0.8928571428571429,0.8928571428571429

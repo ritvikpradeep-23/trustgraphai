@@ -1,0 +1,42 @@
+{
+  "name": "anomaly_v2",
+  "created": "2026-10-05",
+  "training_data_sha256": "10298406458561660115",
+  "training_rows": 20000,
+  "seeds": {
+    "normal": 0,
+    "calibration": 1,
+    "test": 2,
+    "anomalies": 3,
+    "isolation_forest": 0
+  },
+  "library_versions": {
+    "python": "3.11.15",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.4.6",
+    "joblib": "1.6.0"
+  },
+  "files": {
+    "anomaly_isolation_forest.joblib": {
+      "target": "models/anomaly_isolation_forest.joblib",
+      "sha256": "aec4aa05153be5f833f9c0220249b98c09c6ee17561425ac54cdff0ac06a73a4"
+    },
+    "risk_bands.json": {
+      "target": "models/risk_bands.json",
+      "sha256": "6fba51d0876ea92688d58e2432747863808a54e7e7f975a6ebce4fb16f12a5c1"
+    }
+  },
+  "dev_metrics": {
+    "anomalies_caught_caution": 0.7975,
+    "fpr_caution": 0.1056,
+    "fpr_high": 0.0096,
+    "current_engine": {
+      "anomalies_caught_caution": 0.7815,
+      "fpr_caution": 0.106,
+      "fpr_high": 0.0108
+    },
+    "verdict": "reject"
+  },
+  "requires": "",
+  "synthetic_data": true
+}

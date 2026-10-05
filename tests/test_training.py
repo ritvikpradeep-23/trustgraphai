@@ -36,3 +36,10 @@ def test_phase0_finds_no_missing_data(tmp_path):
     res = run(tmp_path)
     assert res["problems"] == []
     assert res["scam_categories"]["corpus"] == 29
+
+
+def test_final_test_refuses_a_second_look(tmp_path):
+    from training.final_test import main
+    (tmp_path / "final_test_demo.json").write_text("{}")
+    with pytest.raises(SystemExit, match="already scored"):
+        main(["demo", "--out", str(tmp_path)])
