@@ -31,3 +31,66 @@ python -m pytest tests/                          # unit tests
 PYTHONPATH=src python -m trustgraph.evaluate     # named scenarios + false-alarm rate
 PYTHONPATH=src python scratch/similarity_check.py 99   # independent check, any seed
 ```
+
+---
+
+# TrustGraph backend API (`app/`)
+
+One FastAPI service for the website, the browser extension and future messaging bots. Bots and the
+extension only carry messages here (`app/integrations/base.py`). All scam and deepfake logic lives in
+`app/scam_engine` and `app/deepfake_engine`.
+
+## Run it
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env                 # optional: edit thresholds, limits, CORS origins, model path
+python scripts/seed_reports.py       # optional: 10 example scam reports for the demo
+uvicorn app.main:app --port 8001     # then open http://127.0.0.1:8001/docs
+```
+
+The first text request downloads the `all-MiniLM-L6-v2` embedding model (~90 MB, once), so it needs internet.
+The deepfake endpoint needs a model file; see `models/README.md`. Without one it answers 503.
+`DEEPFAKE_MOCK=1` enables a fake model for demos, and its answers say `"mock": true`.
+
+## Endpoints
+
+| Method | Path | Body | Answer |
+|---|---|---|---|
+| GET | `/health` | none | `status`, `reports_stored`, `embedding_model_loaded`, `deepfake_model` |
+| POST | `/api/text/report` | `{"text": "...", "source": "website"}` | `201 {"id": "...", "status": "stored"}` |
+| POST | `/api/text/analyze` | `{"text": "...", "source": "extension"}` | `{"risk_level": "LOW/MEDIUM/HIGH", "top_similarity": 0.91, "similar_reports": 2, "matches": [{"id", "similarity", "source"}]}` |
+| POST | `/api/video/analyze` | multipart form field `file` (MP4) | `{"result": "likely_fake/likely_real/inconclusive", "confidence", "frames_examined", "faces_examined", "fake_frame_ratio"}` (+ `"mock": true` with the mock) |
+
+Every error has the same shape, for example `{"error": "model_not_configured", "detail": "..."}`:
+
+| Code | Error |
+|---|---|
+| 413 | `text_too_long`, `file_too_large` |
+| 415 | `unsupported_media_type` |
+| 422 | `invalid_request`, `empty_text`, `empty_file`, `video_unreadable`, `video_too_long` |
+| 503 | `embedding_model_unavailable`, `model_not_configured` |
+
+```bash
+curl -X POST localhost:8001/api/text/analyze -H "Content-Type: application/json" \
+     -d '{"text": "Your bank account is blocked, verify at the link", "source": "website"}'
+curl -F "file=@clip.mp4" localhost:8001/api/video/analyze
+```
+
+## Privacy
+
+- **`/api/text/analyze` never returns another user's report text.** Only the report id, its similarity and its
+  source come back.
+- **Analyzed text isn't stored.** Only explicit reports are kept, in `REPORTS_PATH`, which is git-ignored.
+- **Logs record ids, lengths and sources, never message text.** Validation errors don't echo the submitted text.
+- **Uploaded videos are written to a temporary file and always deleted after analysis**, even when it fails.
+
+## Tests
+
+```bash
+python -m pytest tests/test_backend_*.py
+```
+
+Most text tests use a small stand-in embedder, so they run offline. One test uses the real model, comparing the
+reworded bank-suspension scam with "Dinner at 8?". It is skipped if the model can't be downloaded. The video tests
+build their own small MP4s and a tiny TorchScript model.
