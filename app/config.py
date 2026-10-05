@@ -29,6 +29,10 @@ class Settings(BaseSettings):
     deepfake_model_path: str = ""        # e.g. models/deepfake.pt (TorchScript); empty = not configured
     deepfake_mock: bool = False          # DEEPFAKE_MOCK=1 enables a fake model for demos only
     deepfake_input_size: int = 224       # face crops are resized to this square before the model
+    deepfake_mode: str = "mine"          # "mine", "efficientnet" or "both" (see combined_model.py)
+    efficientnet_model_id: str = "google/efficientnet-b0"  # public Hugging Face model, no token needed
+    efficientnet_head_path: str = "models/efficientnet_head.pt"  # trained real/fake layer
+    deepfake_weight_mine: float = 0.5    # in "both" mode: your model's share of the average
     video_max_bytes: int = 50 * 1024 * 1024   # 50 MB
     video_max_seconds: float = 60.0
     video_sample_fps: float = 1.0        # frames looked at per second of video

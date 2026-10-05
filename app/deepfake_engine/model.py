@@ -65,22 +65,64 @@ class MockDeepfakeModel(DeepfakeModel):
         return float(int(face_bgr.mean() * 997) % 100) / 100.0
 
 
+def _load_mine(settings: Settings) -> DeepfakeModel | None:
+    """Your own model: a TorchScript file at DEEPFAKE_MODEL_PATH."""
+    path = settings.deepfake_model_path
+    if not path:
+        return None
+    if not os.path.exists(path):
+        logger.warning("DEEPFAKE_MODEL_PATH=%s does not exist", path)
+        return None
+    try:
+        return TorchScriptDeepfakeModel(path, settings.deepfake_input_size)
+    except Exception as exc:  # corrupt or wrong file type
+        logger.error("could not load deepfake model %s: %s", path, exc)
+        return None
+
+
+def _load_efficientnet(settings: Settings) -> DeepfakeModel | None:
+    """EfficientNet-B0 plus the trained real/fake head at EFFICIENTNET_HEAD_PATH.
+    Without a trained head there is no deepfake score, so no model."""
+    path = settings.efficientnet_head_path
+    if not path or not os.path.exists(path):
+        logger.warning("EFFICIENTNET_HEAD_PATH=%s does not exist: train it with scripts/train_efficientnet_head.py", path)
+        return None
+    try:
+        from app.deepfake_engine.combined_model import EfficientNetDeepfakeModel  # pulls in transformers
+        return EfficientNetDeepfakeModel(path, settings.efficientnet_model_id)
+    except Exception as exc:  # download blocked, corrupt head file...
+        logger.error("could not load EfficientNet deepfake model: %s", exc)
+        return None
+
+
 def load_deepfake_model(settings: Settings) -> tuple[DeepfakeModel | None, str]:
     """(model, status), where status is "configured", "mock" or "not_configured".
-    A real model file always wins over the mock, so fake scores can't appear
+
+    DEEPFAKE_MODE picks the model: "mine" (default, your TorchScript file),
+    "efficientnet" (EfficientNet-B0 + trained head) or "both" (average of the
+    two). A real model always wins over the mock, so fake scores can't appear
     while a real model is installed."""
-    path = settings.deepfake_model_path
-    if path:
-        if os.path.exists(path):
-            try:
-                model = TorchScriptDeepfakeModel(path, settings.deepfake_input_size)
-                if settings.deepfake_mock:
-                    logger.warning("DEEPFAKE_MOCK ignored: a real model is configured")
-                return model, "configured"
-            except Exception as exc:  # corrupt or wrong file type
-                logger.error("could not load deepfake model %s: %s", path, exc)
+    mode = settings.deepfake_mode
+    model = None
+    if mode == "mine":
+        model = _load_mine(settings)
+    elif mode == "efficientnet":
+        model = _load_efficientnet(settings)
+    elif mode == "both":
+        mine, eff = _load_mine(settings), _load_efficientnet(settings)
+        if mine and eff:
+            from app.deepfake_engine.combined_model import CombinedDeepfakeModel
+            model = CombinedDeepfakeModel("both", mine, eff, settings.deepfake_weight_mine)
         else:
-            logger.warning("DEEPFAKE_MODEL_PATH=%s does not exist", path)
+            logger.warning("DEEPFAKE_MODE=both needs both models; missing: %s",
+                           ", ".join(n for n, m in (("your model", mine), ("EfficientNet head", eff)) if not m))
+    else:
+        logger.error("DEEPFAKE_MODE=%s is not one of mine, efficientnet, both", mode)
+
+    if model is not None:
+        if settings.deepfake_mock:
+            logger.warning("DEEPFAKE_MOCK ignored: a real model is configured")
+        return model, "configured"
     if settings.deepfake_mock:
         logger.warning("Using the MOCK deepfake model: scores are meaningless (demo only)")
         return MockDeepfakeModel(), "mock"

@@ -12,3 +12,7 @@ httpx==0.28.1
 sentence-transformers==6.1.0
 torch==2.14.1
 opencv-python-headless==4.14.0.94
+# --- EfficientNet-B0 (Hugging Face, public: no token needed) ---
+transformers==5.18.0
+torchvision==0.29.1
+pillow==12.3.0

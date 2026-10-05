@@ -53,3 +53,4 @@ class HealthOut(BaseModel):
     reports_stored: int
     embedding_model_loaded: bool  # false until the first text request (the model loads lazily)
     deepfake_model: Literal["configured", "mock", "not_configured"]
+    deepfake_mode: str

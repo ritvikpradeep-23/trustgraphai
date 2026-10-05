@@ -22,3 +22,31 @@ What the adapter (`app/deepfake_engine/model.py`) expects from the model:
 
 Without a model file the endpoint answers `503 {"error": "model_not_configured"}` and never makes up a score.
 `DEEPFAKE_MOCK=1` switches on a fake model for demos only; every answer it gives contains `"mock": true`.
+
+## EfficientNet-B0 (Hugging Face) and the three deepfake modes
+
+`DEEPFAKE_MODE` picks what scores each face:
+
+| Mode | Uses | Needs |
+|---|---|---|
+| `mine` (default) | your TorchScript model | `models/deepfake.pt` (`DEEPFAKE_MODEL_PATH`) |
+| `efficientnet` | EfficientNet-B0 + a small trained real/fake layer | `models/efficientnet_head.pt` (`EFFICIENTNET_HEAD_PATH`) |
+| `both` | the average of the two scores (`DEEPFAKE_WEIGHT_MINE`, default 0.5) | both files |
+
+A mode whose files are missing answers `503 model_not_configured`: no score is ever made up.
+
+- **The pretrained model downloads on first use.** `google/efficientnet-b0` is public (~21 MB, no token) and is
+  cached by the `transformers` library.
+- **It doesn't spot deepfakes on its own.** It was trained on 1,000 everyday ImageNet objects. The real/fake
+  decision comes from the head, which you train on labelled real and fake faces:
+
+  ```
+  python scripts/train_efficientnet_head.py --data path/to/faces      # faces/real/..., faces/fake/...
+  ```
+
+  This writes `models/efficientnet_head.pt` (~6 KB) and prints validation accuracy. To check all three modes on
+  one image:
+
+  ```
+  python scripts/try_efficientnet_modes.py --image some_face.jpg
+  ```
