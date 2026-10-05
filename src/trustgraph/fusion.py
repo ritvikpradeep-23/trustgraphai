@@ -11,6 +11,9 @@ DEFAULT_WEIGHTS = {
     "similarity": 1.0,
     "precedent": 1.0,
     "anomaly": 1.0,
+    # Fifth signal, only present when TRUSTGRAPH_CLASSIFIER=1. The pipeline
+    # replaces this with the weight chosen on dev and saved in the model file.
+    "classifier": 0.5,
 }
 
 BANDS_PATH = "models/risk_bands.json"

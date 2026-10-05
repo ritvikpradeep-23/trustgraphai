@@ -1,19 +1,31 @@
-"""Run interactions through all 4 signals and fusion end to end."""
+"""Run interactions through every signal and fusion end to end.
+
+Four signals always run. The classifier (a fifth) is added at the END of the
+list only when TRUSTGRAPH_CLASSIFIER=1, so anything that reads signals by
+position keeps working with the flag off."""
 import pandas as pd
 
 from trustgraph.anomaly.detector import anomaly_score
 from trustgraph.anomaly.features import RAW_FEATURES
+from trustgraph.classifier import detector as classifier
 from trustgraph.continuity.detector import continuity_score
-from trustgraph.fusion import fuse, risk_band
+from trustgraph.fusion import DEFAULT_WEIGHTS, fuse, risk_band
 from trustgraph.precedent.detector import precedent_score
 from trustgraph.similarity.detector import similarity_score
 
 SIGNAL_FUNCS = [continuity_score, similarity_score, precedent_score, anomaly_score]
 
 
+def active_signal_funcs() -> list:
+    return SIGNAL_FUNCS + [classifier.classifier_score] if classifier.enabled() else list(SIGNAL_FUNCS)
+
+
 def score_interaction(interaction: dict):
-    signals = [fn(interaction) for fn in SIGNAL_FUNCS]
-    return signals, fuse(signals)
+    signals = [fn(interaction) for fn in active_signal_funcs()]
+    weights = None
+    if classifier.enabled():
+        weights = {**DEFAULT_WEIGHTS, "classifier": classifier.fusion_weight()}
+    return signals, fuse(signals, weights)
 
 
 def main():

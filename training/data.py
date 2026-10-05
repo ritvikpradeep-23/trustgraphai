@@ -98,3 +98,34 @@ def balance(rows: list[dict], field: str) -> list[dict]:
         table.append({"field": field, "value": value, "n": len(flags), "scam_share": share,
                       "flag": len(flags) >= 10 and max(share, 1 - share) > SHORTCUT_LIMIT})
     return table
+
+
+# ------------------------------------------------------------ deduplication
+def dedupe(rows: list[dict], threshold: float = 0.9) -> tuple[list[dict], list[dict]]:
+    """Keep a message only if it isn't a near-copy (word TF-IDF cosine above
+    the threshold) of one already kept with the same label."""
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    kept, dropped = [], []
+    for label in ("scam", "legit"):
+        group = [r for r in rows if r["label"] == label]
+        if not group:
+            continue
+        texts = [r["text"] for r in group]
+        vec = TfidfVectorizer(ngram_range=(1, 1), sublinear_tf=True).fit(texts)
+        sims = cosine_similarity(vec.transform(texts))
+        keep_idx = []
+        for i in range(len(group)):
+            if keep_idx and sims[i, keep_idx].max() > threshold:
+                dropped.append(group[i])
+            else:
+                keep_idx.append(i)
+        kept += [group[i] for i in keep_idx]
+    return kept, dropped
+
+
+def held_out_texts() -> list[str]:
+    """Dev and test message texts, ONLY to drop training examples that are
+    near-copies of a held-out message (the same leakage filter the
+    evaluation used). Nothing is scored or tuned on these here."""
+    return [r["text"] for split in ("dev", "test") for r in load_split(DATA / f"{split}.jsonl")]

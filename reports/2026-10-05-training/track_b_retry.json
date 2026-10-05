@@ -1,0 +1,167 @@
+{
+ "table": [
+  {
+   "candidate": "current",
+   "recall_caution": 0.7057522123893806,
+   "lo": 0.6614491150442477,
+   "hi": 0.7478429203539823,
+   "recall_known_types": 0.8926829268292683,
+   "recall_types_engine_had_no_examples_for": 0.5506072874493927,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.4911504424778761,
+   "roc_auc": 0.8801772569916231,
+   "recall_en": 0.7338709677419355,
+   "recall_hinglish": 0.5535714285714286,
+   "recall_manglish": 0.625,
+   "real_sms_false_alarms": 0.19295336787564768
+  },
+  {
+   "candidate": "capped_5",
+   "recall_caution": 0.8915929203539823,
+   "lo": 0.8628318584070797,
+   "hi": 0.9203539823008849,
+   "recall_known_types": 0.926829268292683,
+   "recall_types_engine_had_no_examples_for": 0.8623481781376519,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.6526548672566371,
+   "roc_auc": 0.9432067240095938,
+   "recall_en": 0.8844086021505376,
+   "recall_hinglish": 0.9107142857142857,
+   "recall_manglish": 0.9583333333333334,
+   "real_sms_false_alarms": 0.2839378238341969,
+   "n_added_scam": 433,
+   "n_added_legit": 416,
+   "n_near_copies_dropped": 564,
+   "n_close_to_dev_or_test_dropped": 0,
+   "n_kept_scam": 142,
+   "n_kept_legit": 61,
+   "n_casual_added": 0
+  },
+  {
+   "candidate": "capped_5_casual",
+   "recall_caution": 0.8982300884955752,
+   "lo": 0.8716814159292036,
+   "hi": 0.9247787610619469,
+   "recall_known_types": 0.926829268292683,
+   "recall_types_engine_had_no_examples_for": 0.8744939271255061,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.6504424778761062,
+   "roc_auc": 0.9466294292094474,
+   "recall_en": 0.8897849462365591,
+   "recall_hinglish": 0.9285714285714286,
+   "recall_manglish": 0.9583333333333334,
+   "real_sms_false_alarms": 0.16227979274611398,
+   "n_added_scam": 433,
+   "n_added_legit": 416,
+   "n_near_copies_dropped": 564,
+   "n_close_to_dev_or_test_dropped": 0,
+   "n_kept_scam": 142,
+   "n_kept_legit": 61,
+   "n_casual_added": 40
+  },
+  {
+   "candidate": "capped_10",
+   "recall_caution": 0.9070796460176991,
+   "lo": 0.8805309734513275,
+   "hi": 0.933683628318584,
+   "recall_known_types": 0.9121951219512195,
+   "recall_types_engine_had_no_examples_for": 0.902834008097166,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.6836283185840708,
+   "roc_auc": 0.9596778004891476,
+   "recall_en": 0.9005376344086021,
+   "recall_hinglish": 0.9464285714285714,
+   "recall_manglish": 0.9166666666666666,
+   "real_sms_false_alarms": 0.29740932642487045,
+   "n_added_scam": 433,
+   "n_added_legit": 416,
+   "n_near_copies_dropped": 564,
+   "n_close_to_dev_or_test_dropped": 0,
+   "n_kept_scam": 250,
+   "n_kept_legit": 111,
+   "n_casual_added": 0
+  },
+  {
+   "candidate": "capped_10_casual",
+   "recall_caution": 0.911504424778761,
+   "lo": 0.8849557522123894,
+   "hi": 0.9380530973451328,
+   "recall_known_types": 0.9219512195121952,
+   "recall_types_engine_had_no_examples_for": 0.902834008097166,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.6924778761061947,
+   "roc_auc": 0.9634047461512104,
+   "recall_en": 0.9059139784946236,
+   "recall_hinglish": 0.9464285714285714,
+   "recall_manglish": 0.9166666666666666,
+   "real_sms_false_alarms": 0.16683937823834197,
+   "n_added_scam": 433,
+   "n_added_legit": 416,
+   "n_near_copies_dropped": 564,
+   "n_close_to_dev_or_test_dropped": 0,
+   "n_kept_scam": 250,
+   "n_kept_legit": 111,
+   "n_casual_added": 40
+  }
+ ],
+ "loco_mean": {
+  "current": 0.5675424192665572,
+  "capped_5": 0.7655467138225759,
+  "capped_5_casual": 0.7634436444781273,
+  "capped_10": 0.7397456949181087,
+  "capped_10_casual": 0.7516504568228706
+ },
+ "decisions": {
+  "capped_5": {
+   "rules": {
+    "1. recall +3 points": true,
+    "2. leave-one-type-out not lower": true,
+    "3. High false alarms not higher": true,
+    "5. real SMS +2 points at most": false
+   },
+   "verdict": "reject"
+  },
+  "capped_5_casual": {
+   "rules": {
+    "1. recall +3 points": true,
+    "2. leave-one-type-out not lower": true,
+    "3. High false alarms not higher": true,
+    "5. real SMS +2 points at most": true
+   },
+   "verdict": "adopt"
+  },
+  "capped_10": {
+   "rules": {
+    "1. recall +3 points": true,
+    "2. leave-one-type-out not lower": true,
+    "3. High false alarms not higher": true,
+    "5. real SMS +2 points at most": false
+   },
+   "verdict": "reject"
+  },
+  "capped_10_casual": {
+   "rules": {
+    "1. recall +3 points": true,
+    "2. leave-one-type-out not lower": true,
+    "3. High false alarms not higher": true,
+    "5. real SMS +2 points at most": true
+   },
+   "verdict": "adopt with caveats"
+  }
+ },
+ "chosen": "capped_10_casual",
+ "novelty": {
+  "current": 0.5506072874493927,
+  "capped_10_casual (13 types only)": 0.7530364372469636
+ },
+ "control_current_plus_casual_only": {
+  "dev_recall_caution": 0.717,
+  "real_sms_false_alarms": 0.096,
+  "note": "the 40 casual honest texts added to the current examples, nothing else"
+ }
+}

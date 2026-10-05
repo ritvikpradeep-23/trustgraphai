@@ -13,7 +13,9 @@ Two independent pieces of evidence, combined by noisy-OR:
 
 Interaction field: message_text (call transcript, SMS or email body).
 """
+import json
 import math
+import os
 import re
 
 import numpy as np
@@ -22,6 +24,11 @@ from sklearn.pipeline import FeatureUnion
 
 from trustgraph.signal import RiskSignal
 from trustgraph.similarity.corpus import LEGIT_MESSAGES, SCAM_SCRIPTS
+from trustgraph.textnorm import normalize
+
+# A promoted, larger example list (scripts/promote_model.py puts it here).
+# Without the file, the built-in lists in corpus.py are used.
+CORPUS_PATH = "models/similarity_corpus.json"
 
 MAX_CHARS = 5000
 
@@ -130,30 +137,44 @@ def _flag_hits(text: str) -> list[tuple[float, str]]:
 _index = None
 
 
-def build_index(scam_scripts: dict[str, list[str]], legit_messages: list[str]) -> dict:
+def build_index(scam_scripts: dict[str, list[str]], legit_messages: list[str], normalized: bool = False) -> dict:
     """Fit the TF-IDF index on a reference corpus. The live signal uses the
-    built-in corpus; the evaluation harness passes modified copies."""
+    built-in corpus (or a promoted one); experiments pass modified copies.
+    normalized=True compares texts after trustgraph.textnorm.normalize
+    (disguise tricks undone, links/phones/amounts/numbers as markers)."""
+    prep = normalize if normalized else (lambda t: t)
     scam_texts, scam_labels = [], []
     for category, texts in scam_scripts.items():
-        scam_texts += texts
+        scam_texts += [prep(t) for t in texts]
         scam_labels += [category] * len(texts)
+    legit_texts = [prep(t) for t in legit_messages]
     vectorizer = FeatureUnion([
         ("words", TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True)),
         ("chars", TfidfVectorizer(analyzer="char_wb", ngram_range=(3, 5), sublinear_tf=True)),
     ])
-    vectorizer.fit(scam_texts + list(legit_messages))
+    vectorizer.fit(scam_texts + legit_texts)
     return {
         "vectorizer": vectorizer,
         "scam": vectorizer.transform(scam_texts),
         "scam_labels": scam_labels,
-        "legit": vectorizer.transform(list(legit_messages)),
+        "legit": vectorizer.transform(legit_texts),
+        "normalized": normalized,
     }
+
+
+def load_corpus(path: str = CORPUS_PATH) -> tuple[dict[str, list[str]], list[str], bool]:
+    """(scam scripts, legit messages, normalized) from a promoted file, else the built-ins."""
+    if not os.path.exists(path):
+        return SCAM_SCRIPTS, LEGIT_MESSAGES, False
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return data["scam_scripts"], data["legit_messages"], bool(data.get("normalized", False))
 
 
 def _build_index():
     global _index
     if _index is None:
-        _index = build_index(SCAM_SCRIPTS, LEGIT_MESSAGES)
+        _index = build_index(*load_corpus())
     return _index
 
 
@@ -166,7 +187,7 @@ def _cosine_max(query, matrix) -> tuple[float, int]:
 
 def _script_match(text: str) -> tuple[float, str | None, float]:
     index = _build_index()
-    query = index["vectorizer"].transform([text])
+    query = index["vectorizer"].transform([normalize(text) if index.get("normalized") else text])
     scam_sim, best = _cosine_max(query, index["scam"])
     legit_sim, _ = _cosine_max(query, index["legit"])
     if scam_sim < MIN_SCAM_SIMILARITY:
