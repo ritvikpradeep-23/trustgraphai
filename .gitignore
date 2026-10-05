@@ -5,3 +5,7 @@ __pycache__/
 eval/batches/
 eval/external/
 training/.cache/
+
+# Backend: user-submitted reports are private data, never committed
+data/scam_reports.json
+.env
