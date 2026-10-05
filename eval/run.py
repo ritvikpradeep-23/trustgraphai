@@ -169,6 +169,53 @@ def ablation_section(run):
 
 Run.section_ablation = ablation_section
 
+GROUP_FIELDS = ("category", "language", "evasion_type", "channel")
+
+
+def errors_section(run, worst: int = 25):
+    setting = "text_only"
+    bands = run.bands(setting)
+    scores = run.scores("test", setting)
+    pairs = list(zip(run.test, scores))
+    flagged = lambda sc: bool(metrics.hits([sc["fused"]], bands["caution"])[0])
+    fn = sorted([(r, sc) for r, sc in pairs if r["label"] == "scam" and not flagged(sc)], key=lambda p: p[1]["fused"])
+    fp = sorted([(r, sc) for r, sc in pairs if r["label"] == "legit" and flagged(sc)], key=lambda p: -p[1]["fused"])
+
+    def describe(r, sc):
+        return {"id": r["id"], "category": r["category"], "novelty": r["novelty"], "language": r["language"],
+                "evasion_type": r["evasion_type"], "channel": r["channel"], "fused": round(sc["fused"], 3),
+                "wording": round(sc["wording"], 3), "flags": round(sc["flags"], 3), "anomaly": round(sc["anomaly"], 3),
+                "text": r["text"], "engine_explanation": engine.explain(r, setting)}
+
+    worst_fn = [describe(*p) for p in fn[:worst]]
+    worst_fp = [describe(*p) for p in fp[:worst]]
+    run.write_csv("false_negatives_worst.csv", worst_fn)
+    run.write_csv("false_positives_worst.csv", worst_fp)
+
+    groups = []
+    for kind, errs, label in (("missed scam", fn, "scam"), ("false alarm", fp, "legit")):
+        totals = {}
+        for r in run.test:
+            if r["label"] == label:
+                for f in GROUP_FIELDS:
+                    totals[(f, r[f])] = totals.get((f, r[f]), 0) + 1
+        counts = {}
+        for r, _ in errs:
+            for f in GROUP_FIELDS:
+                counts[(f, r[f])] = counts.get((f, r[f]), 0) + 1
+        for (f, v), c in sorted(counts.items(), key=lambda kv: -kv[1]):
+            groups.append({"error": kind, "field": f, "value": v, "errors": c, "of": totals[(f, v)],
+                           "rate": round(c / totals[(f, v)], 3)})
+    run.write_csv("error_groups.csv", groups)
+    run.results["errors"] = {"n_false_negatives": len(fn), "n_false_positives": len(fp),
+                             "worst_false_negatives": worst_fn, "worst_false_positives": worst_fp, "groups": groups}
+    run.note(f"[errors] {len(fn)} missed scams, {len(fp)} false alarms on the frozen test set (text only)")
+    for g in [g for g in groups if g["field"] in ("language", "evasion_type")]:
+        run.note(f"[errors]   {g['error']:<11s} {g['field']}={g['value']:<16s} {g['errors']}/{g['of']} ({g['rate']:.0%})")
+
+
+Run.section_errors = errors_section
+
 
 def main():
     ap = argparse.ArgumentParser()
