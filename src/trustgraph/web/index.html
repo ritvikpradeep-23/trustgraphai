@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrustGraph Tester</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --text: #1b1f24; --muted: #5b6470; --line: #dde1e6;
+    --accent: #2f5bd3; --accent-text: #ffffff; --field: #ffffff;
+    --low: #1f7a4d; --low-bg: #e3f4ea; --caution: #8a5a00; --caution-bg: #fdf0d5; --high: #b3261e; --high-bg: #fbe3e1;
+    --bar: #d7dce3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111418; --panel: #1a1e24; --text: #e8eaed; --muted: #9aa3ad; --line: #2c323a;
+      --accent: #7b9cf0; --accent-text: #0d1117; --field: #12161b;
+      --low: #6fd49f; --low-bg: #16301f; --caution: #f2c265; --caution-bg: #33290f; --high: #f28b82; --high-bg: #3a1714;
+      --bar: #2c323a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 20px 16px 8px; max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--muted); }
+  main { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; padding: 16px; max-width: 1200px; margin: 0 auto; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  section.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  h2 { font-size: 15px; margin: 0 0 10px; }
+  h2 small { font-weight: normal; color: var(--muted); }
+  .block + .block { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  input, select, textarea { width: 100%; font: inherit; color: var(--text); background: var(--field); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 12px; }
+  @media (max-width: 520px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .check { display: flex; gap: 8px; align-items: center; color: var(--text); font-size: 14px; margin-top: 22px; }
+  .check input { width: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; padding: 0 6px 6px 0; }
+  td { padding: 0 6px 8px 0; vertical-align: top; }
+  td:first-child { font-size: 13px; padding-top: 8px; white-space: nowrap; }
+  td.days { width: 84px; }
+  @media (max-width: 560px) {
+    thead { display: none; }
+    tbody tr { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 4px 8px; margin-bottom: 12px; }
+    td { padding: 0; }
+    td:first-child { grid-column: 1 / -1; padding-top: 0; font-weight: 600; }
+    td.now { grid-column: 1 / -1; }
+    td[data-label]::before { content: attr(data-label); display: block; font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+    td.days { width: auto; }
+  }
+  .hint { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+  .actions { display: flex; gap: 10px; margin-top: 16px; }
+  button { font: inherit; border-radius: 6px; padding: 9px 16px; cursor: pointer; border: 1px solid var(--line); background: var(--field); color: var(--text); }
+  button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  .results { position: sticky; top: 16px; align-self: start; }
+  .empty { color: var(--muted); }
+  .verdict { border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+  .verdict .band { font-size: 26px; font-weight: 700; }
+  .verdict .score { font-size: 14px; opacity: .85; }
+  .band-Low { background: var(--low-bg); color: var(--low); }
+  .band-Caution { background: var(--caution-bg); color: var(--caution); }
+  .band-High { background: var(--high-bg); color: var(--high); }
+  .verdict p { margin: 8px 0 0; color: var(--text); font-size: 14px; }
+  .signal { padding: 10px 0; border-top: 1px solid var(--line); }
+  .signal .row { display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+  .signal .bar { height: 6px; background: var(--bar); border-radius: 3px; margin: 6px 0; overflow: hidden; }
+  .signal .fill { height: 100%; background: var(--accent); border-radius: 3px; }
+  .signal p { margin: 0; font-size: 13px; color: var(--muted); }
+  .note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .error { color: var(--high); }
+</style>
+</head>
+<body>
+<header>
+  <h1>TrustGraph Tester</h1>
+  <p>Describe an interaction and see how the detector scores it. Leave anything you don't know blank.</p>
+</header>
+<main>
+  <section class="panel">
+    <div class="block">
+      <label for="example">Load an example</label>
+      <select id="example"><option value="">Choose a scenario…</option></select>
+    </div>
+
+    <div class="block">
+      <h2>Message <small>what was said or written</small></h2>
+      <textarea id="message_text" placeholder="e.g. Hi Mum, this is my new number, can you help me pay a bill today?"></textarea>
+    </div>
+
+    <div class="block">
+      <h2>Call details</h2>
+      <div class="grid">
+        <div><label for="duration_sec">Call length (seconds)</label><input id="duration_sec" type="number" min="0" placeholder="blank if a text"></div>
+        <div><label for="hour_of_day">Hour of day (0–23)</label><input id="hour_of_day" type="number" min="0" max="23" placeholder="e.g. 14"></div>
+        <div><label for="amount_ratio">Amount × usual</label><input id="amount_ratio" type="number" min="0" step="0.1" placeholder="e.g. 1.0"></div>
+        <div><label for="contact_freq_24h">Contacts in last 24h</label><input id="contact_freq_24h" type="number" min="0" placeholder="e.g. 1"></div>
+        <div><label for="urgency_score">Urgent words</label><input id="urgency_score" type="number" min="0" placeholder="auto from message"></div>
+        <div><label class="check"><input id="new_channel_flag" type="checkbox"> First contact from this device</label></div>
+      </div>
+    </div>
+
+    <div class="block">
+      <h2>Contact's details <small>what you knew before vs. this time</small></h2>
+      <table>
+        <thead><tr><th></th><th>Known before</th><th>Known for (days)</th><th>This time</th></tr></thead>
+        <tbody id="identity"></tbody>
+      </table>
+      <p class="hint">Only filled rows are compared. Account and phone numbers are shown masked in the results.</p>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="check">Check risk</button>
+      <button id="clear">Clear</button>
+    </div>
+  </section>
+
+  <section class="panel results" aria-live="polite">
+    <h2>Result</h2>
+    <div id="result"><p class="empty">Fill in the form (or load an example) and press <b>Check risk</b>.</p></div>
+  </section>
+</main>
+
+<script>
+const FEATURES = ["duration_sec", "hour_of_day", "amount_ratio", "contact_freq_24h", "urgency_score"];
+const ID_FIELDS = [
+  ["payout_account", "Payout account", "GB29 NWBK 6016…"],
+  ["phone_number", "Phone number", "+44 20 7946 0958"],
+  ["email_domain", "Email domain", "acme-corp.com"],
+  ["display_name", "Name", "Jane Doe"],
+];
+const SIGNAL_LABELS = {
+  anomaly: "Anomaly: does the call behave oddly?",
+  continuity: "Continuity: have their details changed?",
+  similarity: "Similarity: does the message read like a scam?",
+  precedent: "Precedent: has this been reported as a scam before?",
+};
+const $ = (id) => document.getElementById(id);
+let examples = [];
+
+function el(tag, attrs = {}, text) {
+  const node = document.createElement(tag);
+  Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+for (const [field, label, placeholder] of ID_FIELDS) {
+  const row = el("tr");
+  row.append(el("td", {}, label));
+  const known = el("td", { "data-label": "Known before" }); known.append(el("input", { id: `known_${field}`, placeholder, "aria-label": `${label} known before` }));
+  const days = el("td", { class: "days", "data-label": "Known for (days)" }); days.append(el("input", { id: `days_${field}`, type: "number", min: "0", placeholder: "e.g. 500", "aria-label": `${label} known for days` }));
+  const now = el("td", { class: "now", "data-label": "This time" }); now.append(el("input", { id: `now_${field}`, placeholder, "aria-label": `${label} this time` }));
+  row.append(known, days, now);
+  $("identity").append(row);
+}
+
+function readForm() {
+  const interaction = {};
+  for (const f of FEATURES) {
+    const v = $(f).value.trim();
+    if (v !== "") interaction[f] = Number(v);
+  }
+  interaction.new_channel_flag = $("new_channel_flag").checked ? 1 : 0;
+  const text = $("message_text").value.trim();
+  if (text) interaction.message_text = text;
+  const identity = {}, known = {};
+  for (const [field] of ID_FIELDS) {
+    const now = $(`now_${field}`).value.trim();
+    const before = $(`known_${field}`).value.trim();
+    const days = $(`days_${field}`).value.trim();
+    if (now) identity[field] = now;
+    if (before) known[field] = { [before]: days === "" ? null : Number(days) };
+  }
+  if (Object.keys(identity).length) interaction.identity = identity;
+  if (Object.keys(known).length) interaction.known_identity = known;
+  return interaction;
+}
+
+function clearForm() {
+  document.querySelectorAll("main input, main textarea").forEach((i) => { i.type === "checkbox" ? (i.checked = false) : (i.value = ""); });
+  $("example").value = "";
+  $("result").replaceChildren(el("p", { class: "empty" }, "Fill in the form (or load an example) and press Check risk."));
+}
+
+function fillForm(interaction) {
+  clearForm();
+  for (const f of FEATURES) if (interaction[f] !== undefined && interaction[f] !== null) $(f).value = interaction[f];
+  $("new_channel_flag").checked = interaction.new_channel_flag === 1;
+  $("message_text").value = interaction.message_text || "";
+  const identity = interaction.identity || {}, known = interaction.known_identity || {};
+  for (const [field] of ID_FIELDS) {
+    if (identity[field]) $(`now_${field}`).value = identity[field];
+    const entries = Object.entries(known[field] || {});
+    if (entries.length) {
+      // Prefer the long-standing value as "known before" when there are several.
+      entries.sort((a, b) => (b[1] ?? 0) - (a[1] ?? 0));
+      $(`known_${field}`).value = entries[0][0];
+      if (entries[0][1] !== null) $(`days_${field}`).value = entries[0][1];
+      if (entries.length > 1 && identity[field] === entries[1][0]) {
+        // The current value was itself first seen recently: show its age instead.
+        $(`known_${field}`).value = entries[1][0];
+        $(`days_${field}`).value = entries[1][1];
+      }
+    }
+  }
+}
+
+function showResult(data) {
+  const verdict = el("div", { class: `verdict band-${data.band}` });
+  verdict.append(el("div", { class: "band" }, data.band === "Low" ? "Low risk" : data.band === "High" ? "High risk" : "Caution"));
+  verdict.append(el("div", { class: "score" }, `Combined score ${data.score.toFixed(2)}`));
+  let why = data.explanation.replace(/^Combined score [\d.]+; /, "");
+  why = why.charAt(0).toUpperCase() + why.slice(1);
+  if (data.band === "Low") {
+    const top = data.signals.reduce((a, b) => (b.score > a.score ? b : a));
+    why = top.score >= 0.3 ? `No strong warning signs. Worth noting: ${top.explanation}` : "No warning signs.";
+  }
+  verdict.append(el("p", {}, why));
+  const parts = [verdict];
+  for (const s of data.signals) {
+    const box = el("div", { class: "signal" });
+    const row = el("div", { class: "row" });
+    row.append(el("span", {}, SIGNAL_LABELS[s.name] || s.name), el("span", {}, s.score.toFixed(2)));
+    const bar = el("div", { class: "bar" }); const fill = el("div", { class: "fill" });
+    fill.style.width = `${Math.round(s.score * 100)}%`; bar.append(fill);
+    box.append(row, bar, el("p", {}, s.explanation));
+    parts.push(box);
+  }
+  if (data.urgency_counted !== null) parts.push(el("p", { class: "note" }, `Urgent words counted from the message: ${data.urgency_counted}.`));
+  $("result").replaceChildren(...parts);
+}
+
+async function check() {
+  $("result").replaceChildren(el("p", { class: "empty" }, "Checking…"));
+  try {
+    const res = await fetch("/api/score", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(readForm()) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || res.statusText);
+    showResult(data);
+  } catch (err) {
+    $("result").replaceChildren(el("p", { class: "error" }, `Something went wrong: ${err.message}`));
+  }
+}
+
+$("check").addEventListener("click", check);
+$("clear").addEventListener("click", clearForm);
+$("example").addEventListener("change", () => {
+  const ex = examples[Number($("example").value)];
+  if (ex) { fillForm(ex.interaction); $("example").value = String(examples.indexOf(ex)); check(); }
+});
+
+fetch("/api/examples").then((r) => r.json()).then((list) => {
+  examples = list;
+  const groups = { scam: el("optgroup", { label: "Scams (should be flagged)" }), legit: el("optgroup", { label: "Legit (should stay Low)" }) };
+  list.forEach((ex, i) => groups[ex.kind].append(el("option", { value: String(i) }, ex.name.replaceAll("_", " "))));
+  $("example").append(groups.scam, groups.legit);
+});
+</script>
+</body>
+</html>

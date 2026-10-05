@@ -113,3 +113,11 @@ def test_huge_amount_is_readable():
     signal = anomaly_score({**NORMAL_INTERACTION, "amount_ratio": 1e9})
     assert signal.score > 0.9
     assert "1,000,000,000×" in signal.explanation
+
+
+def test_zero_duration_means_not_a_call():
+    text = anomaly_score({**NORMAL_INTERACTION, "duration_sec": 0})
+    assert text.score < 0.3
+    assert "call duration not applicable" in text.explanation
+    assert "short call" not in text.explanation
+    assert "short call" in anomaly_score({**NORMAL_INTERACTION, "duration_sec": 1}).explanation
