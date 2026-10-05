@@ -1,0 +1,66 @@
+{
+ "table": [
+  {
+   "model": "current (300 tidy normal rows)",
+   "caution_cutoff": 0.9257231005588635,
+   "high_cutoff": 0.9999999436541618,
+   "anomalies_caught_caution": 0.7815,
+   "lo_caution": 0.7649875,
+   "hi_caution": 0.7985,
+   "new_normal_flagged_caution": 0.106,
+   "old_normal_flagged_caution": 0.005,
+   "anomalies_caught_high": 0.557,
+   "lo_high": 0.535,
+   "hi_high": 0.578525,
+   "new_normal_flagged_high": 0.0108,
+   "old_normal_flagged_high": 0.0,
+   "old_15_anomalies_caught_caution": 12,
+   "odd_late_night_flagged": 0.029508196721311476,
+   "odd_large_one_off_flagged": 0.9403669724770642,
+   "odd_family_burst_flagged": 0.6694214876033058,
+   "odd_new_phone_flagged": 0.00749063670411985,
+   "odd_long_call_flagged": 0.9586206896551724
+  },
+  {
+   "model": "candidate (20,000 rows incl. odd cases)",
+   "caution_cutoff": 0.6620468440722033,
+   "high_cutoff": 0.9892013055251895,
+   "anomalies_caught_caution": 0.7975,
+   "lo_caution": 0.7805,
+   "hi_caution": 0.8145125,
+   "new_normal_flagged_caution": 0.1056,
+   "old_normal_flagged_caution": 0.013,
+   "anomalies_caught_high": 0.726,
+   "lo_high": 0.7069875,
+   "hi_high": 0.745525,
+   "new_normal_flagged_high": 0.0096,
+   "old_normal_flagged_high": 0.0,
+   "old_15_anomalies_caught_caution": 12,
+   "odd_late_night_flagged": 0.10163934426229508,
+   "odd_large_one_off_flagged": 0.7339449541284404,
+   "odd_family_burst_flagged": 0.6239669421487604,
+   "odd_new_phone_flagged": 0.07116104868913857,
+   "odd_long_call_flagged": 0.7655172413793103
+  }
+ ],
+ "scenarios": {
+  "current": {
+   "scams_caught": 18,
+   "scams": 18,
+   "honest_kept_low": 6,
+   "honest": 6
+  },
+  "candidate": {
+   "scams_caught": 17,
+   "scams": 18,
+   "honest_kept_low": 5,
+   "honest": 6
+  }
+ },
+ "verdict": "reject",
+ "bundle": "models/candidate/anomaly_v2",
+ "live_bands": {
+  "caution": 0.3724421549147661,
+  "high": 0.8179775934748242
+ }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "similarity_v2",
+  "created": "2026-10-05",
+  "training_data_sha256": "5026c989a26c6fd0563d87c5534f98cc109071162cb786cdbdc24aedad31f719",
+  "training_rows": 849,
+  "seeds": {
+    "bootstrap": 0
+  },
+  "library_versions": {
+    "python": "3.11.15",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.4.6",
+    "joblib": "1.6.0"
+  },
+  "files": {
+    "similarity_corpus.json": {
+      "target": "models/similarity_corpus.json",
+      "sha256": "584d56f712deb6bd8d677df5b12fe120729ce15a362ec0b4c3b5c4e08f27b95a"
+    },
+    "risk_bands.json": {
+      "target": "models/risk_bands.json",
+      "sha256": "37d361a263af3ac6c561597a1916214cd9d7dc19491b6bc93c9b048a30c9c74e"
+    }
+  },
+  "dev_metrics": {
+    "recall_caution": 0.9137168141592921,
+    "fpr_caution": 0.10013351134846461,
+    "fpr_high": 0.010013351134846462,
+    "loco_mean": 0.7909940634078565,
+    "real_sms_false_alarms": 0.343419689119171,
+    "current_engine": {
+      "recall_caution": 0.7057522123893806,
+      "fpr_caution": 0.10013351134846461,
+      "fpr_high": 0.010013351134846462,
+      "loco_mean": 0.5675424192665572,
+      "real_sms_false_alarms": 0.19295336787564768
+    },
+    "verdict": "reject"
+  },
+  "requires": "",
+  "synthetic_data": true
+}

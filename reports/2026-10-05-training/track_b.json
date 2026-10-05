@@ -1,0 +1,90 @@
+{
+ "stats": {
+  "added_scam": 433,
+  "added_legit": 416,
+  "near_copies_dropped": 564,
+  "close_to_dev_or_test_dropped": 0
+ },
+ "chosen": "grown",
+ "table": [
+  {
+   "candidate": "current",
+   "recall_caution": 0.7057522123893806,
+   "lo": 0.6614491150442477,
+   "hi": 0.7478429203539823,
+   "recall_known_types": 0.8926829268292683,
+   "recall_types_engine_had_no_examples_for": 0.5506072874493927,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.4911504424778761,
+   "roc_auc": 0.8801772569916231,
+   "recall_en": 0.7338709677419355,
+   "recall_hinglish": 0.5535714285714286,
+   "recall_manglish": 0.625,
+   "real_sms_false_alarms": 0.19295336787564768
+  },
+  {
+   "candidate": "grown",
+   "recall_caution": 0.9137168141592921,
+   "lo": 0.8871681415929203,
+   "hi": 0.9402654867256637,
+   "recall_known_types": 0.9121951219512195,
+   "recall_types_engine_had_no_examples_for": 0.9149797570850202,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.6814159292035398,
+   "roc_auc": 0.9637717546699434,
+   "recall_en": 0.9059139784946236,
+   "recall_hinglish": 0.9642857142857143,
+   "recall_manglish": 0.9166666666666666,
+   "real_sms_false_alarms": 0.343419689119171
+  },
+  {
+   "candidate": "grown_norm",
+   "recall_caution": 0.8694690265486725,
+   "lo": 0.838495575221239,
+   "hi": 0.9004977876106194,
+   "recall_known_types": 0.8926829268292683,
+   "recall_types_engine_had_no_examples_for": 0.8502024291497976,
+   "fpr_caution": 0.10013351134846461,
+   "fpr_high": 0.010013351134846462,
+   "recall_high": 0.6991150442477876,
+   "roc_auc": 0.9601518839278331,
+   "recall_en": 0.8709677419354839,
+   "recall_hinglish": 0.8214285714285714,
+   "recall_manglish": 0.9583333333333334,
+   "real_sms_false_alarms": 0.3316062176165803
+  }
+ ],
+ "novelty": {
+  "current": {
+   "value": 0.5506072874493927,
+   "lo": 0.4939271255060729,
+   "hi": 0.611336032388664,
+   "n": 247
+  },
+  "grown (13 types only)": {
+   "value": 0.757085020242915,
+   "lo": 0.7044534412955465,
+   "hi": 0.8097165991902834,
+   "n": 247
+  }
+ },
+ "loco_mean": {
+  "current": 0.5675424192665572,
+  "grown": 0.7909940634078565
+ },
+ "rules": {
+  "1. dev recall at Caution up at least 3 points": true,
+  "2. mean leave-one-type-out recall not lower": true,
+  "3. High-band dev false alarms not higher": true,
+  "4. all tests pass": null,
+  "5. real-SMS false alarms up at most 2 points": false
+ },
+ "verdict": "reject",
+ "bundle": "models/candidate/similarity_v2",
+ "live_bands": {
+  "caution": 0.677061551601399,
+  "high": 0.9135452234999296
+ }
+}

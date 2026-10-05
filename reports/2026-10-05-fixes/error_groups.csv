@@ -1,0 +1,52 @@
+error,field,value,errors,of,rate
+missed scam,language,en,192,771,0.249
+missed scam,evasion_type,none,142,613,0.232
+missed scam,channel,whatsapp,79,343,0.23
+missed scam,channel,sms,68,251,0.271
+missed scam,channel,email,31,139,0.223
+missed scam,channel,instagram,24,89,0.27
+missed scam,category,QR code scam,22,39,0.564
+missed scam,category,fake CAPTCHA or paste-command,21,34,0.618
+missed scam,evasion_type,emoji_padding,20,73,0.274
+missed scam,category,e-challan or traffic fine,20,40,0.5
+missed scam,category,digital arrest,17,39,0.436
+missed scam,category,FASTag or toll balance,17,38,0.447
+missed scam,category,UPI collect or accidental refund,14,24,0.583
+missed scam,category,KYC or ID update expiry,14,40,0.35
+missed scam,evasion_type,spacing,13,52,0.25
+missed scam,evasion_type,obfuscated_link,13,44,0.295
+missed scam,evasion_type,split_phrasing,13,56,0.232
+missed scam,evasion_type,leetspeak,13,56,0.232
+missed scam,channel,messenger,12,72,0.167
+missed scam,language,manglish,12,58,0.207
+missed scam,category,crypto airdrop or wallet drainer,12,35,0.343
+missed scam,category,fake customer-care helpline,11,24,0.458
+missed scam,category,instant-loan app harassment,10,40,0.25
+missed scam,language,hinglish,10,65,0.154
+missed scam,category,electricity disconnection,10,22,0.455
+missed scam,category,social-media verify or copyright strike,10,24,0.417
+missed scam,category,task or like-and-earn scam,7,25,0.28
+missed scam,category,student scholarship or exam scam,6,40,0.15
+missed scam,category,one-time code or password request,6,39,0.154
+missed scam,category,invoice or bank-details change,5,24,0.208
+missed scam,category,deepfake CEO video call,4,18,0.222
+missed scam,category,tax or government threat,4,34,0.118
+missed scam,category,rental or booking deposit,2,25,0.08
+missed scam,category,investment or crypto scam,2,25,0.08
+false alarm,language,en,112,1275,0.088
+false alarm,evasion_type,none,100,1173,0.085
+false alarm,category,delivery update,53,209,0.254
+false alarm,channel,whatsapp,39,488,0.08
+false alarm,channel,sms,32,424,0.075
+false alarm,channel,email,26,213,0.122
+false alarm,category,group-admin notice,18,60,0.3
+false alarm,category,real urgent family message,18,57,0.316
+false alarm,channel,messenger,14,142,0.099
+false alarm,category,refund confirmation,13,67,0.194
+false alarm,category,real promotion,12,56,0.214
+false alarm,evasion_type,casual_lowercase,11,118,0.093
+false alarm,channel,instagram,10,133,0.075
+false alarm,evasion_type,emoji_padding,10,109,0.092
+false alarm,language,manglish,9,64,0.141
+false alarm,category,government notice,6,206,0.029
+false alarm,category,appointment reminder,1,208,0.005

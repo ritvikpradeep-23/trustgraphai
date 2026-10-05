@@ -1,4 +1,16 @@
+# Extension
 dist/
+.DS_Store
+
+# Python
 __pycache__/
 *.pyc
-.DS_Store
+.venv/
+.pytest_cache/
+eval/batches/
+eval/external/
+training/.cache/
+
+# Backend: user-submitted reports are private data, never committed
+data/scam_reports.json
+.env

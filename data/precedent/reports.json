@@ -1,0 +1,2851 @@
+[
+ {
+  "type": "phone",
+  "value": "+44 7700 900999",
+  "reports": 9,
+  "last_reported_days": 12,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB82 WEST 1234 5698 7654 32",
+  "reports": 4,
+  "last_reported_days": 30,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "royalmail-redeliver.com",
+  "reports": 23,
+  "last_reported_days": 3,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "wallet",
+  "value": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+  "reports": 6,
+  "last_reported_days": 20,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "email",
+  "value": "ceo.office.acme@gmail.com",
+  "reports": 2,
+  "last_reported_days": 45,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB94BARC10201530093459",
+  "reports": 3,
+  "last_reported_days": 60,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+44 7700 900111",
+  "reports": 1,
+  "last_reported_days": 1100,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "secure-account51.online",
+  "reports": 3,
+  "last_reported_days": 817,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB70KZBW85320692169484",
+  "reports": 1,
+  "last_reported_days": 425,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "email",
+  "value": "alert.secure665@gmail.com",
+  "reports": 1,
+  "last_reported_days": 975,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "service-login3.co.uk",
+  "reports": 1,
+  "last_reported_days": 361,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447799091146",
+  "reports": 1,
+  "last_reported_days": 21,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1Hfu311A3pcyoxEHrF4foyv7mrhpqS3TC7",
+  "reports": 2,
+  "last_reported_days": 187,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-update62.com",
+  "reports": 1,
+  "last_reported_days": 1276,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-secure19.com",
+  "reports": 3,
+  "last_reported_days": 406,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447982184306",
+  "reports": 2,
+  "last_reported_days": 763,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB29BQAB73862045659055",
+  "reports": 1,
+  "last_reported_days": 1326,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB97CUEJ51270457821264",
+  "reports": 3,
+  "last_reported_days": 381,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "wallet",
+  "value": "1saS9FwYJRaYhFeSwA9TWhQuU87y8wH6Jc",
+  "reports": 2,
+  "last_reported_days": 641,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "track-alert41.co.uk",
+  "reports": 1,
+  "last_reported_days": 613,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "email",
+  "value": "update.track317@proton.me",
+  "reports": 1,
+  "last_reported_days": 54,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB60MDFC60919471038872",
+  "reports": 3,
+  "last_reported_days": 820,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447628435094",
+  "reports": 1,
+  "last_reported_days": 978,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB48UIOF66341123284695",
+  "reports": 1,
+  "last_reported_days": 1442,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447827470367",
+  "reports": 4,
+  "last_reported_days": 1105,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "email",
+  "value": "service.login503@proton.me",
+  "reports": 3,
+  "last_reported_days": 780,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "domain",
+  "value": "account-billing83.net",
+  "reports": 1,
+  "last_reported_days": 741,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "verify-service83.xyz",
+  "reports": 1,
+  "last_reported_days": 83,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB37IMET76842331005257",
+  "reports": 1,
+  "last_reported_days": 655,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "wallet",
+  "value": "1hrRNi9Ebf7WNWx5zTmRKmg9hkPveL1gDk",
+  "reports": 1,
+  "last_reported_days": 787,
+  "category": "money mule account"
+ },
+ {
+  "type": "email",
+  "value": "parcel.support835@proton.me",
+  "reports": 2,
+  "last_reported_days": 1483,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "domain",
+  "value": "login-login98.top",
+  "reports": 1,
+  "last_reported_days": 212,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447395733437",
+  "reports": 3,
+  "last_reported_days": 120,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB23LMMX26283398700778",
+  "reports": 4,
+  "last_reported_days": 1411,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447668882673",
+  "reports": 1,
+  "last_reported_days": 349,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447996049565",
+  "reports": 2,
+  "last_reported_days": 879,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "verify-account24.xyz",
+  "reports": 2,
+  "last_reported_days": 1265,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "track-support66.xyz",
+  "reports": 1,
+  "last_reported_days": 1144,
+  "category": "money mule account"
+ },
+ {
+  "type": "wallet",
+  "value": "1NkYtLwqLUXmgrNWRuJb7rPLaVrXW72Qzv",
+  "reports": 2,
+  "last_reported_days": 587,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447107692057",
+  "reports": 1,
+  "last_reported_days": 508,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB49APYR37678156517870",
+  "reports": 2,
+  "last_reported_days": 849,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB56KHES98362535278828",
+  "reports": 2,
+  "last_reported_days": 950,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447986289939",
+  "reports": 4,
+  "last_reported_days": 1142,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447748626351",
+  "reports": 6,
+  "last_reported_days": 935,
+  "category": "money mule account"
+ },
+ {
+  "type": "account",
+  "value": "GB55LWBC49607982957463",
+  "reports": 2,
+  "last_reported_days": 1098,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447688692168",
+  "reports": 6,
+  "last_reported_days": 160,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "domain",
+  "value": "parcel-account81.xyz",
+  "reports": 3,
+  "last_reported_days": 955,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB55ADHB54072976763521",
+  "reports": 8,
+  "last_reported_days": 1166,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "email",
+  "value": "support.account976@gmail.com",
+  "reports": 3,
+  "last_reported_days": 617,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "verify-refund55.info",
+  "reports": 5,
+  "last_reported_days": 1203,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447840324781",
+  "reports": 1,
+  "last_reported_days": 82,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "email",
+  "value": "alert.secure369@gmail.com",
+  "reports": 2,
+  "last_reported_days": 1144,
+  "category": "money mule account"
+ },
+ {
+  "type": "email",
+  "value": "track.wallet9@proton.me",
+  "reports": 3,
+  "last_reported_days": 590,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB19JBXG87231277416234",
+  "reports": 1,
+  "last_reported_days": 932,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447563166407",
+  "reports": 2,
+  "last_reported_days": 795,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-support69.online",
+  "reports": 2,
+  "last_reported_days": 381,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447473501465",
+  "reports": 1,
+  "last_reported_days": 1279,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447868010203",
+  "reports": 1,
+  "last_reported_days": 1064,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447504074660",
+  "reports": 1,
+  "last_reported_days": 595,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "service-login19.top",
+  "reports": 1,
+  "last_reported_days": 127,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "claim-support80.info",
+  "reports": 1,
+  "last_reported_days": 1498,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "support-update14.com",
+  "reports": 11,
+  "last_reported_days": 862,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "claim-wallet59.com",
+  "reports": 5,
+  "last_reported_days": 588,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB42MIDC16045000196299",
+  "reports": 1,
+  "last_reported_days": 832,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB88HLZQ47834359435474",
+  "reports": 6,
+  "last_reported_days": 514,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447776766809",
+  "reports": 2,
+  "last_reported_days": 1470,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447907297118",
+  "reports": 1,
+  "last_reported_days": 840,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "domain",
+  "value": "service-service30.info",
+  "reports": 3,
+  "last_reported_days": 323,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB86QQAH39024311245179",
+  "reports": 1,
+  "last_reported_days": 362,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB59WAHB81277698262723",
+  "reports": 3,
+  "last_reported_days": 952,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "login-billing94.online",
+  "reports": 2,
+  "last_reported_days": 383,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "claim-service27.xyz",
+  "reports": 1,
+  "last_reported_days": 256,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB38ICLQ56145885787010",
+  "reports": 1,
+  "last_reported_days": 1433,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB19AYYT13697118397436",
+  "reports": 1,
+  "last_reported_days": 858,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447986140995",
+  "reports": 2,
+  "last_reported_days": 682,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447381312953",
+  "reports": 1,
+  "last_reported_days": 1277,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB89QJUB28631848737233",
+  "reports": 1,
+  "last_reported_days": 1047,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447454713199",
+  "reports": 1,
+  "last_reported_days": 227,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB24HCKW55735062023158",
+  "reports": 2,
+  "last_reported_days": 1,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "email",
+  "value": "account.support431@outlook.com",
+  "reports": 4,
+  "last_reported_days": 1170,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447334313688",
+  "reports": 1,
+  "last_reported_days": 896,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447922756223",
+  "reports": 2,
+  "last_reported_days": 719,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447305427587",
+  "reports": 1,
+  "last_reported_days": 370,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447534366903",
+  "reports": 2,
+  "last_reported_days": 72,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "claim-parcel15.top",
+  "reports": 1,
+  "last_reported_days": 71,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB26XCAY12815516161148",
+  "reports": 1,
+  "last_reported_days": 1059,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "billing-refund9.info",
+  "reports": 2,
+  "last_reported_days": 1031,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "billing-secure28.xyz",
+  "reports": 2,
+  "last_reported_days": 686,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB35XUZW92691431281241",
+  "reports": 2,
+  "last_reported_days": 381,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "email",
+  "value": "track.service983@gmail.com",
+  "reports": 3,
+  "last_reported_days": 542,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447593355577",
+  "reports": 2,
+  "last_reported_days": 1198,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447294720125",
+  "reports": 1,
+  "last_reported_days": 953,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447840948342",
+  "reports": 1,
+  "last_reported_days": 117,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "help-help2.top",
+  "reports": 3,
+  "last_reported_days": 248,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB38SHTV90101751140592",
+  "reports": 2,
+  "last_reported_days": 354,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447798773619",
+  "reports": 2,
+  "last_reported_days": 215,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB98EUND10360684426000",
+  "reports": 1,
+  "last_reported_days": 830,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447620028420",
+  "reports": 1,
+  "last_reported_days": 876,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "service-verify87.net",
+  "reports": 2,
+  "last_reported_days": 804,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB62HSBL36527967388248",
+  "reports": 2,
+  "last_reported_days": 1465,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB23EABP88649964811342",
+  "reports": 1,
+  "last_reported_days": 346,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447649693119",
+  "reports": 2,
+  "last_reported_days": 787,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-claim53.xyz",
+  "reports": 2,
+  "last_reported_days": 401,
+  "category": "money mule account"
+ },
+ {
+  "type": "account",
+  "value": "GB92SZDK11122289014709",
+  "reports": 3,
+  "last_reported_days": 771,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447568207060",
+  "reports": 1,
+  "last_reported_days": 1409,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447794995274",
+  "reports": 1,
+  "last_reported_days": 1334,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1gU9MxGBgCvrzuFDLUtjeseNQW6kejXnxa",
+  "reports": 1,
+  "last_reported_days": 1168,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1hsroW61CRkT2DyzNoiwtdPdKMcaaPQ1ba",
+  "reports": 2,
+  "last_reported_days": 1403,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "parcel-help37.net",
+  "reports": 1,
+  "last_reported_days": 591,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447246584350",
+  "reports": 2,
+  "last_reported_days": 70,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "wallet",
+  "value": "12xjFC6UkatLHUCyBUX4UTG831U6xFegVt",
+  "reports": 1,
+  "last_reported_days": 166,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "account-account75.net",
+  "reports": 4,
+  "last_reported_days": 1315,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "alert-track97.net",
+  "reports": 1,
+  "last_reported_days": 1429,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB59DYHF18728009983493",
+  "reports": 4,
+  "last_reported_days": 1114,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447588127961",
+  "reports": 1,
+  "last_reported_days": 122,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447508900149",
+  "reports": 4,
+  "last_reported_days": 240,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "wallet",
+  "value": "1aXjjJrNqQ7m2m3CbwQ7Etj6PGBrcBeQ4T",
+  "reports": 1,
+  "last_reported_days": 1318,
+  "category": "money mule account"
+ },
+ {
+  "type": "account",
+  "value": "GB76DWOW57776535485903",
+  "reports": 1,
+  "last_reported_days": 508,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447320316851",
+  "reports": 1,
+  "last_reported_days": 54,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447166883900",
+  "reports": 3,
+  "last_reported_days": 1331,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB57NHML58291121221938",
+  "reports": 1,
+  "last_reported_days": 542,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447423746075",
+  "reports": 6,
+  "last_reported_days": 188,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "email",
+  "value": "billing.login952@gmail.com",
+  "reports": 2,
+  "last_reported_days": 245,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "domain",
+  "value": "refund-parcel25.online",
+  "reports": 1,
+  "last_reported_days": 45,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "service-secure32.online",
+  "reports": 2,
+  "last_reported_days": 912,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB26KNNR98974350866761",
+  "reports": 3,
+  "last_reported_days": 1225,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "help-billing83.co.uk",
+  "reports": 5,
+  "last_reported_days": 1022,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB15OBYI66043787048938",
+  "reports": 3,
+  "last_reported_days": 1191,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-login21.co.uk",
+  "reports": 1,
+  "last_reported_days": 1385,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447675112284",
+  "reports": 1,
+  "last_reported_days": 828,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB45HHWB21612705146383",
+  "reports": 1,
+  "last_reported_days": 687,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447669054531",
+  "reports": 1,
+  "last_reported_days": 229,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB74QIKS69395617101635",
+  "reports": 2,
+  "last_reported_days": 691,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447525505575",
+  "reports": 6,
+  "last_reported_days": 788,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447600213744",
+  "reports": 2,
+  "last_reported_days": 265,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447861406804",
+  "reports": 1,
+  "last_reported_days": 1481,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB34HXTT57827243043751",
+  "reports": 2,
+  "last_reported_days": 1487,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447372232252",
+  "reports": 5,
+  "last_reported_days": 1071,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "wallet",
+  "value": "1jjPQtZ9ibWjuLRBeQLhQTSF8p6Kf8fjfJ",
+  "reports": 1,
+  "last_reported_days": 29,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB86FEUY32201233950353",
+  "reports": 2,
+  "last_reported_days": 258,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447884045604",
+  "reports": 1,
+  "last_reported_days": 412,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB91HHRX28227016713176",
+  "reports": 2,
+  "last_reported_days": 818,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447957630221",
+  "reports": 2,
+  "last_reported_days": 1118,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "wallet",
+  "value": "1Jd4KiyXQSgY2YQhsxcNSBwrrLKrYhVSdp",
+  "reports": 1,
+  "last_reported_days": 501,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB85XYYI98038398768810",
+  "reports": 3,
+  "last_reported_days": 1495,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "refund-wallet11.info",
+  "reports": 2,
+  "last_reported_days": 1049,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447680337274",
+  "reports": 1,
+  "last_reported_days": 458,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB35MPJK83445041507754",
+  "reports": 4,
+  "last_reported_days": 328,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB39EJAB81775975211267",
+  "reports": 4,
+  "last_reported_days": 351,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1hmc77PTzHCw92RQcswHyd5w9bnFGUtDfT",
+  "reports": 3,
+  "last_reported_days": 167,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB59EELN55068953417225",
+  "reports": 2,
+  "last_reported_days": 1194,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB12AZAZ18567917826477",
+  "reports": 3,
+  "last_reported_days": 774,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447978997670",
+  "reports": 1,
+  "last_reported_days": 445,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447260050764",
+  "reports": 1,
+  "last_reported_days": 637,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB80RTJI84890806775378",
+  "reports": 3,
+  "last_reported_days": 1404,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB73KIGT54213170175222",
+  "reports": 4,
+  "last_reported_days": 1202,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447229517826",
+  "reports": 4,
+  "last_reported_days": 1373,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "email",
+  "value": "account.parcel308@outlook.com",
+  "reports": 1,
+  "last_reported_days": 765,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "email",
+  "value": "refund.secure87@outlook.com",
+  "reports": 3,
+  "last_reported_days": 148,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447404278552",
+  "reports": 3,
+  "last_reported_days": 978,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB86EADB84081214895508",
+  "reports": 2,
+  "last_reported_days": 682,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447183480469",
+  "reports": 1,
+  "last_reported_days": 818,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "update-refund33.xyz",
+  "reports": 2,
+  "last_reported_days": 808,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447742919003",
+  "reports": 1,
+  "last_reported_days": 697,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "refund-track21.top",
+  "reports": 1,
+  "last_reported_days": 1127,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "verify-help18.co.uk",
+  "reports": 3,
+  "last_reported_days": 263,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "help-claim98.xyz",
+  "reports": 2,
+  "last_reported_days": 205,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447503856556",
+  "reports": 1,
+  "last_reported_days": 275,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "wallet",
+  "value": "1xyxsTCcDUfwHFj1ZkYPqNiT2X3vbNVcGH",
+  "reports": 3,
+  "last_reported_days": 627,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447843950336",
+  "reports": 2,
+  "last_reported_days": 236,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447779137297",
+  "reports": 2,
+  "last_reported_days": 406,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB70ILOQ15947128982745",
+  "reports": 1,
+  "last_reported_days": 14,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB79PXUQ90123756564125",
+  "reports": 2,
+  "last_reported_days": 257,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "email",
+  "value": "billing.login934@outlook.com",
+  "reports": 1,
+  "last_reported_days": 89,
+  "category": "romance scam"
+ },
+ {
+  "type": "email",
+  "value": "update.support196@gmail.com",
+  "reports": 1,
+  "last_reported_days": 1019,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447189241273",
+  "reports": 1,
+  "last_reported_days": 156,
+  "category": "romance scam"
+ },
+ {
+  "type": "wallet",
+  "value": "1XB58erBKLMF4XMLGvcRCot2vh6k737TcQ",
+  "reports": 4,
+  "last_reported_days": 182,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447778844363",
+  "reports": 3,
+  "last_reported_days": 1037,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB28DZLB39154300204387",
+  "reports": 5,
+  "last_reported_days": 601,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447619174862",
+  "reports": 3,
+  "last_reported_days": 1387,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1oyKVXVHyxPoQoaU8eKDCy6os2baMfQSSo",
+  "reports": 5,
+  "last_reported_days": 949,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447939501657",
+  "reports": 1,
+  "last_reported_days": 1159,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447343835894",
+  "reports": 2,
+  "last_reported_days": 676,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB59MHRJ38864399202466",
+  "reports": 1,
+  "last_reported_days": 105,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "wallet",
+  "value": "1X6JAWiyPsDnZkkXFXpyvBb7fz4fwrP7vv",
+  "reports": 1,
+  "last_reported_days": 868,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "email",
+  "value": "secure.alert680@proton.me",
+  "reports": 1,
+  "last_reported_days": 844,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-parcel84.co.uk",
+  "reports": 2,
+  "last_reported_days": 744,
+  "category": "romance scam"
+ },
+ {
+  "type": "email",
+  "value": "secure.update786@proton.me",
+  "reports": 4,
+  "last_reported_days": 496,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "email",
+  "value": "help.login564@gmail.com",
+  "reports": 1,
+  "last_reported_days": 405,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB57UDMF96887435813356",
+  "reports": 6,
+  "last_reported_days": 1187,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447866358176",
+  "reports": 2,
+  "last_reported_days": 281,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "domain",
+  "value": "service-update37.com",
+  "reports": 3,
+  "last_reported_days": 151,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "billing-refund56.top",
+  "reports": 2,
+  "last_reported_days": 1473,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB47LYJD20655917486080",
+  "reports": 3,
+  "last_reported_days": 331,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447735491617",
+  "reports": 4,
+  "last_reported_days": 455,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "secure-alert52.info",
+  "reports": 2,
+  "last_reported_days": 695,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447663974761",
+  "reports": 1,
+  "last_reported_days": 1002,
+  "category": "money mule account"
+ },
+ {
+  "type": "wallet",
+  "value": "1c83aTxXwDS9aBVLB6WwCQEoRyF5aezstd",
+  "reports": 1,
+  "last_reported_days": 200,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447132308997",
+  "reports": 2,
+  "last_reported_days": 554,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447530674951",
+  "reports": 1,
+  "last_reported_days": 1438,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "email",
+  "value": "claim.update302@outlook.com",
+  "reports": 1,
+  "last_reported_days": 1354,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447942286691",
+  "reports": 4,
+  "last_reported_days": 1367,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447354405405",
+  "reports": 4,
+  "last_reported_days": 89,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB91ESNB61070330219439",
+  "reports": 1,
+  "last_reported_days": 1189,
+  "category": "romance scam"
+ },
+ {
+  "type": "email",
+  "value": "alert.secure172@proton.me",
+  "reports": 1,
+  "last_reported_days": 1186,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447562184651",
+  "reports": 6,
+  "last_reported_days": 429,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447706543930",
+  "reports": 3,
+  "last_reported_days": 1300,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "login-verify96.top",
+  "reports": 5,
+  "last_reported_days": 1263,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "wallet",
+  "value": "18voJYPYxuDyShmVTTsPHMCP76i5ZnjSCv",
+  "reports": 2,
+  "last_reported_days": 130,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB35IEWF29683380353647",
+  "reports": 2,
+  "last_reported_days": 1463,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447942559238",
+  "reports": 7,
+  "last_reported_days": 60,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447606701100",
+  "reports": 1,
+  "last_reported_days": 73,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447156995630",
+  "reports": 1,
+  "last_reported_days": 222,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447427912826",
+  "reports": 2,
+  "last_reported_days": 1368,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "track-wallet20.info",
+  "reports": 2,
+  "last_reported_days": 1200,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447953958796",
+  "reports": 1,
+  "last_reported_days": 168,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB65MFKL44047884013607",
+  "reports": 3,
+  "last_reported_days": 1418,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "update-support18.top",
+  "reports": 2,
+  "last_reported_days": 481,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB30RELV74971610156140",
+  "reports": 1,
+  "last_reported_days": 1072,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447786716836",
+  "reports": 1,
+  "last_reported_days": 281,
+  "category": "tech support scam"
+ },
+ {
+  "type": "email",
+  "value": "billing.billing519@gmail.com",
+  "reports": 1,
+  "last_reported_days": 762,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "domain",
+  "value": "alert-verify48.info",
+  "reports": 1,
+  "last_reported_days": 716,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "domain",
+  "value": "verify-wallet59.co.uk",
+  "reports": 2,
+  "last_reported_days": 341,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447145750115",
+  "reports": 7,
+  "last_reported_days": 25,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447544939831",
+  "reports": 2,
+  "last_reported_days": 1345,
+  "category": "money mule account"
+ },
+ {
+  "type": "wallet",
+  "value": "14opieknuRTeCrmdJMSfnfvxhNbRdpNW3j",
+  "reports": 2,
+  "last_reported_days": 798,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB44PTJD66414248450578",
+  "reports": 3,
+  "last_reported_days": 297,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447759199383",
+  "reports": 1,
+  "last_reported_days": 408,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB27YUEH36219650820261",
+  "reports": 2,
+  "last_reported_days": 283,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "claim-wallet17.top",
+  "reports": 1,
+  "last_reported_days": 1126,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "wallet",
+  "value": "1nUo9PGFJP8iYqh95RUEnak7pCSSpHELMB",
+  "reports": 2,
+  "last_reported_days": 264,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447747150400",
+  "reports": 3,
+  "last_reported_days": 361,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1KBGN81ShJrNuEYm4vNVde2sdzUcStquWn",
+  "reports": 2,
+  "last_reported_days": 1140,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447114224999",
+  "reports": 2,
+  "last_reported_days": 703,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB77MKLO85295173692942",
+  "reports": 1,
+  "last_reported_days": 828,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "refund-parcel78.com",
+  "reports": 9,
+  "last_reported_days": 1271,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447885620814",
+  "reports": 4,
+  "last_reported_days": 240,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447461495470",
+  "reports": 1,
+  "last_reported_days": 1233,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB98QYLI36666966740813",
+  "reports": 1,
+  "last_reported_days": 835,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "wallet",
+  "value": "1Ck4dxmQ4q1gfCjBEpyGvum9JgzpRExHLx",
+  "reports": 1,
+  "last_reported_days": 8,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB79ZLSG79466440890623",
+  "reports": 1,
+  "last_reported_days": 1163,
+  "category": "money mule account"
+ },
+ {
+  "type": "wallet",
+  "value": "1qqDg1aaNzt3DDuXjom69PLkANEBBCZQSU",
+  "reports": 4,
+  "last_reported_days": 789,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "email",
+  "value": "wallet.claim134@proton.me",
+  "reports": 1,
+  "last_reported_days": 978,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB98GYBG77911582439632",
+  "reports": 1,
+  "last_reported_days": 1094,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "billing-verify20.co.uk",
+  "reports": 2,
+  "last_reported_days": 278,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447360486736",
+  "reports": 3,
+  "last_reported_days": 317,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447584969952",
+  "reports": 1,
+  "last_reported_days": 1204,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "email",
+  "value": "account.verify255@gmail.com",
+  "reports": 5,
+  "last_reported_days": 202,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "support-service23.net",
+  "reports": 1,
+  "last_reported_days": 1270,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447131605129",
+  "reports": 1,
+  "last_reported_days": 1179,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB44LUEF86589740804694",
+  "reports": 4,
+  "last_reported_days": 1376,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "refund-billing5.online",
+  "reports": 1,
+  "last_reported_days": 1301,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "email",
+  "value": "track.update759@outlook.com",
+  "reports": 3,
+  "last_reported_days": 192,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "alert-verify72.online",
+  "reports": 4,
+  "last_reported_days": 661,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB83NZTB77441757552910",
+  "reports": 1,
+  "last_reported_days": 635,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB69ZGIN62437991438308",
+  "reports": 1,
+  "last_reported_days": 757,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB31UYXU76287089593169",
+  "reports": 2,
+  "last_reported_days": 379,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-parcel34.xyz",
+  "reports": 6,
+  "last_reported_days": 11,
+  "category": "money mule account"
+ },
+ {
+  "type": "email",
+  "value": "login.service157@proton.me",
+  "reports": 1,
+  "last_reported_days": 533,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB29RMBZ47113742286750",
+  "reports": 4,
+  "last_reported_days": 140,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447355646179",
+  "reports": 3,
+  "last_reported_days": 900,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447649055142",
+  "reports": 4,
+  "last_reported_days": 1469,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "account-refund76.co.uk",
+  "reports": 2,
+  "last_reported_days": 505,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "email",
+  "value": "track.alert828@proton.me",
+  "reports": 1,
+  "last_reported_days": 36,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447740726029",
+  "reports": 2,
+  "last_reported_days": 908,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447526916986",
+  "reports": 1,
+  "last_reported_days": 82,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB45WTAV95063345890369",
+  "reports": 1,
+  "last_reported_days": 539,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447331851354",
+  "reports": 4,
+  "last_reported_days": 334,
+  "category": "money mule account"
+ },
+ {
+  "type": "email",
+  "value": "wallet.service298@gmail.com",
+  "reports": 2,
+  "last_reported_days": 614,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447819143736",
+  "reports": 1,
+  "last_reported_days": 368,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447406354595",
+  "reports": 3,
+  "last_reported_days": 1437,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1dNkvX6U8T4eKC2tqp4Mya89GyAugvpLqA",
+  "reports": 1,
+  "last_reported_days": 199,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447268659311",
+  "reports": 1,
+  "last_reported_days": 180,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447990840762",
+  "reports": 1,
+  "last_reported_days": 45,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447575127228",
+  "reports": 2,
+  "last_reported_days": 1240,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447667820806",
+  "reports": 4,
+  "last_reported_days": 461,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447495995508",
+  "reports": 3,
+  "last_reported_days": 783,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447502653476",
+  "reports": 1,
+  "last_reported_days": 251,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447161402579",
+  "reports": 3,
+  "last_reported_days": 254,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447479735114",
+  "reports": 1,
+  "last_reported_days": 230,
+  "category": "money mule account"
+ },
+ {
+  "type": "account",
+  "value": "GB71VRIY87076866759016",
+  "reports": 1,
+  "last_reported_days": 1322,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "refund-account74.co.uk",
+  "reports": 2,
+  "last_reported_days": 975,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB32CHZO59885702715378",
+  "reports": 2,
+  "last_reported_days": 434,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447649301849",
+  "reports": 2,
+  "last_reported_days": 1387,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB59ISQR16666349746483",
+  "reports": 1,
+  "last_reported_days": 1023,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "email",
+  "value": "support.support87@proton.me",
+  "reports": 1,
+  "last_reported_days": 333,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "email",
+  "value": "wallet.wallet237@proton.me",
+  "reports": 2,
+  "last_reported_days": 1244,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447784379516",
+  "reports": 2,
+  "last_reported_days": 810,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447174380353",
+  "reports": 5,
+  "last_reported_days": 929,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447963085302",
+  "reports": 2,
+  "last_reported_days": 792,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447763763623",
+  "reports": 1,
+  "last_reported_days": 614,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB39RMNX52148848122489",
+  "reports": 6,
+  "last_reported_days": 740,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB29LPEL18566878450327",
+  "reports": 1,
+  "last_reported_days": 969,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447584874821",
+  "reports": 1,
+  "last_reported_days": 1100,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB93OZEC25062849967976",
+  "reports": 2,
+  "last_reported_days": 292,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB35KQIK30761121279507",
+  "reports": 4,
+  "last_reported_days": 1139,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447550188684",
+  "reports": 3,
+  "last_reported_days": 738,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "email",
+  "value": "help.alert806@gmail.com",
+  "reports": 1,
+  "last_reported_days": 524,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447713997692",
+  "reports": 2,
+  "last_reported_days": 394,
+  "category": "money mule account"
+ },
+ {
+  "type": "wallet",
+  "value": "1z1z7XLeirQwKCNXfqEJwSFzTzvuaoxG3K",
+  "reports": 2,
+  "last_reported_days": 120,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447256958726",
+  "reports": 2,
+  "last_reported_days": 758,
+  "category": "romance scam"
+ },
+ {
+  "type": "email",
+  "value": "support.claim748@proton.me",
+  "reports": 1,
+  "last_reported_days": 500,
+  "category": "tech support scam"
+ },
+ {
+  "type": "wallet",
+  "value": "18RBXrzS4E7mzZB2yK7BFftGg414vao22r",
+  "reports": 1,
+  "last_reported_days": 778,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "wallet",
+  "value": "1ESgSP5Todt81YBbuLYg9uCof9jCbxxsVZ",
+  "reports": 2,
+  "last_reported_days": 450,
+  "category": "money mule account"
+ },
+ {
+  "type": "email",
+  "value": "help.wallet224@proton.me",
+  "reports": 1,
+  "last_reported_days": 68,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "claim-help2.net",
+  "reports": 2,
+  "last_reported_days": 658,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "domain",
+  "value": "track-track77.info",
+  "reports": 3,
+  "last_reported_days": 1215,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "verify-login47.top",
+  "reports": 1,
+  "last_reported_days": 905,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447138296635",
+  "reports": 1,
+  "last_reported_days": 862,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB22EKCE93311800186305",
+  "reports": 1,
+  "last_reported_days": 1236,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB92YNAH95673591107281",
+  "reports": 1,
+  "last_reported_days": 1309,
+  "category": "money mule account"
+ },
+ {
+  "type": "email",
+  "value": "claim.alert196@proton.me",
+  "reports": 6,
+  "last_reported_days": 287,
+  "category": "tech support scam"
+ },
+ {
+  "type": "account",
+  "value": "GB15UCBW65326306976946",
+  "reports": 1,
+  "last_reported_days": 920,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB75ONDR16751557661638",
+  "reports": 3,
+  "last_reported_days": 275,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "billing-billing71.info",
+  "reports": 1,
+  "last_reported_days": 1391,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447121001061",
+  "reports": 1,
+  "last_reported_days": 553,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447297621632",
+  "reports": 2,
+  "last_reported_days": 889,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB94NTCF44038047070871",
+  "reports": 4,
+  "last_reported_days": 1289,
+  "category": "money mule account"
+ },
+ {
+  "type": "account",
+  "value": "GB92GPQM33210460823301",
+  "reports": 2,
+  "last_reported_days": 966,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447588083058",
+  "reports": 1,
+  "last_reported_days": 225,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB16RWII52777505609524",
+  "reports": 3,
+  "last_reported_days": 210,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB75NIAV85845877192582",
+  "reports": 1,
+  "last_reported_days": 780,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447957677645",
+  "reports": 2,
+  "last_reported_days": 284,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB35JXRM23742112045727",
+  "reports": 2,
+  "last_reported_days": 212,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "secure-update29.info",
+  "reports": 1,
+  "last_reported_days": 209,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447472918394",
+  "reports": 2,
+  "last_reported_days": 403,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "wallet",
+  "value": "1R2gcJNLem7Q1TFLTKPmo1NrXCb92dWkMr",
+  "reports": 1,
+  "last_reported_days": 631,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "wallet",
+  "value": "1nqwK2ybFmuHmnWdGvzyj3NSxYY9oL6zC1",
+  "reports": 2,
+  "last_reported_days": 154,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB23NIAM52738915282813",
+  "reports": 1,
+  "last_reported_days": 1467,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "phone",
+  "value": "+447146549342",
+  "reports": 5,
+  "last_reported_days": 1478,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB58UNBC93709496732511",
+  "reports": 2,
+  "last_reported_days": 635,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "email",
+  "value": "alert.alert259@proton.me",
+  "reports": 4,
+  "last_reported_days": 756,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "support-verify28.net",
+  "reports": 1,
+  "last_reported_days": 1283,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "email",
+  "value": "billing.service975@gmail.com",
+  "reports": 1,
+  "last_reported_days": 279,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB27AKKO71203144186710",
+  "reports": 1,
+  "last_reported_days": 760,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "help-refund50.net",
+  "reports": 1,
+  "last_reported_days": 455,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447514217895",
+  "reports": 1,
+  "last_reported_days": 699,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "login-secure57.co.uk",
+  "reports": 4,
+  "last_reported_days": 320,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447408385266",
+  "reports": 1,
+  "last_reported_days": 846,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "update-verify94.co.uk",
+  "reports": 3,
+  "last_reported_days": 515,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "email",
+  "value": "account.login905@proton.me",
+  "reports": 2,
+  "last_reported_days": 226,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447742227948",
+  "reports": 9,
+  "last_reported_days": 732,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "domain",
+  "value": "billing-parcel11.info",
+  "reports": 2,
+  "last_reported_days": 1172,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447504451704",
+  "reports": 1,
+  "last_reported_days": 919,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "service-track26.co.uk",
+  "reports": 1,
+  "last_reported_days": 59,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447316224053",
+  "reports": 1,
+  "last_reported_days": 1236,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "wallet",
+  "value": "1MHGCuNRPyLLLK6c2ECHkbzMv3WoXwK2m4",
+  "reports": 4,
+  "last_reported_days": 1147,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447905954119",
+  "reports": 1,
+  "last_reported_days": 182,
+  "category": "money mule account"
+ },
+ {
+  "type": "wallet",
+  "value": "1iomJ4vV6vzSm36Hf82fmjoobXrM6kHyRr",
+  "reports": 1,
+  "last_reported_days": 63,
+  "category": "romance scam"
+ },
+ {
+  "type": "email",
+  "value": "refund.alert392@proton.me",
+  "reports": 4,
+  "last_reported_days": 637,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB47HWXX39502694862458",
+  "reports": 2,
+  "last_reported_days": 77,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "billing-refund37.info",
+  "reports": 1,
+  "last_reported_days": 1150,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "domain",
+  "value": "track-update55.net",
+  "reports": 3,
+  "last_reported_days": 1447,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "wallet",
+  "value": "1fy1nVyaqA9vXZAEpJaKGAvw7MZPiG4LbB",
+  "reports": 1,
+  "last_reported_days": 1223,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447561018673",
+  "reports": 1,
+  "last_reported_days": 104,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB33JDKY26737697788813",
+  "reports": 1,
+  "last_reported_days": 1342,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "phone",
+  "value": "+447628871477",
+  "reports": 3,
+  "last_reported_days": 736,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "billing-parcel70.com",
+  "reports": 14,
+  "last_reported_days": 1145,
+  "category": "romance scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447383028110",
+  "reports": 2,
+  "last_reported_days": 1308,
+  "category": "money mule account"
+ },
+ {
+  "type": "account",
+  "value": "GB20XXCX93666896895180",
+  "reports": 5,
+  "last_reported_days": 516,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB75IJRL27104069436363",
+  "reports": 4,
+  "last_reported_days": 624,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "account",
+  "value": "GB15GMSP13487619837558",
+  "reports": 2,
+  "last_reported_days": 153,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB81PRLC77366302020378",
+  "reports": 4,
+  "last_reported_days": 1424,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "parcel-login32.online",
+  "reports": 2,
+  "last_reported_days": 552,
+  "category": "romance scam"
+ },
+ {
+  "type": "domain",
+  "value": "account-login6.info",
+  "reports": 1,
+  "last_reported_days": 553,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB33KEFS66425710638904",
+  "reports": 1,
+  "last_reported_days": 366,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB11SNZU62876754330025",
+  "reports": 6,
+  "last_reported_days": 568,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "wallet",
+  "value": "1X8uuoM4iRzhYzoT26SZ28hk2W5iqsbdvc",
+  "reports": 3,
+  "last_reported_days": 886,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447572230538",
+  "reports": 1,
+  "last_reported_days": 1303,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447294642378",
+  "reports": 4,
+  "last_reported_days": 1125,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447539530929",
+  "reports": 1,
+  "last_reported_days": 630,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "domain",
+  "value": "help-claim69.net",
+  "reports": 1,
+  "last_reported_days": 306,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB27XSTC36308038908699",
+  "reports": 6,
+  "last_reported_days": 247,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "update-track22.net",
+  "reports": 1,
+  "last_reported_days": 1041,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "domain",
+  "value": "verify-claim61.com",
+  "reports": 1,
+  "last_reported_days": 1433,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447989325967",
+  "reports": 3,
+  "last_reported_days": 1423,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "email",
+  "value": "billing.refund486@proton.me",
+  "reports": 1,
+  "last_reported_days": 654,
+  "category": "money mule account"
+ },
+ {
+  "type": "domain",
+  "value": "billing-update43.net",
+  "reports": 4,
+  "last_reported_days": 897,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447995508475",
+  "reports": 1,
+  "last_reported_days": 588,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB23AETJ25708341846410",
+  "reports": 3,
+  "last_reported_days": 431,
+  "category": "gift-card scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447546659868",
+  "reports": 5,
+  "last_reported_days": 1263,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447957659922",
+  "reports": 1,
+  "last_reported_days": 100,
+  "category": "money mule account"
+ },
+ {
+  "type": "phone",
+  "value": "+447172249588",
+  "reports": 1,
+  "last_reported_days": 596,
+  "category": "CEO fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "1LD8C8aRVqa9NKpJ9jR6hDsqNZZe5KAh5W",
+  "reports": 1,
+  "last_reported_days": 1091,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB86SABZ85197717829998",
+  "reports": 1,
+  "last_reported_days": 451,
+  "category": "bank impersonation"
+ },
+ {
+  "type": "account",
+  "value": "GB75XBOW59344598607236",
+  "reports": 1,
+  "last_reported_days": 352,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "domain",
+  "value": "wallet-service48.com",
+  "reports": 8,
+  "last_reported_days": 750,
+  "category": "romance scam"
+ },
+ {
+  "type": "account",
+  "value": "GB14DOVY52988389261567",
+  "reports": 4,
+  "last_reported_days": 168,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "wallet",
+  "value": "1vgmGpR4NMXGTRKhJmFsN39osDba8Thyr6",
+  "reports": 1,
+  "last_reported_days": 356,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "secure-verify5.net",
+  "reports": 8,
+  "last_reported_days": 1143,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB16BITC63291954241330",
+  "reports": 3,
+  "last_reported_days": 1266,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "account",
+  "value": "GB27OAHP33185568055464",
+  "reports": 1,
+  "last_reported_days": 1486,
+  "category": "tech support scam"
+ },
+ {
+  "type": "wallet",
+  "value": "18PZcbDnhkUtPoCFXZkJsLXwYguyVRCYvV",
+  "reports": 1,
+  "last_reported_days": 584,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "domain",
+  "value": "alert-billing14.com",
+  "reports": 5,
+  "last_reported_days": 1144,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "wallet",
+  "value": "16Ckmq69uvj744hrdGk4qtisaUKvhCx4bC",
+  "reports": 1,
+  "last_reported_days": 996,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447780508728",
+  "reports": 11,
+  "last_reported_days": 747,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "email",
+  "value": "secure.refund690@outlook.com",
+  "reports": 2,
+  "last_reported_days": 1257,
+  "category": "tech support scam"
+ },
+ {
+  "type": "domain",
+  "value": "secure-secure48.net",
+  "reports": 2,
+  "last_reported_days": 1135,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447410751273",
+  "reports": 3,
+  "last_reported_days": 986,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB65QHUU58375689628348",
+  "reports": 2,
+  "last_reported_days": 1166,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "domain",
+  "value": "verify-account83.info",
+  "reports": 4,
+  "last_reported_days": 832,
+  "category": "tax impersonation"
+ },
+ {
+  "type": "phone",
+  "value": "+447397901654",
+  "reports": 2,
+  "last_reported_days": 135,
+  "category": "invoice fraud"
+ },
+ {
+  "type": "account",
+  "value": "GB83FATX63411064533097",
+  "reports": 2,
+  "last_reported_days": 443,
+  "category": "crypto investment scam"
+ },
+ {
+  "type": "email",
+  "value": "claim.support836@proton.me",
+  "reports": 3,
+  "last_reported_days": 554,
+  "category": "tech support scam"
+ },
+ {
+  "type": "phone",
+  "value": "+447338314408",
+  "reports": 1,
+  "last_reported_days": 552,
+  "category": "money mule account"
+ },
+ {
+  "type": "account",
+  "value": "GB43DJFE94972928236864",
+  "reports": 2,
+  "last_reported_days": 1478,
+  "category": "parcel phishing"
+ },
+ {
+  "type": "account",
+  "value": "GB13YCFI44500851406945",
+  "reports": 3,
+  "last_reported_days": 1223,
+  "category": "gift-card scam"
+ }
+]

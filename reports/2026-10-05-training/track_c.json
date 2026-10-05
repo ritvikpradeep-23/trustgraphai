@@ -1,0 +1,69 @@
+{
+ "on_top_of_track_b": true,
+ "C": 10.0,
+ "c_table": [
+  {
+   "C": 0.1,
+   "group_cv_roc_auc": 0.985486159776691,
+   "sd": 0.00454820323809919
+  },
+  {
+   "C": 0.3,
+   "group_cv_roc_auc": 0.9884848560007958,
+   "sd": 0.0034211429510933367
+  },
+  {
+   "C": 1.0,
+   "group_cv_roc_auc": 0.9900468595630763,
+   "sd": 0.00294594745809286
+  },
+  {
+   "C": 3.0,
+   "group_cv_roc_auc": 0.9907278550061477,
+   "sd": 0.0027206457386005885
+  },
+  {
+   "C": 10.0,
+   "group_cv_roc_auc": 0.990948443520877,
+   "sd": 0.0025336587414998865
+  }
+ ],
+ "fusion_weight": 0.3,
+ "three_ways": {
+  "(a) random 5-fold CV on corpus (in-distribution)": 1.0,
+  "(a2) group 5-fold CV on corpus (families held out)": 0.8229007633587786,
+  "(b) dev (families held out)": 0.754424778761062,
+  "(c) leave-one-type-out, mean over 29 types": 0.6649762115279357
+ },
+ "loco_mean": {
+  "classifier_alone": 0.6649762115279357,
+  "engine_with_classifier": 0.8278219864426761,
+  "engine_without": 0.7516504568228706
+ },
+ "novelty": {
+  "engine without classifier": 0.902834008097166,
+  "classifier alone (13 types only)": 0.6882591093117408,
+  "engine + classifier (13 types only)": 0.9190283400809717
+ },
+ "flagged_words": [
+  "details",
+  "zzamount",
+  "zzlink",
+  "zznum",
+  "zzphone"
+ ],
+ "beats_baseline": true,
+ "rules": {
+  "1. dev recall at Caution up at least 3 points": false,
+  "2. mean leave-one-type-out recall not lower": true,
+  "3. High-band dev false alarms not higher": true,
+  "4. all tests pass": null,
+  "5. real-SMS false alarms up at most 2 points": false
+ },
+ "verdict": "reject",
+ "bundle": "models/candidate/classifier_v1",
+ "live_bands": {
+  "caution": 0.6989869129257007,
+  "high": 0.9140887684361519
+ }
+}

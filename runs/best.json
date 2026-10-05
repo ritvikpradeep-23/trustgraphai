@@ -1,0 +1,7 @@
+{
+ "name": "fast_r12",
+ "dir": "models\\candidate\\fast_r12",
+ "round": 12,
+ "dev_recall_caution": 0.6666666666666666,
+ "real_sms_false_alarms": 0.03585492227979275
+}

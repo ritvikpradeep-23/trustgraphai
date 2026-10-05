@@ -1,0 +1,36 @@
+id,category,novelty,language,evasion_type,channel,fused,wording,flags,anomaly,text,engine_explanation
+m02735,delivery update,n/a,en,none,sms,0.615,0.6,0.0,0.037,SwiftPost: your delivery is out for delivery. Details: [LINK],Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.24)
+m02739,delivery update,n/a,en,none,instagram,0.615,0.6,0.0,0.037,"Hi, SwiftPost: your package is out for delivery.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.24)
+m02747,delivery update,n/a,en,none,email,0.615,0.6,0.0,0.037,Kestrel Courier: your package is out for delivery. Regards.,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.24)
+m02753,delivery update,n/a,en,none,email,0.615,0.6,0.0,0.037,"Subject: Dear user, ParcelGo: your package
+
+Dear user, ParcelGo: your package is out for delivery. Thanks.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.25)
+m02762,delivery update,n/a,en,none,sms,0.615,0.6,0.0,0.037,"Hello, Kestrel Courier: your package is out for delivery. Regards.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.21)
+m02763,delivery update,n/a,en,emoji_padding,whatsapp,0.615,0.6,0.0,0.037,"Hi, SwiftPost: your package is out for delivery. Details: https://app.example.com/service/jh5hq5",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.27)
+m02766,delivery update,n/a,en,none,sms,0.615,0.6,0.0,0.037,"Hey, SwiftPost: your package was delivered.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.30)
+m02771,delivery update,n/a,en,none,email,0.615,0.6,0.0,0.037,SwiftPost: your package is out for delivery.,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.25)
+m02786,delivery update,n/a,en,none,email,0.615,0.6,0.0,0.037,"Subject: SwiftPost: your package was delivered
+
+SwiftPost: your package was delivered. Sent from my phone",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.29)
+m02803,delivery update,n/a,en,none,email,0.615,0.6,0.0,0.037,"Subject: Dear user, SwiftPost: your package
+
+Dear user, SwiftPost: your package was delivered.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.30)
+m02805,delivery update,n/a,en,none,email,0.615,0.6,0.0,0.037,"Subject: Hey, the courier: your package
+
+Hey, the courier: your package was delivered.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.29)
+m02810,delivery update,n/a,en,emoji_padding,email,0.615,0.6,0.0,0.037,Your package was delivered. Regards.,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.32)
+m02836,delivery update,n/a,en,none,instagram,0.615,0.6,0.0,0.037,Your package was delivered.,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.34)
+m02872,delivery update,n/a,en,casual_lowercase,sms,0.615,0.6,0.0,0.037,your package is out for delivery. details: https://secure.example.org/dchup9 Cheers.,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known parcel or delivery fee script (similarity 0.28)
+m05177,refund confirmation,n/a,en,none,whatsapp,0.615,0.6,0.0,0.037,"Hi, Sorry about the late delivery. We've refunded the delivery charge. Details: https://app.example.com/my/3xvpp5",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.27)
+m05179,refund confirmation,n/a,en,none,instagram,0.615,0.6,0.0,0.037,"Dear user, Sorry about the late delivery. We've refunded the delivery charge. Details: [LINK] Cheers.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.29)
+m05180,refund confirmation,n/a,en,none,whatsapp,0.615,0.6,0.0,0.037,Sorry about the late delivery. We've refunded the delivery charge. Regards.,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.29)
+m05183,refund confirmation,n/a,en,none,messenger,0.615,0.6,0.0,0.037,"Hello, Sorry about the late delivery. We've refunded the delivery charge. Details: https://app.example.com/pay/ysx78y Sent from my phone",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.26)
+m05185,refund confirmation,n/a,en,casual_lowercase,email,0.615,0.6,0.0,0.037,"Subject: sorry about the late delivery
+
+sorry about the late delivery. we've refunded the delivery charge. Cheers.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.27)
+m05186,refund confirmation,n/a,en,none,instagram,0.615,0.6,0.0,0.037,"Dear user, Sorry about the late delivery. We've refunded the delivery charge.",Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.29)
+m05187,refund confirmation,n/a,en,none,whatsapp,0.615,0.6,0.0,0.037,Sorry about the late delivery. We've refunded the delivery charge.,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.30)
+m05184,refund confirmation,n/a,en,none,whatsapp,0.614,0.6,0.0,0.037,Sorry about the late delivery. We've refunded the delivery charge. Details: https://app.example.com/login/84skwn Sent from my phone,Combined score 0.61; driven by 'similarity' (score 0.60): Message: reads like a known prize or lottery fee script (similarity 0.26)
+m02870,delivery update,n/a,en,none,whatsapp,0.561,0.544,0.0,0.037,Your package is out for delivery. Track it in the app.,Combined score 0.56; driven by 'similarity' (score 0.54): Message: reads like a known parcel or delivery fee script (similarity 0.23)
+m02845,delivery update,n/a,en,none,whatsapp,0.54,0.523,0.0,0.037,"Hi, Your package is out for delivery. Track it in the app.",Combined score 0.54; driven by 'similarity' (score 0.52): Message: reads like a known parcel or delivery fee script (similarity 0.22)
+m03868,government notice,n/a,en,casual_lowercase,instagram,0.539,0.522,0.0,0.037,"Dear user, transport department: your renewal was approved. details: [link] Regards.",Combined score 0.54; driven by 'similarity' (score 0.52): Message: reads like a known tax or government threat script (similarity 0.18)

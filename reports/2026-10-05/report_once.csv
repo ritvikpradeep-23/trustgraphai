@@ -1,0 +1,59 @@
+variant,category,reported_examples,n_batch_b,recall_before,recall_after,change_points
+scam_reports_only,FASTag or toll balance,3,54,0.46296296296296297,0.2962962962962963,-16.7
+scam_reports_only,KYC or ID update expiry,3,59,0.576271186440678,0.06779661016949153,-50.8
+scam_reports_only,QR code scam,3,53,0.4339622641509434,0.0,-43.4
+scam_reports_only,UPI collect or accidental refund,3,59,0.22033898305084745,0.01694915254237288,-20.3
+scam_reports_only,bank safe-account scam,1,75,1.0,0.8666666666666667,-13.3
+scam_reports_only,blackmail or sextortion,0,63,1.0,0.8571428571428571,-14.3
+scam_reports_only,crypto airdrop or wallet drainer,3,48,0.7708333333333334,0.0,-77.1
+scam_reports_only,deepfake CEO video call,3,43,0.7441860465116279,0.5348837209302325,-20.9
+scam_reports_only,digital arrest,3,50,0.86,0.64,-22.0
+scam_reports_only,e-challan or traffic fine,3,50,0.7,0.42,-28.0
+scam_reports_only,electricity disconnection,3,54,0.35185185185185186,0.2222222222222222,-13.0
+scam_reports_only,fake CAPTCHA or paste-command,3,40,0.525,0.0,-52.5
+scam_reports_only,fake customer-care helpline,3,53,0.5849056603773585,0.09433962264150944,-49.1
+scam_reports_only,family emergency or new-number scam,3,64,0.875,0.5,-37.5
+scam_reports_only,gift-card request from a boss or colleague,2,54,0.9814814814814815,0.6296296296296297,-35.2
+scam_reports_only,instant-loan app harassment,3,60,0.7666666666666667,0.36666666666666664,-40.0
+scam_reports_only,investment or crypto scam,3,48,0.9375,0.5,-43.8
+scam_reports_only,invoice or bank-details change,3,49,0.9183673469387755,0.2857142857142857,-63.3
+scam_reports_only,job or advance-fee scam,3,45,1.0,0.5555555555555556,-44.4
+scam_reports_only,one-time code or password request,2,63,0.8888888888888888,0.7142857142857143,-17.5
+scam_reports_only,parcel or delivery fee,3,49,0.9591836734693877,0.2857142857142857,-67.3
+scam_reports_only,prize or lottery fee,1,63,0.9841269841269841,0.6666666666666666,-31.7
+scam_reports_only,rental or booking deposit,3,53,0.49056603773584906,0.09433962264150944,-39.6
+scam_reports_only,romance scam money request,3,55,0.8909090909090909,0.09090909090909091,-80.0
+scam_reports_only,social-media verify or copyright strike,3,54,0.5740740740740741,0.3148148148148148,-25.9
+scam_reports_only,student scholarship or exam scam,3,58,0.7758620689655172,0.46551724137931033,-31.0
+scam_reports_only,task or like-and-earn scam,3,60,0.45,0.11666666666666667,-33.3
+scam_reports_only,tax or government threat,2,44,0.9545454545454546,0.6363636363636364,-31.8
+scam_reports_only,tech support remote-access scam,1,62,1.0,0.3709677419354839,-62.9
+plus_legit,FASTag or toll balance,3,54,0.46296296296296297,0.9074074074074074,44.4
+plus_legit,KYC or ID update expiry,3,59,0.576271186440678,0.6949152542372882,11.9
+plus_legit,QR code scam,3,53,0.4339622641509434,0.7547169811320755,32.1
+plus_legit,UPI collect or accidental refund,3,59,0.22033898305084745,0.8983050847457628,67.8
+plus_legit,bank safe-account scam,1,75,1.0,1.0,0.0
+plus_legit,blackmail or sextortion,0,63,1.0,1.0,0.0
+plus_legit,crypto airdrop or wallet drainer,3,48,0.7708333333333334,0.7708333333333334,0.0
+plus_legit,deepfake CEO video call,3,43,0.7441860465116279,0.9069767441860465,16.3
+plus_legit,digital arrest,3,50,0.86,0.96,10.0
+plus_legit,e-challan or traffic fine,3,50,0.7,0.98,28.0
+plus_legit,electricity disconnection,3,54,0.35185185185185186,0.9444444444444444,59.3
+plus_legit,fake CAPTCHA or paste-command,3,40,0.525,0.65,12.5
+plus_legit,fake customer-care helpline,3,53,0.5849056603773585,0.49056603773584906,-9.4
+plus_legit,family emergency or new-number scam,3,64,0.875,0.890625,1.6
+plus_legit,gift-card request from a boss or colleague,2,54,0.9814814814814815,1.0,1.9
+plus_legit,instant-loan app harassment,3,60,0.7666666666666667,0.9333333333333333,16.7
+plus_legit,investment or crypto scam,3,48,0.9375,0.8541666666666666,-8.3
+plus_legit,invoice or bank-details change,3,49,0.9183673469387755,1.0,8.2
+plus_legit,job or advance-fee scam,3,45,1.0,1.0,0.0
+plus_legit,one-time code or password request,2,63,0.8888888888888888,0.8412698412698413,-4.8
+plus_legit,parcel or delivery fee,3,49,0.9591836734693877,0.8163265306122449,-14.3
+plus_legit,prize or lottery fee,1,63,0.9841269841269841,0.9365079365079365,-4.8
+plus_legit,rental or booking deposit,3,53,0.49056603773584906,0.6226415094339622,13.2
+plus_legit,romance scam money request,3,55,0.8909090909090909,0.9636363636363636,7.3
+plus_legit,social-media verify or copyright strike,3,54,0.5740740740740741,0.9444444444444444,37.0
+plus_legit,student scholarship or exam scam,3,58,0.7758620689655172,0.8620689655172413,8.6
+plus_legit,task or like-and-earn scam,3,60,0.45,0.8833333333333333,43.3
+plus_legit,tax or government threat,2,44,0.9545454545454546,0.9545454545454546,0.0
+plus_legit,tech support remote-access scam,1,62,1.0,0.9354838709677419,-6.5

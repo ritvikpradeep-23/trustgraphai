@@ -1,0 +1,58 @@
+error,field,value,errors,of,rate
+missed scam,language,en,213,771,0.276
+missed scam,evasion_type,none,174,613,0.284
+missed scam,channel,whatsapp,96,343,0.28
+missed scam,channel,sms,81,251,0.323
+missed scam,channel,email,38,139,0.273
+missed scam,language,manglish,33,58,0.569
+missed scam,channel,instagram,30,89,0.337
+missed scam,category,QR code scam,27,39,0.692
+missed scam,evasion_type,emoji_padding,24,73,0.329
+missed scam,category,UPI collect or accidental refund,22,24,0.917
+missed scam,category,e-challan or traffic fine,21,40,0.525
+missed scam,category,fake CAPTCHA or paste-command,21,34,0.618
+missed scam,evasion_type,leetspeak,20,56,0.357
+missed scam,channel,messenger,19,72,0.264
+missed scam,language,hinglish,18,65,0.277
+missed scam,evasion_type,split_phrasing,18,56,0.321
+missed scam,category,digital arrest,16,39,0.41
+missed scam,category,FASTag or toll balance,16,38,0.421
+missed scam,category,KYC or ID update expiry,16,40,0.4
+missed scam,category,instant-loan app harassment,15,40,0.375
+missed scam,evasion_type,obfuscated_link,14,44,0.318
+missed scam,evasion_type,spacing,14,52,0.269
+missed scam,category,rental or booking deposit,13,25,0.52
+missed scam,category,fake customer-care helpline,13,24,0.542
+missed scam,category,crypto airdrop or wallet drainer,12,35,0.343
+missed scam,category,student scholarship or exam scam,12,40,0.3
+missed scam,category,electricity disconnection,11,22,0.5
+missed scam,category,social-media verify or copyright strike,9,24,0.375
+missed scam,category,one-time code or password request,8,39,0.205
+missed scam,category,task or like-and-earn scam,8,25,0.32
+missed scam,category,tax or government threat,6,34,0.176
+missed scam,category,invoice or bank-details change,5,24,0.208
+missed scam,category,romance scam money request,4,23,0.174
+missed scam,category,deepfake CEO video call,4,18,0.222
+missed scam,category,investment or crypto scam,3,25,0.12
+missed scam,category,tech support remote-access scam,1,23,0.043
+missed scam,category,family emergency or new-number scam,1,44,0.023
+false alarm,evasion_type,none,119,1173,0.101
+false alarm,language,en,112,1275,0.088
+false alarm,category,delivery update,50,209,0.239
+false alarm,channel,whatsapp,47,488,0.096
+false alarm,channel,sms,37,424,0.087
+false alarm,channel,email,28,213,0.131
+false alarm,category,refund confirmation,26,67,0.388
+false alarm,channel,messenger,21,142,0.148
+false alarm,language,hinglish,20,61,0.328
+false alarm,category,bank transaction alert,18,69,0.261
+false alarm,evasion_type,emoji_padding,16,109,0.147
+false alarm,language,manglish,15,64,0.234
+false alarm,category,real promotion,15,56,0.268
+false alarm,category,OTP message with do-not-share,14,216,0.065
+false alarm,channel,instagram,14,133,0.105
+false alarm,category,group-admin notice,14,60,0.233
+false alarm,evasion_type,casual_lowercase,12,118,0.102
+false alarm,category,government notice,8,206,0.039
+false alarm,category,appointment reminder,1,208,0.005
+false alarm,category,college circular or exam-fee deadline,1,65,0.015
