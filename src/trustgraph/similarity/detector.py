@@ -49,7 +49,13 @@ RED_FLAGS = [
     (0.7, "asks for a one-time code, PIN or password",
      r"\b(read|send|tell|give|forward|share|confirm|reply with)\b.{0,40}"
      r"\b(otp|passcode|pin|password|(verification|security|one[- ]time|login|access|whatsapp|\d[- ]digit|six[- ]digit|sms) code)s?\b"
-     r"|\b(read|send|tell|give|forward|share|confirm)\b.{0,40}\bcode\b.{0,40}\b(sent|texted|arrived|received)\b"),
+     r"|\b(read|send|tell|give|forward|share|confirm)\b.{0,40}\bcode\b.{0,40}\b(sent|texted|arrived|received)\b"
+     # "download our support app and share the code": asking for the code itself.
+     # Not "share your referral code" (another word sits between) or "share the code
+     # with your friends", and not an offer: "I'll send the code later".
+     r"|(?<!i'll )(?<!i will )(?<!we'll )(?<!we will )(?<!i can )"
+     r"\b(read|send|tell|give|forward|share)\b (me |us )?(the|that|this|your) code\b"
+     r"(?!\s+(with|to) (your |all your )?(friends|family|colleagues|classmates|team))"),
     (0.7, "asks for gift-card codes",
      r"\b(buy|get|grab|purchase|pick up)\b.{0,40}\b(gift|steam|itunes|google play|apple|amazon) ?cards?\b"
      r"|\b(gift|steam|itunes|google play|apple|amazon) ?cards?\b.{0,80}\b(codes?|card numbers)\b"
@@ -86,7 +92,7 @@ RED_FLAGS = [
      r"|\bbefore (you|your) (start|first (day|shift)|begin)\b.{0,60}\b(fee|charge|deposit)\b"),
     (0.4, "asks for an upfront fee (to release money, a prize or a job)",
      # Everyday fees (training, registration, joining) are left out: clubs and schools charge them.
-     r"\b(processing|release|clearance|administration|admin|withdrawal|handling|redelivery|background[- ]check|"
+     r"\b(processing|release|clearance|administration|admin|withdrawal|handling|redelivery|storage|background[- ]check|"
      r"activation|onboarding|unlock(ing)?) (fee|tax|charge|deposit)s?\b"
      r"|\bpay\b.{0,40}\b(upfront|up front|in advance|before (you|your) (start|first day))\b"),
 ]

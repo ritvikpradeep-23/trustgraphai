@@ -1,0 +1,79 @@
+{
+ "source": "UCI SMS Spam Collection (GitHub mirror of the public dataset)",
+ "thresholds": {
+  "caution": 0.2287150937277748,
+  "high": 0.5616549976549451
+ },
+ "legit": {
+  "n": 4827,
+  "caution": {
+   "value": 0.09550445411228506,
+   "lo": 0.08721773358193495,
+   "hi": 0.10421068986948415,
+   "n": 4827
+  },
+  "high": {
+   "value": 0.013258752848560183,
+   "lo": 0.010358400662937643,
+   "hi": 0.016573441060700227,
+   "n": 4827
+  }
+ },
+ "spam": {
+  "n": 747,
+  "caution": {
+   "value": 0.25301204819277107,
+   "lo": 0.22356091030789826,
+   "hi": 0.2838018741633199,
+   "n": 747
+  },
+  "high": {
+   "value": 0.07764390896921017,
+   "lo": 0.060240963855421686,
+   "hi": 0.09772423025435073,
+   "n": 747
+  }
+ },
+ "top_false_alarms": [
+  {
+   "score": 0.84,
+   "text": "Send me your id and password"
+  },
+  {
+   "score": 0.645,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.645,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.645,
+   "text": "I wnt to buy a BMW car urgently..its vry urgent.but hv a shortage of  &lt;#&gt; Lacs.there is no source to arng dis amt. &lt;#&gt; lacs..thats my prob"
+  },
+  {
+   "score": 0.619,
+   "text": "Geeeee ... Your internet is really bad today, eh ?"
+  },
+  {
+   "score": 0.615,
+   "text": "You've always been the brainy one."
+  },
+  {
+   "score": 0.615,
+   "text": "Yeah but which is worse for i"
+  },
+  {
+   "score": 0.615,
+   "text": "X course it 2yrs. Just so her messages on messenger lik you r sending me"
+  },
+  {
+   "score": 0.615,
+   "text": "Who were those people ? Were you in a tour ? I thought you were doing that sofa thing you sent me ? Your curious sugar"
+  },
+  {
+   "score": 0.615,
+   "text": "Which channel:-):-):):-)."
+  }
+ ]
+}

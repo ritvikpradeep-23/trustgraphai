@@ -24,12 +24,22 @@ def _score(text):
      "threatens to share private videos or photos"),
     ("You've got the remote role! Please transfer the 120 onboarding fee so we can set up your laptop.",
      "asks you to pay to get or start a job"),
+    ("Hello from the returns desk. Install our help app, then read me the code so I can finish your refund.",
+     "asks for a one-time code, PIN or password"),
 ])
+
 def test_scam_asks_in_new_wording_score_high(text, reason):
     signal = _score(text)
     assert signal.signal_name == "similarity"
     assert signal.score >= 0.7
     assert reason in signal.explanation
+
+@pytest.mark.parametrize("text, reason", [
+    ("Final notice: your parcel will be returned unless the storage fee is paid.", "asks for an upfront fee"),
+    ("Support here. Open the app and share the code with us to continue.", "asks for a one-time code, PIN or password"),
+])
+def test_closed_gaps_raise_their_red_flag(text, reason):
+    assert reason in _score(text).explanation
 
 
 @pytest.mark.parametrize("text", [
@@ -49,6 +59,10 @@ def test_scam_asks_in_new_wording_score_high(text, reason):
     "319204 aapka login OTP hai. Ise kisi se share na karein.",
     "Apna OTP kisi ko bhi mat share karo, bank wale kabhi nahi poochte.",
     "602118 aanu ningalude OTP. Ithu aarumaayi share cheyyaruthu.",
+    # Code-sharing that isn't an ask for a login code
+    "Share your referral code with friends and you both get 10% off.",
+    "I'll send the code for the side gate later, share the code with your family too.",
+    "ok see you at 7",
 ])
 def test_legit_messages_with_scam_vocabulary_score_low(text):
     assert _score(text).score < 0.5
