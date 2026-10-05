@@ -20,3 +20,8 @@ data/detection/
 logs/
 models/efficientnet_head.pt
 models/text_detector/
+
+# New-scam learning: reported and inbox messages are private, and so are versions built from them
+data/learning/
+models/candidate/learn_*/
+runs/learning_best.json

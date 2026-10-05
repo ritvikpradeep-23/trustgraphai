@@ -22,7 +22,7 @@ for _p in (ROOT, ROOT / "src"):
         sys.path.insert(0, str(_p))
 
 from app.ai_text_engine import load_text_detector  # noqa: E402
-from app.api import accuracy, ai_text, health, scam_score, text, video  # noqa: E402
+from app.api import accuracy, ai_text, feedback, health, scam_score, text, video  # noqa: E402
 from app.config import Settings, get_settings  # noqa: E402
 from app.deepfake_engine.face_detector import FaceDetector  # noqa: E402
 from app.deepfake_engine.model import load_deepfake_model  # noqa: E402
@@ -77,6 +77,7 @@ def create_app(settings: Settings | None = None, embedder=None) -> FastAPI:
     app.include_router(ai_text.router)
     app.include_router(video.router)
     app.include_router(accuracy.router)
+    app.include_router(feedback.router)
     return app
 
 

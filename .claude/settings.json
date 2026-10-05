@@ -34,7 +34,15 @@
       "PowerShell(python install_schedule.py *)",
       "PowerShell(python -m pytest *)",
       "PowerShell(pip install -r requirements.txt)",
-      "PowerShell(python -m pip install -r requirements.txt)"
+      "PowerShell(python -m pip install -r requirements.txt)",
+      "Bash(python learn_cycle.py)",
+      "Bash(python learn_cycle.py *)",
+      "Bash(python add_examples.py *)",
+      "Bash(python run_server.py)",
+      "PowerShell(python learn_cycle.py)",
+      "PowerShell(python learn_cycle.py *)",
+      "PowerShell(python add_examples.py *)",
+      "PowerShell(python run_server.py)"
     ],
     "deny": [
       "Read(./.env)",

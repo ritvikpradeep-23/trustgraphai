@@ -206,6 +206,10 @@ added to `/api/score` replies as `ai_written` once the text model is trained), d
 routine's latest results (`GET /api/accuracy`). All endpoints are listed at `/docs`. The older
 `python run_website.py` (scam check + page only) still works; don't run both, they use the same port.
 
+**Learning new scams:** `learn_cycle.py` runs every hour. It learns from reported scams (`POST /api/feedback`,
+`add_examples.py`) and records how many it caught *before* learning them. Every new version must pass the safety
+gate and goes live only when you promote it. See [`docs/NEW_SCAM_LEARNING.md`](docs/NEW_SCAM_LEARNING.md).
+
 Settings for the API (thresholds, video limits, `DEEPFAKE_MODE` = mine / efficientnet / both, CORS origins) are listed in
 `.env.example`. The deepfake endpoint answers `503 model_not_configured` until a trained model is installed
 (`models/README.md`); it never makes up a score.
