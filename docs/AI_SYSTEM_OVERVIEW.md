@@ -1,0 +1,169 @@
+# TrustGraph AI: what is being built
+
+TrustGraph checks what people receive in chats for three things:
+
+1. **Scam messages**: texts that try to trick you (fake bank alerts, OTP requests, fake jobs…).
+2. **Deepfake videos**: videos where a face has been swapped or generated.
+3. **AI-written text**: messages written by an AI model instead of a person.
+
+Everything runs **on your own laptop**. No accounts, no API keys, no cloud service; message text never leaves the
+computer.
+
+> Status: the scam check is built and connected to the browser extension. The deepfake video and AI-text
+> detectors are built and tested, but **not trained on real data yet** and **not connected to the extension yet**.
+
+---
+
+## 1. The big picture
+
+```
+ Browser extension (WhatsApp / Gmail / … pages)
+        │  HTTP + JSON:  POST /api/score  {message_text, channel}
+        ▼
+ Local service A: python run_website.py      →  http://127.0.0.1:8000
+        └─ Scam engine (Python modules in src/trustgraph)
+
+ Local service B: python -m uvicorn app.main:app --port 8001   (FastAPI)
+        ├─ /api/text/report, /api/text/analyze   similar-report search (sentence embeddings)
+        └─ /api/video/analyze                    deepfake check (EfficientNet-B0 + your head)
+
+ Stand-alone Python (no server):
+        ├─ video_detector.py / train_video.py    deepfake video detector
+        ├─ text_detector.py  / train_text.py     AI-written text detector
+        └─ run_cycle.py   ← started by Task Scheduler every 2 hours (accuracy routine)
+```
+
+**How the pieces talk:** the extension calls a **local service** through an **HTTP API** (JSON in, JSON out). The
+service is written in Python and loads the AI as **Python modules**. If the service doesn't answer within 3 seconds,
+the extension uses its own built-in rules instead.
+
+---
+
+## 2. The three detectors
+
+| | Scam check | Deepfake video | AI-written text |
+|---|---|---|---|
+| **Looks at** | Message text + metadata (sender history, urgency words) | Faces in 16 frames spread over the video | Text only |
+| **Model** | 4 signals combined: similarity to scam scripts + red-flag patterns, anomaly model (IsolationForest), continuity, precedent | Google **EfficientNet-B0** (pretrained, frozen) + **your layer** on top (1280 features → 1 score) | **distilroberta-base**, fine-tuned for human vs AI |
+| **Output** | Low / Caution / High + score + explanation | Fake score 0–1 per video (average of frame scores) | AI score 0–1 per text |
+| **Trained on** | Synthetic scam/legit messages (labelled as synthetic) | Not yet. Plan: Celeb-DF v2 | Not yet. Plan: HC3 |
+| **Code** | `src/trustgraph/` | `video_detector.py`, `train_video.py`, `app/deepfake_engine/` | `text_detector.py`, `train_text.py` |
+| **Reachable over HTTP** | ✅ `POST /api/score` (port 8000) | ⚠️ `POST /api/video/analyze` (port 8001), after training | ❌ not yet |
+| **Used by the extension** | ✅ yes | ❌ no | ❌ no |
+
+### Your own model's role (deepfake video)
+
+- Your model is the **head**: one small trained layer (`app/deepfake_engine/combined_model.py`).
+- **EfficientNet-B0** is the **backbone**. It turns each face into 1,280 numbers, and the head turns those into a fake
+  score. This is **transfer learning**.
+- **Stage 1** trains only the head, with EfficientNet frozen. **Stage 2** (optional) also adapts EfficientNet's last
+  blocks, at a 100× lower learning rate.
+- The API can run `DEEPFAKE_MODE=mine`, `efficientnet` or `both`. `both` averages the two image models.
+
+---
+
+## 3. Separate, not multimodal
+
+Each modality is analysed **on its own**. Nothing combines video and text into one judgement.
+
+- **Video ignores audio:** cloned voices are not checked. It also ignores spoken words, and judges each frame
+  separately (not motion over time).
+- **The scam check** combines 4 signals, but all of them are about the same message.
+- **The routine** reports video and text as two separate scores.
+
+**Possible next step: late fusion.** Run each detector separately, then combine their scores (for example a message
+with a video attached). A truly joint model would need a dataset where video, audio and text are labelled together.
+
+---
+
+## 4. Data plan
+
+**Rules for all data:**
+- Only public datasets.
+- Nothing over 1 GB is downloaded without showing the name, source and size first.
+
+**Video**
+- **Celeb-DF v2 (recommended):** you fill in the request form yourself; about 10 GB.
+- FaceForensics++ also needs a request form.
+- DFDC (Kaggle) is about 470 GB in full; a 400-video sample exists.
+
+**Text**
+- **HC3** (`Hello-SimpleAI/HC3`, CC-BY-SA-4.0): human and ChatGPT answers to the same questions. Under 1 GB.
+
+**Split:** 60% train, 10% validation, 30% test pool.
+- Data is split **by group**: a question with all its answers, or a person's videos, stays on one side. So the test
+  pool never contains near-copies of training data.
+- The test pool is cut into **numbered batches** before any training, each with a SHA-256 hash.
+- Training only reads train and validation.
+
+---
+
+## 5. The accuracy routine
+
+`run_cycle.py` is a plain Python script. It never trains, never tunes and never calls Claude.
+
+Every `INTERVAL_HOURS` (default 2, set in `detection_config.json`):
+
+1. Takes the **next unused test batch** for video and for text.
+2. Scores it with the current models.
+3. Computes accuracy, precision, recall, F1, ROC-AUC and the confusion matrix.
+4. Marks the batch as **used forever**. When batches run out it warns and stops; old batches are never reused.
+5. Prints `Video: 91.3% accuracy, F1 0.90 (n=50). Text: 87.5% accuracy, F1 0.86 (n=200).`
+6. Appends to `reports/history.csv`, rewrites `reports/latest.md`, and logs to `logs/`.
+
+**Safety rules:**
+- A lock file stops two runs overlapping.
+- Missed runs (laptop off) are skipped, not piled up.
+- Test batches are hash-checked before use.
+
+**Commands:**
+- `python install_schedule.py` installs the schedule (Windows Task Scheduler / cron).
+- `--show` checks it exists, and `--remove` deletes it.
+- `python show_report.py` prints the latest run and the trend.
+
+---
+
+## 6. What the numbers mean, and what they don't
+
+- **They do mean:** how the model did on one batch of the prepared dataset that it never trained on, scored once.
+- **Small batches wobble.** In a batch of 50 videos, one video is 2 percentage points. Read the trend, not one run.
+- **Runs with the same model only show batch-to-batch variation.** The routine is most useful after retraining:
+  did the new model do better on data it has never seen?
+- **They are not real-world accuracy:**
+  - Public deepfake datasets use older methods.
+  - HC3 is 2022 ChatGPT answering questions, not chat messages or newer AI models.
+- **The tiny end-to-end test numbers mean nothing.** It used untrained models and generated data, and gave 50%: a
+  coin toss.
+
+---
+
+## 7. Run it
+
+```
+python -m pip install -r requirements.txt
+python run_website.py                         # scam check + demo page, port 8000 (extension uses this)
+python -m uvicorn app.main:app --port 8001    # backend API with the video endpoint
+python check_gpu.py                           # is the GPU usable?
+python prepare_data.py text --hc3             # then: video --folder <Celeb-DF folder>
+python train_video.py ; python train_text.py
+python run_cycle.py ; python show_report.py
+python install_schedule.py                    # every 2 hours
+python -m pytest -q                           # all tests
+```
+
+Details: `docs/DETECTION_ROUTINE.md`. Model setup: `models/README.md`.
+
+---
+
+## 8. What's next
+
+1. **One local service:**
+   - Move `/api/score` into the FastAPI app, so everything runs at `127.0.0.1:8000`.
+   - Add `POST /api/text/ai-check`, and an `ai_written` field in `/api/score` replies (older extensions ignore it).
+   - Make `/api/video/analyze` use `video_detector.py`, so the API scores videos exactly the way the routine measures
+     them.
+   - Add `GET /api/accuracy` with the latest routine results.
+2. **Extension:** a "check a video" button and an "AI-written?" line on verdicts. These are interface changes, so they
+   need your decision.
+3. **Train on real data:** HC3 and Celeb-DF, then let the routine measure.
+4. **Later:** late fusion across modalities, and checking audio for cloned voices.
