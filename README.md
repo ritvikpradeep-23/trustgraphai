@@ -2,10 +2,10 @@
   <img src="https://github.com/Runa8147/Hackathena_Readme_Template/blob/d0add823684f0ac28b76a99636c729f80b0ca8ff/hackathena_banner.png" alt="Hackathena '26 2.0" width="100%">
 </p>
 
-<h1 align="center">[PROJECT NAME]</h1>
+<h1 align="center">TrustGraph</h1>
 
 <p align="center">
-  <strong>[One-line description of your solution]</strong>
+  <strong>A privacy-first browser extension that checks any message for scam signals, right where you read it. Only the verdict comes home.</strong>
 </p>
 
 <p align="center">
@@ -35,37 +35,47 @@ The rapid advancement of generative AI has made it increasingly difficult to dis
 
 Deepfakes, cloned voices, synthetic images, fabricated documents, and other AI-assisted techniques can enable **impersonation, misinformation, identity theft, financial fraud, and social engineering attacks**.
 
-**[Describe the specific fraud/problem your project addresses in 2–3 concise sentences.]**
+**Scammers now write fluent, personalised messages at scale: fake bank KYC alerts, "Hi Mum, this is my new number", OTP and UPI-PIN requests, task-job and investment offers, "digital arrest" threats. They arrive in the chat and email apps people already use, in English and in regional languages, and people have no quick, private way to check a message before they reply, pay or share a code.**
 
 ---
 
 ## 💡 Solution
 
-### [PROJECT NAME]
+### TrustGraph
 
-**[Project Name]** is a **[web/mobile/desktop/API]** solution designed to detect and/or prevent **[specific type of AI-based fraud]**.
+**TrustGraph** is a **Chrome extension (Manifest V3)** that detects and explains **AI-assisted and social-engineering scam messages**.
 
-The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification mechanism]**, and produces **[detection result/risk score/authenticity assessment/alert]** to help users identify potentially fraudulent content.
+The user hovers a message on Gmail, WhatsApp Web, LinkedIn, Telegram, Discord, Slack, Messenger or Instagram (or selects text anywhere) and clicks a shield. A **scoring engine** analyses the text in memory and returns a **risk verdict (Low / Caution / High), a 0–100 score, a plain-language explanation and the signals behind it**. Only that verdict and its metadata are ever stored or synced. The message text never is.
 
 ### Key Features
 
-* 🔴 **[Feature 1]** — [Short description]
-* ⚪ **[Feature 2]** — [Short description]
-* ⚫ **[Feature 3]** — [Short description]
-* 🔴 **[Feature 4]** — [Short description]
-* ⚪ **[Feature 5]** — [Short description]
+* 🔴 **One-click checks where you read** — a shield on each message, a whole-chat scan in a side panel that pushes the page aside instead of covering it, and right-click "Check with TrustGraph" on any site.
+* ⚪ **Explainable verdicts** — a score ring, a one-paragraph explanation, and eight signal types (urgency, money/gift-card/crypto requests, OTP/credential requests, lookalike links, sender mismatch, impersonation, continuity break, known-pattern similarity), each with the exact words that matched.
+* ⚫ **Multilingual rules** — English, Malayalam, Manglish, Hinglish and Hindi, with leetspeak and spacing tricks normalised and negation understood ("we will never ask for your OTP").
+* 🔴 **Conversation awareness** — scores runs of messages from one sender together and flags a sender whose ordinary messages suddenly turn into requests (a hacked or impersonated account).
+* ⚪ **Privacy by construction** — the stored record has no text field (a unit test fails if one is added); history export / delete anytime; no scam-report database; works offline.
 
 ---
 
 ## 🔄 How It Works
 
 ```text
-      provide architectural diagram here
+  Web page (Gmail, WhatsApp, ...)          Extension service worker               Web app (optional)
+ ┌───────────────────────────────┐   typed   ┌──────────────────────────────┐    ┌──────────────────────┐
+ │ 1. EXTENSION DETECTS          │ messages  │ 2. ENGINE THINKS             │    │ 3. SHOWS & MANAGES   │
+ │ site adapter finds messages   │──────────▶│ LocalEngine: on-device rules │    │ history, export,     │
+ │ shield / chat scan / select   │  (text,   │ RemoteEngine: scoring server │    │ workspace view       │
+ │ side panel (closed shadow DOM)│  memory   │   + local rules, higher wins │    │                      │
+ │ text kept in memory only      │◀──────────│ -> Verdict {riskLevel, score,│    │                      │
+ └───────────────────────────────┘  Verdict  │    explanation, signals}     │    │                      │
+                                             │ -> Result (NO TEXT) ─────────┼───▶│ POST /api/results    │
+                                             │    chrome.storage history    │    │ (verdict + metadata) │
+                                             └──────────────────────────────┘    └──────────────────────┘
 ```
 
-![System Architecture](ARCHITECTURE_IMAGE_URL)
+![System Architecture](docs/screenshots/panel-chat-scan.png)
 
-*System architecture and processing workflow.*
+*Whole-chat scan: verdict, signals with evidence, continuity and similarity.*
 
 ---
 
@@ -75,19 +85,18 @@ The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification 
 
 | Layer          | Technologies                             |
 | -------------- | ---------------------------------------- |
-| **Frontend**   | [React / Next.js / HTML / CSS / etc.]    |
-| **Backend**    | [FastAPI / Flask / Node.js / etc.]       |
-| **AI / ML**    | [Model / Framework / API]                |
-| **Database**   | [PostgreSQL / MongoDB / Firebase / etc.] |
-| **Processing** | [OpenCV / NumPy / etc.]                  |
-| **Deployment** | [Vercel / Render / Railway / etc.]       |
+| **Frontend**   | Chrome extension, Manifest V3, plain JavaScript (no build step), Shadow DOM, Lucide icons, bundled Space Grotesk / DM Sans / JetBrains Mono |
+| **Backend**    | Optional TrustGraph scoring server (`POST /api/score`); Python standard-library mock in `trustgraph_extension/scripts/mock_server.py` |
+| **AI / ML**    | Explainable weighted rule engine (`score = 1 − ∏(1 − w)` plus combination rules); pluggable `RemoteEngine` for a model server |
+| **Database**   | `chrome.storage.local` (verdict history only); web-app sync through an `ApiClient` with a built-in mock |
+| **Processing** | Unicode/leetspeak normalisation, URL heuristics (lookalike brands, punycode, shorteners, raw IPs, risky TLDs) |
+| **Deployment** | Chrome Web Store package via `scripts/build_zip.py` |
 
 ### Tools
 
 * Git & GitHub
-* [Development Tool]
-* [API / AI Service]
-* [Other Tools]
+* Node.js (unit tests), Playwright + Chromium (in-browser tests and screenshots)
+* Python 3 (mock scoring server, icon and zip builders)
 
 ---
 
@@ -95,21 +104,21 @@ The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification 
 
 ### Main Interface
 
-![Main Interface](SCREENSHOT_1_URL)
+![Main Interface](docs/screenshots/popup-overview.png)
 
-*Main interface of the application.*
+*Toolbar popup: today's verdicts, 7-day risk trend and risk per channel.*
 
 ### Detection / Analysis
 
-![Detection](SCREENSHOT_2_URL)
+![Detection](docs/screenshots/panel-single-high.png)
 
-*AI fraud detection and analysis workflow.*
+*Checking one message: the side panel shows the verdict, score and signals with the words that matched.*
 
 ### Results
 
-![Results](SCREENSHOT_3_URL)
+![Results](docs/screenshots/popup-history.png)
 
-*Detection result, risk assessment, and supporting information.*
+*History keeps verdicts and metadata only, never the message.*
 
 ---
 
@@ -117,13 +126,13 @@ The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification 
 
 | Metric                 | Result                                      |
 | ---------------------- | ------------------------------------------- |
-| **Detection Accuracy** | [XX%]                                       |
-| **Precision**          | [XX%]                                       |
-| **Recall**             | [XX%]                                       |
-| **Response Time**      | [XX seconds]                                |
-| **Supported Input**    | [Images / Audio / Video / Documents / etc.] |
+| **Detection Accuracy** | 100% on the 52-message test set (27 scams, 25 benign) |
+| **Precision**          | 100% (same set)                                       |
+| **Recall**             | 100% (same set)                                       |
+| **Response Time**      | ~0.08 ms per message for the on-device engine (Node, measured); remote engine bounded by a 3 s timeout with local fallback |
+| **Supported Input**    | Text messages and emails (English, Malayalam, Manglish, Hinglish, Hindi), including links |
 
-> **Note:** Replace the above values with measured results from the final prototype. Remove metrics that are not applicable.
+> **Note:** The test set (`trustgraph_extension/test/rules.test.js`) was written by the team, including tricky benign cases (bank alerts, developer chats about OTP flows). It is not a real-world benchmark; expect lower numbers on live traffic.
 
 ---
 
@@ -131,38 +140,38 @@ The system takes **[input]**, analyzes it using **[AI/ML/algorithm/verification 
 
 ### Prerequisites
 
-* [Python 3.x / Node.js / etc.]
-* [Required API keys]
-* [Other dependencies]
+* Google Chrome (or any Chromium browser, version 110+)
+* Optional: Python 3 for the mock scoring server, Node.js 18+ to run the tests
 
 ### Installation
 
 ```bash
-git clone [REPOSITORY_URL]
-cd [PROJECT_DIRECTORY]
-
-[INSTALL_COMMAND]
+git clone https://github.com/ritvikpradeep-23/trustgraphai
+cd trustgraphai/trustgraph_extension
 ```
+
+1. Open `chrome://extensions` and turn on **Developer mode**.
+2. Click **Load unpacked** and choose the `trustgraph_extension/` folder.
 
 ### Environment Variables
 
-Create a `.env` file:
-
-```env
-[VARIABLE_NAME]=[VALUE]
-[API_KEY]=[YOUR_API_KEY]
-```
+None. The scoring server and web app addresses are set in the extension's Settings page (defaults: `http://127.0.0.1:8000` and a built-in demo web app).
 
 ### Run
 
 ```bash
-[RUN_COMMAND]
+# optional: a stand-in scoring server
+python3 scripts/mock_server.py --new-shape
+
+# tests
+node test/rules.test.js && node test/verdict.test.js && node test/result.test.js && node test/background.test.js && node test/tokens.test.js
 ```
 
-The application will be available at:
+The welcome page opens on install. To try it without real chats, open the toolbar popup → **Use without account** → Settings → **Demo data**, or serve the test chat:
 
 ```text
-[LOCALHOST / DEPLOYMENT URL]
+cd trustgraph_extension && python3 -m http.server 5500
+http://localhost:5500/test/test-chat.html
 ```
 
 ---
@@ -186,21 +195,26 @@ The application will be available at:
 **Input**
 
 ```text
-[Example input provided to the system]
+Dear customer your SBI KYC is pending and your account will be blocked today.
+Share the OTP sent to you at http://sbi-kyc-update.xyz urgently
 ```
 
 **System Analysis**
 
 ```text
-[Brief representation of the analysis]
+Credential or OTP request            HIGH   "Share the OTP"
+Suspicious link or lookalike domain  HIGH   "http://sbi-kyc-update.xyz"  (bank name on an unofficial .xyz domain,
+                                                                          plus official warning + suspicious link)
+Impersonation of a contact or brand  HIGH   "KYC is pending"
+Urgency pressure                     LOW    "urgently"
 ```
 
 **Result**
 
 ```text
-[AUTHENTIC / SUSPICIOUS / AI-GENERATED / FRAUDULENT]
-Confidence: [XX%]
-Risk Level: [LOW / MEDIUM / HIGH]
+FRAUDULENT (likely scam)
+Score: 95 / 100
+Risk Level: HIGH
 ```
 
 ---
@@ -209,13 +223,12 @@ Risk Level: [LOW / MEDIUM / HIGH]
 
 The system is designed with user privacy and responsible AI usage in mind.
 
-* [No permanent storage of uploaded content]
-* [Secure processing]
-* [Minimal collection of user data]
-* [API credentials stored through environment variables]
-* [Other relevant privacy measure]
-
-> Replace the above points with the actual privacy and security mechanisms implemented in the project.
+* **No message text is stored, synced or logged.** It lives in memory for the length of a check. The only stored record (`shared/result.js`) is `id, timestamp, riskLevel, score, signalIds, channel, domain, hash?`, and `test/result.test.js` fails if a field is added or any word of a message reaches storage.
+* **Nothing is read until the user clicks** (auto-scan is opt-in); the user's own messages are never checked.
+* **No scam-report or public submission database.** "Mark as wrong verdict" sends only a verdict id.
+* **No passwords in the extension.** Sign-in happens on the web app, which hands the extension a one-time pairing code.
+* **Isolation:** all in-page UI is in closed shadow roots and built with `textContent` (never `innerHTML`), so message text can't inject markup. No remote code, analytics or ads. Fonts are bundled.
+* **Minimum permissions:** `activeTab`, `storage`, `contextMenus`, `scripting`; all-sites and notifications access are optional and requested only when the user turns them on.
 
 ---
 
@@ -226,8 +239,10 @@ The system is designed with user privacy and responsible AI usage in mind.
 * [ ] Add real-time detection capabilities
 * [ ] Improve explainability of detection results
 * [ ] Deploy scalable inference infrastructure
-* [ ] Integrate with [relevant platform/system]
-* [ ] Add [future feature]
+* [ ] Calibrate the LinkedIn, Telegram, Discord, Slack, Gmail, Messenger and Instagram adapters against live pages
+* [ ] Connect the production web app and model server (`/api/results`, `/api/score`)
+* [ ] Learn from "Mark as wrong verdict" feedback
+* [ ] Voice-note and image (screenshot) scam detection
 
 ---
 
@@ -256,17 +271,23 @@ The project focuses on addressing emerging forms of fraud enabled or amplified b
 
 ```text
 .
-├── frontend/              # Frontend application
-├── backend/               # Backend services
-├── models/                # AI/ML models
-├── data/                  # Datasets / sample data
-├── docs/                  # Documentation
-├── screenshots/           # Project screenshots
-├── .env.example           # Environment variables template
-├── requirements.txt       # Python dependencies
-├── package.json           # Node dependencies
+├── trustgraph_extension/   # The Chrome extension (Manifest V3, no build step)
+│   ├── background.js       # Service worker: engines, history, account, network
+│   ├── content/            # Shield, side panel, chat scan
+│   ├── adapters/           # Per-site message readers (+ config-driven sites)
+│   ├── shared/             # Design system, Verdict + Result, rules engine, ApiClient
+│   ├── ui/                 # Popup, welcome + settings, privacy, demo web app
+│   ├── test/               # Unit + in-browser tests and fixtures
+│   ├── dev/                # Component gallery
+│   ├── store/              # Chrome Web Store listing and policies
+│   └── scripts/            # Mock server, icon and zip builders
+├── docs/
+│   ├── screenshots/        # Screenshots of every surface
+│   └── redesign-handoff.md # Notes on the UI redesign
 └── README.md
 ```
+
+Full developer documentation: [`trustgraph_extension/README.md`](trustgraph_extension/README.md).
 
 ---
 
@@ -277,7 +298,7 @@ For questions, collaboration, or further information:
 **Team:** [TEAM NAME]
 **Team Lead:** [NAME]
 **Email:** [EMAIL]
-**GitHub:** [GITHUB REPOSITORY]
+**GitHub:** https://github.com/ritvikpradeep-23/trustgraphai
 
 ---
 
