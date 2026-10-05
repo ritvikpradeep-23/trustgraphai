@@ -63,7 +63,7 @@ def evaluate(cand: dict, rows: list[dict], dev: list[dict]) -> dict:
         g["n"] += 1
         g["caught"] += int(caution[i])
     out["per_category"], out["per_language"] = per_cat, per_lang
-    misses = sorted((float(s[i]), r) for i, r in enumerate(rows) if scam[i] and not caution[i])
+    misses = sorted(((float(s[i]), r) for i, r in enumerate(rows) if scam[i] and not caution[i]), key=lambda x: x[0])
     out["n_missed"] = len(misses)
     out["worst_misses"] = [{"score": round(sc, 3), "category": r["category"], "language": r["language"],
                             "evasion": r["evasion_type"], "text": r["text"].replace("\n", " ")[:160],
@@ -130,7 +130,11 @@ def write_summary(res: dict):
           "the top of the per-type table.",
           "- Soft scams with no ask at all (a friendly \"wrong number\", \"are you free?\") read like honest messages: wording "
           "can't catch them; sender history (continuity, precedent) has to.",
-          "- Hinglish and Manglish are weaker than English; the red-flag rules are English wording.",
+          "- Per language (synthetic data): " + ", ".join(f"{k} {v['caught']}/{v['n']}" for k, v in
+                                                       sorted(best["per_language"].items())) + "; the red-flag rules are English wording.",
+          "- Scam types that got worse: " + (", ".join(f"{c} {base['per_category'][c]['caught']}/{v['n']} -> {v['caught']}/{v['n']}"
+                                                      for c, v in best["per_category"].items()
+                                                      if v["caught"] < base["per_category"][c]["caught"]) or "none") + ".",
           "- Eight proposed red-flag rules (`proposed_rules.md`) were not applied, so this test measures the engine without them.", "",
           "## Five honest bullets for the judges", "",
           f"1. We ran 10 improvement rounds, each on a fresh batch of 180 messages the engine had never seen, scoring each "
@@ -143,8 +147,8 @@ def write_summary(res: dict):
           f"{pct(best['false_alarms_caution']['value'])} false alarms on honest messages (synthetic data).",
           "4. All test messages are synthetic, written by the same AI that built the detector, so these numbers flatter it; "
           "they are not real-world accuracy. The only real data is the UK SMS false-alarm check.",
-          "5. What it can't do yet: catch scams that make no request at all, or match English quality in Hinglish and "
-          "Manglish. Real reported scams and real honest messages are the next step.", "",
+          "5. What it can't do yet: catch scams that make no request at all, and learning some scam types can make "
+          "others slightly worse. Real reported scams and real honest messages are the next step.", "",
           "## Commands (run these yourself)", "", "```",
           "python -m pytest tests/                                          # all tests",
           "$env:PYTHONPATH=\"src;.\"                                          # Windows PowerShell",

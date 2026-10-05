@@ -143,7 +143,7 @@ def scenario_check(index: dict, bands: dict) -> dict:
 
 def run_tests(model_dir: str | None) -> tuple[bool, str]:
     """The whole test suite, with the engine loading from this bundle."""
-    env = {**os.environ, "PYTHONPATH": "src:."}
+    env = {**os.environ, "PYTHONPATH": os.pathsep.join(["src", "."])}  # ";" on Windows, ":" elsewhere
     if model_dir:
         env["TRUSTGRAPH_MODEL_DIR"] = model_dir
     p = subprocess.run([sys.executable, "-m", "pytest", "-q", "tests"], env=env, capture_output=True, text=True)

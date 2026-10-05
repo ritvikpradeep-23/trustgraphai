@@ -1,0 +1,544 @@
+{
+ "date": "2026-10-05 14:57",
+ "rounds": [
+  13,
+  14
+ ],
+ "n_scam": 120,
+ "n_honest": 240,
+ "n_types": 25,
+ "demo-safe": {
+  "name": "demo-safe",
+  "bands": {
+   "caution": 0.35599631130979437,
+   "high": 0.6146772080531456
+  },
+  "dev_recall_caution": 0.48333333333333334,
+  "recall_caution": {
+   "value": 0.5166666666666667,
+   "lo": 0.425,
+   "hi": 0.6085416666666664,
+   "n": 120
+  },
+  "false_alarms_caution": {
+   "value": 0.020833333333333332,
+   "lo": 0.004166666666666667,
+   "hi": 0.041666666666666664,
+   "n": 240
+  },
+  "recall_high": {
+   "value": 0.18333333333333332,
+   "lo": 0.11666666666666667,
+   "hi": 0.25,
+   "n": 120
+  },
+  "false_alarms_high": {
+   "value": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "n": 240
+  },
+  "roc_auc": 0.8817708333333334,
+  "pr_auc": 0.8561652205114936,
+  "roc_auc_ci": [
+   0.8381050944011825,
+   0.923654281292261
+  ],
+  "pr_auc_ci": [
+   0.8032395302388979,
+   0.9054835899316936
+  ],
+  "per_category": {
+   "deepfake CEO video call": {
+    "n": 6,
+    "caught": 5,
+    "in_corpus": "no"
+   },
+   "task or like-and-earn": {
+    "n": 4,
+    "caught": 1,
+    "in_corpus": "partly (job or advance-fee scam)"
+   },
+   "courier or customs parcel held": {
+    "n": 5,
+    "caught": 4,
+    "in_corpus": "yes (parcel or delivery fee)"
+   },
+   "remote-access support": {
+    "n": 7,
+    "caught": 7,
+    "in_corpus": "yes (tech support remote-access scam)"
+   },
+   "electricity disconnection": {
+    "n": 4,
+    "caught": 0,
+    "in_corpus": "no"
+   },
+   "prize or lottery": {
+    "n": 5,
+    "caught": 5,
+    "in_corpus": "yes (prize or lottery fee)"
+   },
+   "rental or booking deposit": {
+    "n": 7,
+    "caught": 0,
+    "in_corpus": "no"
+   },
+   "fake job offer with upfront fee": {
+    "n": 4,
+    "caught": 0,
+    "in_corpus": "yes (job or advance-fee scam)"
+   },
+   "instant-loan harassment": {
+    "n": 6,
+    "caught": 3,
+    "in_corpus": "no"
+   },
+   "AI trading-bot group": {
+    "n": 5,
+    "caught": 3,
+    "in_corpus": "partly (investment or crypto scam)"
+   },
+   "social-media verify-your-account DM": {
+    "n": 5,
+    "caught": 4,
+    "in_corpus": "no"
+   },
+   "romance": {
+    "n": 4,
+    "caught": 4,
+    "in_corpus": "yes (romance scam money request)"
+   },
+   "KYC or Aadhaar/PAN expiry": {
+    "n": 6,
+    "caught": 0,
+    "in_corpus": "no"
+   },
+   "digital arrest": {
+    "n": 5,
+    "caught": 4,
+    "in_corpus": "partly (tax or government threat)"
+   },
+   "AI voice-clone family emergency": {
+    "n": 3,
+    "caught": 3,
+    "in_corpus": "partly (family emergency or new-number scam)"
+   },
+   "FASTag or toll balance": {
+    "n": 5,
+    "caught": 4,
+    "in_corpus": "no"
+   },
+   "fake CAPTCHA paste-command": {
+    "n": 7,
+    "caught": 0,
+    "in_corpus": "no"
+   },
+   "wrong-number crypto investment": {
+    "n": 5,
+    "caught": 0,
+    "in_corpus": "partly (investment or crypto scam)"
+   },
+   "boss gift-card request": {
+    "n": 4,
+    "caught": 4,
+    "in_corpus": "yes (gift-card request from a boss or colleague)"
+   },
+   "fake scholarship or exam results": {
+    "n": 3,
+    "caught": 3,
+    "in_corpus": "no"
+   },
+   "QR-code scam": {
+    "n": 3,
+    "caught": 1,
+    "in_corpus": "no"
+   },
+   "UPI collect-request or refund": {
+    "n": 5,
+    "caught": 2,
+    "in_corpus": "no"
+   },
+   "fake customer-care number": {
+    "n": 4,
+    "caught": 2,
+    "in_corpus": "no"
+   },
+   "fake e-challan": {
+    "n": 4,
+    "caught": 0,
+    "in_corpus": "no"
+   },
+   "crypto airdrop or wallet drainer": {
+    "n": 4,
+    "caught": 3,
+    "in_corpus": "partly (investment or crypto scam)"
+   }
+  },
+  "per_language": {
+   "Hinglish": {
+    "n": 23,
+    "caught": 14
+   },
+   "English": {
+    "n": 86,
+    "caught": 40
+   },
+   "Manglish": {
+    "n": 11,
+    "caught": 8
+   }
+  },
+  "n_missed": 58,
+  "worst_misses": [
+   {
+    "score": 0.037,
+    "category": "task or like-and-earn",
+    "language": "English",
+    "evasion": "none",
+    "text": "Dear customer, Earn Rs. 750 daily by writing short reviews. Only 20 minutes a day. Join here: info-claim.invalid/r2867e Sent from my phone",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "fake job offer with upfront fee",
+    "language": "English",
+    "evasion": "none",
+    "text": "Brightpath Services HR: your offer for content writer is ready. A security deposit is needed before the first day. Pay at https://help-update.example.org/zzwwek",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "task or like-and-earn",
+    "language": "English",
+    "evasion": "spacing",
+    "text": "Hello, Earn Rs 15,000 daily by w a t c h i n g ads. No experience needed. Join here: https://help.e x a m p l e.com/hvpbrh Regards.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "fake CAPTCHA paste-command",
+    "language": "English",
+    "evasion": "spacing",
+    "text": "Hello, Human check: this site copied a short code for you. Run it in your d e v i c e's c o m m a n d tool to unlock the page. Cheers.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "fake CAPTCHA paste-command",
+    "language": "English",
+    "evasion": "obfuscated_link",
+    "text": "Hello, Human check: this site copied a short code for you. Run it in your device's command tool to unlock the page.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "crypto airdrop or wallet drainer",
+    "language": "English",
+    "evasion": "none",
+    "text": "Hello, Your wallet qualifies for an exclusive NFT drop. Verify it by connecting at my-account.invalid/6k7rb7 and approve the transaction.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "fake CAPTCHA paste-command",
+    "language": "Hinglish",
+    "evasion": "split_phrasing",
+    "text": "Subject: Dear customer, Aap insaan ho  Dear customer, Aap insaan ho ye verify karne ke liye screen ke steps follow karo aur copy kiya hua command chalao.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "fake e-challan",
+    "language": "English",
+    "evasion": "split_phrasing",
+    "text": "Subject: Hello, dear vehicle owner, a  Hello, dear vehicle owner, a fine is registered against your number plate. To check details, reply with your registration",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "KYC or Aadhaar/PAN expiry",
+    "language": "English",
+    "evasion": "casual_lowercase",
+    "text": "hi, routine reminder: our records show your kyc is due for renewal. you can do it from home in two minutes.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "KYC or Aadhaar/PAN expiry",
+    "language": "English",
+    "evasion": "none",
+    "text": "Dear customer, Hi, routine reminder: our records show your KYC is due for renewal. You can do it from home in two minutes.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   }
+  ],
+  "real_sms_false_alarms": 0.043730569948186526
+ },
+ "best": {
+  "name": "fast_r12",
+  "bands": {
+   "caution": 0.44913400765494127,
+   "high": 0.6146772080531456
+  },
+  "dev_recall_caution": 0.6666666666666666,
+  "recall_caution": {
+   "value": 0.65,
+   "lo": 0.5666666666666667,
+   "hi": 0.725,
+   "n": 120
+  },
+  "false_alarms_caution": {
+   "value": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "n": 240
+  },
+  "recall_high": {
+   "value": 0.21666666666666667,
+   "lo": 0.14979166666666668,
+   "hi": 0.2916666666666667,
+   "n": 120
+  },
+  "false_alarms_high": {
+   "value": 0.0,
+   "lo": 0.0,
+   "hi": 0.0,
+   "n": 240
+  },
+  "roc_auc": 0.9551388888888889,
+  "pr_auc": 0.943662720909949,
+  "roc_auc_ci": [
+   0.9260394154574456,
+   0.9793088071085321
+  ],
+  "pr_auc_ci": [
+   0.9118786708006943,
+   0.9697140831882735
+  ],
+  "per_category": {
+   "deepfake CEO video call": {
+    "n": 6,
+    "caught": 3,
+    "in_corpus": "no"
+   },
+   "task or like-and-earn": {
+    "n": 4,
+    "caught": 2,
+    "in_corpus": "partly (job or advance-fee scam)"
+   },
+   "courier or customs parcel held": {
+    "n": 5,
+    "caught": 3,
+    "in_corpus": "yes (parcel or delivery fee)"
+   },
+   "remote-access support": {
+    "n": 7,
+    "caught": 7,
+    "in_corpus": "yes (tech support remote-access scam)"
+   },
+   "electricity disconnection": {
+    "n": 4,
+    "caught": 2,
+    "in_corpus": "no"
+   },
+   "prize or lottery": {
+    "n": 5,
+    "caught": 5,
+    "in_corpus": "yes (prize or lottery fee)"
+   },
+   "rental or booking deposit": {
+    "n": 7,
+    "caught": 4,
+    "in_corpus": "no"
+   },
+   "fake job offer with upfront fee": {
+    "n": 4,
+    "caught": 3,
+    "in_corpus": "yes (job or advance-fee scam)"
+   },
+   "instant-loan harassment": {
+    "n": 6,
+    "caught": 0,
+    "in_corpus": "no"
+   },
+   "AI trading-bot group": {
+    "n": 5,
+    "caught": 4,
+    "in_corpus": "partly (investment or crypto scam)"
+   },
+   "social-media verify-your-account DM": {
+    "n": 5,
+    "caught": 5,
+    "in_corpus": "no"
+   },
+   "romance": {
+    "n": 4,
+    "caught": 4,
+    "in_corpus": "yes (romance scam money request)"
+   },
+   "KYC or Aadhaar/PAN expiry": {
+    "n": 6,
+    "caught": 3,
+    "in_corpus": "no"
+   },
+   "digital arrest": {
+    "n": 5,
+    "caught": 3,
+    "in_corpus": "partly (tax or government threat)"
+   },
+   "AI voice-clone family emergency": {
+    "n": 3,
+    "caught": 1,
+    "in_corpus": "partly (family emergency or new-number scam)"
+   },
+   "FASTag or toll balance": {
+    "n": 5,
+    "caught": 5,
+    "in_corpus": "no"
+   },
+   "fake CAPTCHA paste-command": {
+    "n": 7,
+    "caught": 4,
+    "in_corpus": "no"
+   },
+   "wrong-number crypto investment": {
+    "n": 5,
+    "caught": 3,
+    "in_corpus": "partly (investment or crypto scam)"
+   },
+   "boss gift-card request": {
+    "n": 4,
+    "caught": 4,
+    "in_corpus": "yes (gift-card request from a boss or colleague)"
+   },
+   "fake scholarship or exam results": {
+    "n": 3,
+    "caught": 2,
+    "in_corpus": "no"
+   },
+   "QR-code scam": {
+    "n": 3,
+    "caught": 2,
+    "in_corpus": "no"
+   },
+   "UPI collect-request or refund": {
+    "n": 5,
+    "caught": 3,
+    "in_corpus": "no"
+   },
+   "fake customer-care number": {
+    "n": 4,
+    "caught": 2,
+    "in_corpus": "no"
+   },
+   "fake e-challan": {
+    "n": 4,
+    "caught": 0,
+    "in_corpus": "no"
+   },
+   "crypto airdrop or wallet drainer": {
+    "n": 4,
+    "caught": 4,
+    "in_corpus": "partly (investment or crypto scam)"
+   }
+  },
+  "per_language": {
+   "Hinglish": {
+    "n": 23,
+    "caught": 17
+   },
+   "English": {
+    "n": 86,
+    "caught": 53
+   },
+   "Manglish": {
+    "n": 11,
+    "caught": 8
+   }
+  },
+  "n_missed": 42,
+  "worst_misses": [
+   {
+    "score": 0.037,
+    "category": "KYC or Aadhaar/PAN expiry",
+    "language": "English",
+    "evasion": "casual_lowercase",
+    "text": "hi, routine reminder: our records show your kyc is due for renewal. you can do it from home in two minutes.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "task or like-and-earn",
+    "language": "English",
+    "evasion": "none",
+    "text": "Hi, I'm a recruiter for a digital marketing team. Simple online tasks, paid daily. Interested? No fees mentioned until you reach VIP.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.037,
+    "category": "electricity disconnection",
+    "language": "Hinglish",
+    "evasion": "spacing",
+    "text": "Hi, Aapki bijli aaj raat 9 baje kaat di j a y e g i. P i c h l a bill update nahi hua. Turant [PHONE] pe call karein. Thanks.",
+    "engine_explanation": "Combined score 0.04; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.057,
+    "category": "courier or customs parcel held",
+    "language": "English",
+    "evasion": "casual_lowercase",
+    "text": "Subject: Hello, your parcel is held  Hello, your parcel is held at customs. pay the import duty of \u00a34,999 at update-account.invalid/uptzas to release it.",
+    "engine_explanation": "Combined score 0.06; driven by 'anomaly' (score 0.04): Insufficient data to assess (call duration unknown, time of day unknown, amount unknown, contact frequency unknown, channel history unknown)"
+   },
+   {
+    "score": 0.084,
+    "category": "wrong-number crypto investment",
+    "language": "English",
+    "evasion": "emoji_padding",
+    "text": "Hey, Hello, are we still meeting for golf on Sunday? \ud83d\ude4f Oh, wrong number. \u2764\ufe0f Nice to meet you anyway, I'm in finance. \u2764\ufe0f",
+    "engine_explanation": "Combined score 0.08; driven by 'similarity' (score 0.05): Message doesn't resemble known scam scripts"
+   },
+   {
+    "score": 0.092,
+    "category": "wrong-number crypto investment",
+    "language": "English",
+    "evasion": "emoji_padding",
+    "text": "Hi, Hello, are we still meeting for golf on Sunday? \ud83d\udc4d Oh, wrong number. \ud83d\udce6 Nice to meet you anyway, I'm in finance. \ud83d\udc4d Thanks.",
+    "engine_explanation": "Combined score 0.09; driven by 'similarity' (score 0.06): Message doesn't resemble known scam scripts"
+   },
+   {
+    "score": 0.106,
+    "category": "electricity disconnection",
+    "language": "Hinglish",
+    "evasion": "none",
+    "text": "Hello, Aapki bijli aaj raat 9 baje kaat di jayegi. Pichla bill update nahi hua. Turant [PHONE] pe call karein. Cheers.",
+    "engine_explanation": "Combined score 0.11; driven by 'similarity' (score 0.07): Message doesn't resemble known scam scripts"
+   },
+   {
+    "score": 0.13,
+    "category": "KYC or Aadhaar/PAN expiry",
+    "language": "English",
+    "evasion": "none",
+    "text": "Dear customer, Hi, routine reminder: our records show your KYC is due for renewal. You can do it from home in two minutes.",
+    "engine_explanation": "Combined score 0.13; driven by 'similarity' (score 0.10): Message doesn't resemble known scam scripts"
+   },
+   {
+    "score": 0.149,
+    "category": "fake job offer with upfront fee",
+    "language": "English",
+    "evasion": "emoji_padding",
+    "text": "Your interview is cleared. Please deposit the refundable laptop security amount before joining on Monday. Regards.",
+    "engine_explanation": "Combined score 0.15; driven by 'similarity' (score 0.12): Message doesn't resemble known scam scripts"
+   },
+   {
+    "score": 0.151,
+    "category": "AI trading-bot group",
+    "language": "English",
+    "evasion": "leetspeak",
+    "text": "Dear customer, Join our st0ck tips group led by a famous market professor. Free today, limited seats: pay-secure.1nv4l1d/4hdcqn Regards.",
+    "engine_explanation": "Combined score 0.15; driven by 'similarity' (score 0.11): Message doesn't resemble known scam scripts"
+   }
+  ],
+  "real_sms_false_alarms": 0.03585492227979275
+ }
+}
