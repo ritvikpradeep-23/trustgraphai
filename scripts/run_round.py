@@ -46,6 +46,15 @@ def pct(x):
 def run(n: int, commit: bool):
     if n in DEV or n in FINAL or n not in IMPROVE:
         raise SystemExit(f"round {n} is not an improvement round (03-12)")
+    hist = core.RUNS / "history.csv"
+    if hist.exists():
+        with open(hist, encoding="utf-8") as f:
+            done = {int(row["round"]) for row in csv.DictReader(f)}
+        if n in done:
+            raise SystemExit(f"round {n:02d} was already run: re-running it would test the engine on messages it "
+                             "has already learned from. Run the next round instead.")
+        if done and n != max(done) + 1:
+            raise SystemExit(f"rounds must run in order: the next one is {max(done) + 1:02d}")
     t0 = time.time()
     manifest = core.verify_manifest()
     rows = core.load_round(n)
@@ -106,7 +115,7 @@ def run(n: int, commit: bool):
     (bundle / "manifest.json").write_text(json.dumps(manifest_b, indent=2, default=float))
     if g["passed"]:
         core.RUNS.mkdir(exist_ok=True)
-        core.BEST.write_text(json.dumps({"name": new["name"], "dir": str(bundle), "round": n,
+        core.BEST.write_text(json.dumps({"name": new["name"], "dir": bundle.as_posix(), "round": n,
                                          "dev_recall_caution": dev_new["recall_caution"],
                                          "real_sms_false_alarms": sms_new}, indent=1))
     after = new["name"] if g["passed"] else best["name"]
@@ -144,7 +153,6 @@ def run(n: int, commit: bool):
           f"**Result: {verdict}.** Best candidate is now **{after}**.", ""]
     (core.REPORTS / f"round_{n:02d}.md").write_text("\n".join(L), encoding="utf-8")
 
-    hist = core.RUNS / "history.csv"
     core.RUNS.mkdir(exist_ok=True)
     new_file = not hist.exists()
     with open(hist, "a", newline="", encoding="utf-8") as f:

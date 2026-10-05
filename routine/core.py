@@ -69,7 +69,8 @@ def load_best() -> dict:
     info = json.loads(BEST.read_text())
     if info["dir"] is None:
         return baseline()
-    scams, legit, _ = sim.load_corpus(str(Path(info["dir"]) / "similarity_corpus.json"))
+    folder = Path(info["dir"].replace("\\", "/"))  # saved on Windows with backslashes
+    scams, legit, _ = sim.load_corpus(str(folder / "similarity_corpus.json"))
     return {"name": info["name"], "dir": info["dir"], "scams": scams, "legit": legit}
 
 
