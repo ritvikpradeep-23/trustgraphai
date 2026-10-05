@@ -1,0 +1,154 @@
+{
+ "generator_seed": 0,
+ "created": "2026-10-05",
+ "synthetic_data": true,
+ "dev_rounds": [
+  1,
+  2
+ ],
+ "improvement_rounds": [
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12
+ ],
+ "final_test_rounds": [
+  13,
+  14
+ ],
+ "leakage_threshold": 0.9,
+ "files": {
+  "round_01.jsonl": {
+   "sha256": "3a3910efce21cfb406c08563b9ef89122b882fbd3218e35b0100e8feeaa39ea8",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 13,
+   "dropped_by_leakage": 12
+  },
+  "round_02.jsonl": {
+   "sha256": "a4f85d015884e6ecde5a5a5b40f629ccf350906d1d8751cc7044ba55453e85b5",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 12,
+   "dropped_by_leakage": 1
+  },
+  "round_03.jsonl": {
+   "sha256": "6cedd917b2303d895e30402dfb5a6e878bb1610c534a9025fce6e404c1f323d9",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 15,
+   "dropped_by_leakage": 4
+  },
+  "round_04.jsonl": {
+   "sha256": "9aacf9b1b38937bd983656a14413e2a43f280a21c8a306b90cef0852106f4f92",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 10,
+   "dropped_by_leakage": 15
+  },
+  "round_05.jsonl": {
+   "sha256": "b5b2161992ffa93f55e4f13a65f667540f3ce0290fc6da989179846bc9914fa6",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 15,
+   "dropped_by_leakage": 0
+  },
+  "round_06.jsonl": {
+   "sha256": "67cc3aeab92172876e3df11dab0ca1d8d6fec9f3a9533975023840416473cbf8",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 10,
+   "dropped_by_leakage": 0
+  },
+  "round_07.jsonl": {
+   "sha256": "f0731dbc65439d9d3677746d74115a502a0b96da3a1e51b5fc9fd6932299ff80",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 15,
+   "dropped_by_leakage": 3
+  },
+  "round_08.jsonl": {
+   "sha256": "8ac0688fed19e0c1c9c4f84709ff88bf83ec42f988e8b995fe7400d566a31768",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 10,
+   "dropped_by_leakage": 0
+  },
+  "round_09.jsonl": {
+   "sha256": "8e0f8f4cbe753153ec6f6730fb4388cb39e92d3c97520e188dd2f3ee7a396564",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 15,
+   "dropped_by_leakage": 0
+  },
+  "round_10.jsonl": {
+   "sha256": "f8d5dd5186604f3d9dc13256a49e842c129a73db3c1bb3b613a4a97a76e14611",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 10,
+   "dropped_by_leakage": 17
+  },
+  "round_11.jsonl": {
+   "sha256": "ae56ee2dfabbb3f9f4ecb9a8994b9b4a002f6f9b6103610ea4704efaad5c5f99",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 15,
+   "dropped_by_leakage": 6
+  },
+  "round_12.jsonl": {
+   "sha256": "c35ca28c7d2febbeb5dc21cc68609d46e6302b3570cfeb2a9dbb32015cce43be",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 10,
+   "dropped_by_leakage": 13
+  },
+  "round_13.jsonl": {
+   "sha256": "dedee04811e2f06dcb7f25e01d5a7c8d30495e2cdeff77b7fca79762fc9da39e",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 25,
+   "dropped_by_leakage": 34
+  },
+  "round_14.jsonl": {
+   "sha256": "349a64903d8e9b4db34e774f287790699069c8e4b7befb8301780ffb8650c4e3",
+   "counts": {
+    "scam": 60,
+    "legit": 120
+   },
+   "scam_categories": 25,
+   "dropped_by_leakage": 8
+  }
+ }
+}
