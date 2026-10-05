@@ -7,7 +7,7 @@ TrustGraph: scores an interaction (a call, text or email) for scam risk and expl
 | Anomaly | Does the call behave oddly? (3am, huge amount, many urgent words) | built |
 | Continuity | Have the contact's details changed? (new bank account, lookalike email domain) | built |
 | Similarity | Does the message read like a known scam? (gift-card codes, "safe account") | built |
-| Precedent | — | not built yet |
+| Precedent | Has this number, account, link or wallet been reported as a scam before? | built (demo report list) |
 
 The signals combine into one risk level: **Low**, **Caution** or **High**.
 

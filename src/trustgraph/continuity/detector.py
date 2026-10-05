@@ -13,9 +13,9 @@ Interaction fields:
 Fields: payout_account, phone_number, email_domain, display_name.
 """
 import math
-import re
 from difflib import SequenceMatcher
 
+from trustgraph.identifiers import normalize_account, normalize_domain, normalize_phone, split_domain
 from trustgraph.signal import RiskSignal
 
 FIELDS = ["payout_account", "email_domain", "phone_number", "display_name"]
@@ -46,33 +46,16 @@ _LABEL = {
 }
 
 
-# Two-label public suffixes, so "mail.acme.co.uk" reduces to "acme.co.uk".
-_TWO_LABEL_SUFFIXES = {"co.uk", "org.uk", "ac.uk", "gov.uk", "com.au", "net.au", "co.nz",
-                       "co.in", "co.za", "com.br", "co.jp", "com.sg", "com.mx"}
-
-
-def _split_domain(domain: str) -> tuple[str, str]:
-    """(brand, suffix): "mail.acme-corp.co.uk" -> ("acme-corp", "co.uk")."""
-    labels = domain.split(".")
-    n = 2 if ".".join(labels[-2:]) in _TWO_LABEL_SUFFIXES else 1
-    if len(labels) <= n:
-        return domain, ""
-    return labels[-n - 1], ".".join(labels[-n:])
-
-
 def _normalize(field: str, value) -> str | None:
     if value is None:
         return None
     text = str(value).strip()
     if field == "payout_account":
-        text = re.sub(r"[^0-9A-Za-z]", "", text).upper()
+        text = normalize_account(text)
     elif field == "phone_number":
-        # The national number: "+44 (0)20 7946 0958", "020 7946 0958" and
-        # "+442079460958" are the same line.
-        text = re.sub(r"\D", "", text)[-10:]
+        text = normalize_phone(text)
     elif field == "email_domain":
-        brand, suffix = _split_domain(text.lower().split("@")[-1].strip("."))
-        text = f"{brand}.{suffix}" if suffix else brand
+        text = normalize_domain(text)
     else:
         text = " ".join(text.casefold().split())
     return text or None
@@ -80,7 +63,7 @@ def _normalize(field: str, value) -> str | None:
 
 def _lookalike(field: str, a: str, b: str) -> bool:
     if field == "email_domain":
-        (brand_a, suffix_a), (brand_b, suffix_b) = _split_domain(a), _split_domain(b)
+        (brand_a, suffix_a), (brand_b, suffix_b) = split_domain(a), split_domain(b)
         if brand_a == brand_b:
             return suffix_a != suffix_b
         return SequenceMatcher(None, brand_a, brand_b).ratio() >= LOOKALIKE_RATIO

@@ -57,7 +57,7 @@ def main():
     print(f"  High:             {np.mean(test_scores >= bands['high']):.1%}")
 
     print()
-    print("Named scenarios (anomaly / continuity / similarity -> fused):")
+    print("Named scenarios (anomaly / continuity / similarity / precedent -> fused):")
     results = {"scam": [], "legit": []}
     for name, kind, interaction in SCENARIOS:
         signals, fused = score_interaction(interaction)
@@ -66,7 +66,7 @@ def main():
         results[kind].append(band)
         ok = (band != "Low") == (kind == "scam")
         print(f"  {'ok ' if ok else 'MISS'} [{kind:<5s}] {name:<37s} "
-              f"{by_name['anomaly'].score:.2f} / {by_name['continuity'].score:.2f} / {by_name['similarity'].score:.2f}"
+              f"{by_name['anomaly'].score:.2f} / {by_name['continuity'].score:.2f} / {by_name['similarity'].score:.2f} / {by_name['precedent'].score:.2f}"
               f" -> {fused.score:.2f} {band:<7s}")
         print(f"         {fused.explanation}")
     scams, legit = results["scam"], results["legit"]

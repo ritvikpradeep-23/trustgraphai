@@ -74,7 +74,18 @@ SCENARIOS = [
     ("one_time_code_theft", "scam", {
         **_call(duration_sec=70),
         "message_text": "To cancel the suspicious payment I just need you to read me the six digit code we texted you."}),
+    # Scams only the report history gives away: a known bad actor coming back
+    ("reported_number_calls_again", "scam", {
+        **_call(duration_sec=110), "identity": {"phone_number": "+44 7700 900999"}}),
+    ("known_mule_account_in_message", "scam", {
+        **_call(), "message_text": "Hi, the deposit for the flat is 850, please send it to GB82 WEST 1234 5698 7654 32 so I can hold it for you."}),
+    ("parcel_phishing_link", "scam", {
+        **_call(), "message_text": "Your parcel couldn't be delivered. Choose a new slot at royalmail-redeliver.com/track"}),
     # Honest changes that should stay Low
+    ("legit_recycled_number", "legit", {
+        # This number was reported once, three years ago, before it was reassigned.
+        **_call(), "identity": {"phone_number": "+44 7700 900111"},
+        "message_text": "Hi, it's the plumber, I'm running 10 minutes late. See you soon."}),
     ("legit_new_phone", "legit", {**_call(), **_id(phone_number="+447700900789")}),
     ("legit_nickname", "legit", {**_call(), **_id(display_name="Janie Doe")}),
     ("legit_routine_payment", "legit", {

@@ -15,7 +15,7 @@ def _signals(continuity=0.0, similarity=0.0, precedent=0.0, anomaly=0.0):
     ]
 
 
-def test_zero_stubs_leave_anomaly_score_unchanged():
+def test_zero_scores_leave_anomaly_score_unchanged():
     fused = fuse(_signals(anomaly=0.9))
     assert fused.score == pytest.approx(0.9)
     assert "driven by 'anomaly'" in fused.explanation

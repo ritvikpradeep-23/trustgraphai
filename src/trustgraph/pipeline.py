@@ -5,8 +5,8 @@ from trustgraph.anomaly.detector import anomaly_score
 from trustgraph.anomaly.features import RAW_FEATURES
 from trustgraph.continuity.detector import continuity_score
 from trustgraph.fusion import fuse, risk_band
+from trustgraph.precedent.detector import precedent_score
 from trustgraph.similarity.detector import similarity_score
-from trustgraph.stubs import precedent_score
 
 SIGNAL_FUNCS = [continuity_score, similarity_score, precedent_score, anomaly_score]
 
