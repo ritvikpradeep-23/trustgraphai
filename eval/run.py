@@ -293,12 +293,64 @@ def report_once_section(run, seed_a: int = 101, seed_b: int = 202, per_category:
 
 Run.section_report_once = report_once_section
 
+SMS_PATH = Path("eval/external/sms.tsv")
+
+
+def sms_section(run):
+    """Real-world sanity check: false alarms on genuine non-scam texts (UCI SMS Spam
+    Collection, UK texts from the 2000s). Its 'spam' is mostly marketing, not scams,
+    so its flag rate is reported for interest only."""
+    if not SMS_PATH.exists():
+        run.note("[sms] eval/external/sms.tsv not found; skipped (see the report for how to fetch it)")
+        return
+    rows = []
+    for i, line in enumerate(SMS_PATH.read_text(encoding="utf-8", errors="replace").splitlines()):
+        label, _, text = line.partition("\t")
+        if text.strip():
+            rows.append({"id": f"sms{i}", "text": text, "label": "legit" if label == "ham" else "spam"})
+    bands = run.bands("text_only")
+    scores = engine.score_rows(rows, "text_only")
+    rng = np.random.default_rng(run.seed)
+    out = {"source": "UCI SMS Spam Collection (GitHub mirror of the public dataset)", "thresholds": bands}
+    for label in ("legit", "spam"):
+        s_ = [sc["fused"] for sc, r in zip(scores, rows) if r["label"] == label]
+        out[label] = {"n": len(s_), "caution": metrics.rate(metrics.hits(s_, bands["caution"]), rng),
+                      "high": metrics.rate(metrics.hits(s_, bands["high"]), rng)}
+    flagged = sorted([(sc["fused"], r["text"]) for sc, r in zip(scores, rows) if r["label"] == "legit"
+                      and metrics.hits([sc["fused"]], bands["caution"])[0]], reverse=True)[:10]
+    out["top_false_alarms"] = [{"score": round(f, 3), "text": t} for f, t in flagged]
+    run.results["sms"] = out
+    (run.out / "sms_check.json").write_text(json.dumps(out, indent=1, default=float))
+    h = out["legit"]["caution"]
+    run.note(f"[sms] real honest texts flagged at Caution: {h['value']:.1%} [{h['lo']:.1%}, {h['hi']:.1%}] "
+             f"of {out['legit']['n']}; marketing spam flagged {out['spam']['caution']['value']:.1%}")
+
+
+Run.section_sms = sms_section
+
+
+def fresh_batch_section(run, batch_seed: int):
+    """Score a freshly generated batch (new fills and evasions of the same seeds) with
+    the dev thresholds. Near-copies of corpus/dev/engine reference are removed. This
+    shows run-to-run stability; it is not a second untouched test set."""
+    from eval.generate import generate
+    from eval.leakage import engine_reference_texts, filter_leaks
+    rows = generate(batch_seed)
+    reference = [r["text"] for r in run.corpus_split + run.dev] + engine_reference_texts()
+    rows, dropped = filter_leaks(rows, reference)
+    bands = run.bands("text_only")
+    m = metrics.evaluate(rows, engine.score_rows(rows, "text_only"), "fused", bands, run.seed)
+    run.results["fresh_batch"] = {"seed": batch_seed, "dropped_near_copies": len(dropped), "metrics": m}
+    run.note(f"[fresh batch {batch_seed}] {m['n_scam']} scams / {m['n_legit']} legit after dropping {len(dropped)} "
+             f"near-copies: recall@Caution {m['recall_caution']['value']:.1%}, false alarms {m['fpr_caution']['value']:.1%}")
+
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", choices=SECTIONS, action="append")
     ap.add_argument("--seed", type=int, default=0, help="bootstrap seed")
     ap.add_argument("--out", default=f"reports/{date.today().isoformat()}")
+    ap.add_argument("--batch-seed", type=int, help="also score a fresh generated batch with this seed")
     args = ap.parse_args()
     run = Run(Path(args.out), args.seed)
     run.note(f"frozen test set verified: sha256 {run.manifest['test_sha256'][:16]}...")
@@ -308,7 +360,11 @@ def main():
             run.note(f"[{name}] not built yet, skipped")
             continue
         fn()
+    if args.batch_seed is not None:
+        fresh_batch_section(run, args.batch_seed)
     (run.out / "results.json").write_text(json.dumps(run.results, indent=1, default=float))
+    from eval.summary import write_summary
+    write_summary(run)
     (run.out / "runlog.md").write_text("# Run log\n\n" + "\n".join(run.log) + "\n")
 
 
