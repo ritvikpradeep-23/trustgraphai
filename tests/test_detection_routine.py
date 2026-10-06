@@ -222,3 +222,15 @@ def test_schedule_dry_run_changes_nothing(capsys):
     install_schedule.main(["--dry-run"])
     out = capsys.readouterr().out
     assert "every 2 hour(s)" in out and "run_cycle.py" in out
+
+
+def test_show_and_remove_of_a_missing_windows_task_are_not_errors(monkeypatch, capsys):
+    class Failed:
+        returncode, stdout, stderr = 1, "", "ERROR: The system cannot find the file specified."
+    monkeypatch.setattr(install_schedule.subprocess, "run", lambda *a, **k: Failed())
+    install_schedule.windows("show", 2, False, install_schedule.ROUTINES["learning"])
+    install_schedule.windows("remove", 2, False, install_schedule.ROUTINES["learning"])
+    out = capsys.readouterr().out
+    assert "TrustGraphLearningRoutine is not installed." in out and "nothing to remove" in out
+    with pytest.raises(SystemExit):  # a failed install is still an error
+        install_schedule.windows("install", 2, False, install_schedule.ROUTINES["learning"])
