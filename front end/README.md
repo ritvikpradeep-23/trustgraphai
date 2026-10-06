@@ -26,7 +26,7 @@ For development, leave the backend running and run `npm run dev` from this folde
 
 - Dashboard, search, risk/date filters, detail views, and analytics read sanitized PostgreSQL detection history through `/api/workspace/detections`.
 - The projection omits stored submission text, captions, sender identities, media references, and full URL paths/query strings. Backend explanation text is still displayed.
-- Run `python scripts/seed_demo_patterns.py` from the repository root to add 36 explicitly synthetic demo examples, idempotently. Full texts: `docs/DEMO_SCAM_PATTERNS.md`.
+- Run `python scripts/seed_demo_patterns.py` from the repository root to add 300 explicitly synthetic examples (36 original + 264 redacted ScamShield messages), idempotently. Full texts: `docs/DEMO_SCAM_PATTERNS.md` and `docs/SCAMSHIELD_SAMPLE.md`. Provenance/license: `data/SCAMSHIELD_NOTICE.md`.
 - Analyze calls existing `POST /api/detect` and `POST /api/url/analyze`. It does not submit or persist messages. The existing detect API does not save results; an analysis response will not appear in history.
 - Message checking needs no AI: it compares text with PostgreSQL scam reports using normalized token overlap and sequence similarity (demo-calibrated threshold 71.2%). Every eligible pattern is ranked in resemblance tiers. A match is HIGH with a text-similarity score, not a calibrated fraud probability. No match is UNKNOWN, never a safety verdict. URL structure checks do not establish website safety.
 - This is an **unauthenticated, private/local prototype**, not a production account system. There is no per-user history isolation. Do not publish the backend without real authorization and a security review. CORS is not authentication.

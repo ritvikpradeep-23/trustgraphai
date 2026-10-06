@@ -1,6 +1,6 @@
-# Judge demo: 36 patterns + naturally varied similarity scores
+# Judge demo: 300 messages + naturally varied similarity scores
 
-36 authored synthetic scam examples are stored in PostgreSQL. They illustrate common categories, not verified real-world incidents. Links use reserved .invalid domains.
+300 distinct synthetic scam messages are stored in PostgreSQL: the original 36 authored examples listed here plus 264 redacted ScamShield messages listed in `SCAMSHIELD_SAMPLE.md`. They illustrate common categories, not verified real-world incidents. Links use reserved .invalid domains. See `data/SCAMSHIELD_NOTICE.md` for source, license, uniqueness filtering, and limitations.
 
 Open http://127.0.0.1:8001/app/analyze. For natural score variation, use the 13 paraphrases below: they are NOT stored as exact patterns. Results range from 72.3% to 96%. Exact normalized copies correctly return 100% text similarity. No scores are randomized or capped.
 
@@ -88,7 +88,7 @@ Attention customer, your Lotus Bank account is suspended. Verify your password a
 
 ## Limits and hierarchy
 
-The 71.2% match threshold comes from maximizing balanced accuracy on these 13 unseeded paraphrases and 16 benign controls (`data/demo_benign_controls.json`), not an arbitrary requested percentage. It lies midway between the nearest benign warning (70.1%) and scam paraphrase (72.3%). All 13 pass and all 16 controls are rejected on this calibration set. This is threshold tuning on a small synthetic set, NOT independent validation or real-world accuracy.
+Recalibration against all 300 messages retained the 71.2% match threshold, from maximizing balanced accuracy on these 13 unseeded English paraphrases and 16 benign controls (`data/demo_benign_controls.json`), not an arbitrary requested percentage. It lies midway between the nearest benign warning (70.1%) and scam paraphrase (72.3%). All 13 pass and all 16 controls are rejected on this calibration set. This is threshold tuning on a small synthetic set, NOT independent validation, Hindi/Hinglish evaluation, or real-world accuracy.
 
 Every eligible database pattern receives its own rank, similarity, and tier. The closest appears first. Tiers describe resemblance only:
 
@@ -413,4 +413,4 @@ From the repository root:
 .venv\Scripts\python scripts/verify_demo_patterns.py http://127.0.0.1:8001
 ```
 
-Use port 8000 for the default launcher. Seeding is additive/idempotent and does not overwrite existing records. The matcher averages normalized token Jaccard overlap and sequence similarity, then applies the demo-calibrated 71.2% threshold. Reproduce calibration with `python scripts/calibrate_demo_threshold.py`. New scams/paraphrases may be missed; similar benign messages may be flagged. The verifier checks all 36 exact patterns, 13 paraphrases, 16 benign controls, and short input.
+Use port 8000 for the default launcher. Seeding is additive/idempotent and does not overwrite existing records. The matcher averages normalized token Jaccard overlap and sequence similarity, then applies the demo-calibrated 71.2% threshold. Reproduce calibration with `python scripts/calibrate_demo_threshold.py`. New scams/paraphrases may be missed; similar benign messages may be flagged. The verifier checks all 300 exact patterns, 13 paraphrases, 16 benign controls, and short input. Exact-copy matching does not measure generalization.

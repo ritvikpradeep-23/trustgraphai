@@ -38,9 +38,11 @@ The latest extension uses `/api/detect` for text, `/api/media/check` for media f
 
 ## Dataset and honest score variation
 
-36 authored synthetic scam examples are seeded additively in PostgreSQL (up from 12); repeated seeding makes no duplicates. Thirteen separate unseeded judge queries paraphrase stored examples, including a partial match. Their similarities vary naturally. Exact normalized copies still correctly score 100% similarity: scores are never randomized or capped for appearance.
+300 distinct synthetic scam messages are seeded additively in PostgreSQL: the original 36 authored examples plus 264 redacted ScamShield dataset messages (130 Hindi, 134 Hinglish). Repeated seeding makes no duplicates, and normalized/number-only variants were excluded from the import. This is 300 message examples, not 300 independent scam categories. Full provenance and license notice: `data/SCAMSHIELD_NOTICE.md`.
 
-The score is word/sequence similarity, not fraud probability or a claim of AI accuracy. The 71.2% demo-calibrated threshold maximizes balanced accuracy on 13 unseeded scam paraphrases and 16 benign controls, including similar scam warnings. It is the midpoint between the nearest benign score (70.1%) and scam score (72.3%). Those calibration inputs are not independent validation, and this is not a production safety threshold. Reproduce with `python scripts/calibrate_demo_threshold.py`.
+Thirteen separate unseeded judge queries paraphrase stored examples, including a partial match. Their similarities vary naturally. Exact normalized copies still correctly score 100% similarity: scores are never randomized or capped for appearance.
+
+The score is word/sequence similarity, not fraud probability or a claim of AI accuracy. Recalibration against the expanded 300-pattern catalog retained the 71.2% demo threshold on 13 unseeded English scam paraphrases and 16 benign controls, including similar scam warnings. It is the midpoint between the nearest benign score (70.1%) and scam score (72.3%). Those calibration inputs are not independent validation and do not validate Hindi/Hinglish accuracy; this is not a production safety threshold. Reproduce with `python scripts/calibrate_demo_threshold.py`.
 
 Every eligible pattern is ranked under Exact (100%), Very strong (90–under 100%), Strong (80–under 90%), Partial (71.2–under 80%), or Below threshold. The tier boundaries are descriptive display bands, not separately validated fraud decisions. Below-threshold comparisons are not detected matches. No known match does not prove safety. Read `docs/DEMO_SCAM_PATTERNS.md` for all full texts and demonstration queries.
 
@@ -50,3 +52,7 @@ Every eligible pattern is ranked under Exact (100%), Very strong (90–under 100
 ```
 
 The current API is unauthenticated and must stay private/local. No new trained AI weights are included; existing legacy assets are retained but not misrepresented as an active detector.
+
+## Vercel: import the repository root, not the frontend folder
+
+Root `vercel.json` now defines one Vercel Services project with a Vite frontend and FastAPI backend, with same-origin `/api` routing and SPA deep links. See `docs/VERCEL_DEPLOYMENT.md` for required environment settings, deployment protection, and what local tests do/do not prove. No cloud deployment was performed.

@@ -1,0 +1,27 @@
+# Runtime data belongs in PostgreSQL; never upload local secrets or backups.
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+/.git/
+/.venv/
+**/__pycache__
+**/*.pyc
+**/node_modules
+/front end/dist/
+/backup/
+/backups/
+/scratch/
+/.claude/
+/outputs/
+/logs/
+/data/
+/models/
+/src/
+/training/
+/routine/
+/eval/
+/reports/
+/runs/
+/trustgraph_extension/

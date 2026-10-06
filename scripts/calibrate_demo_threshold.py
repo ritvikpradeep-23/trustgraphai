@@ -3,11 +3,12 @@ import json
 from pathlib import Path
 import sys
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
+sys.path[:0] = [str(Path(__file__).resolve().parents[1] / "backend"), str(Path(__file__).resolve().parents[1])]
 from app.services.previous_report_matcher import _normalize_content, _similarity_score
+from scripts.scam_catalog import load_catalog
 
 root = Path(__file__).resolve().parents[1]
-patterns = json.loads((root / "data/demo_scam_patterns.json").read_text())
+patterns = load_catalog()
 queries = json.loads((root / "data/demo_judge_queries.json").read_text())
 benign = json.loads((root / "data/demo_benign_controls.json").read_text())
 

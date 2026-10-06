@@ -9,7 +9,7 @@ def verdict(matches):
             "No match does not prove a message is safe. New scams and paraphrases can be missed.",
         ]
     similarity = max(match.similarity_score for match in matches)
-    demo = any(match.status == "synthetic_demo" for match in matches)
+    demo = any(match.status in {"synthetic_demo", "synthetic_dataset"} for match in matches)
     return similarity, "HIGH", [
         f"Matched {len(matches)} stored scam pattern(s); best text similarity {similarity:.1%} (demo-calibrated threshold {MATCH_THRESHOLD:.1%}).",
         "Deterministic word overlap and sequence matching; the score is similarity, not a fraud probability.",

@@ -4,12 +4,15 @@ import sys
 from pathlib import Path
 import httpx
 
-patterns = json.loads((Path(__file__).resolve().parents[1] / "data/demo_scam_patterns.json").read_text())
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.scam_catalog import load_catalog, validate_catalog
+patterns = load_catalog()
+validate_catalog(patterns)
 queries = json.loads((Path(__file__).resolve().parents[1] / "data/demo_judge_queries.json").read_text())
 controls = json.loads((Path(__file__).resolve().parents[1] / "data/demo_benign_controls.json").read_text())
 base = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8001"
 with httpx.Client(base_url=base, timeout=30, trust_env=False) as client:
-    for p in patterns:
+    for index, p in enumerate(patterns, 1):
         response = client.post("/api/detect", json={"channel": "other", "text": p["text"]})
         response.raise_for_status()
         result = response.json()
@@ -21,6 +24,8 @@ with httpx.Client(base_url=base, timeout=30, trust_env=False) as client:
         assert ranked[0]["report_id"] == "report_" + p["id"]
         assert [m["similarity_score"] for m in ranked] == sorted((m["similarity_score"] for m in ranked), reverse=True)
         assert [m["rank"] for m in ranked] == list(range(1, len(ranked) + 1))
+        if index % 50 == 0:
+            print(f"Exact-copy API checks: {index}/{len(patterns)} passed", flush=True)
     scores = []
     for query in queries:
         response = client.post("/api/detect", json={"channel": "other", "text": query["text"]})
@@ -40,5 +45,5 @@ with httpx.Client(base_url=base, timeout=30, trust_env=False) as client:
         response.raise_for_status()
         assert response.json()["risk_level"] == "UNKNOWN"
         assert response.json()["risk_score"] is None
-print(f"{len(patterns)}/{len(patterns)} authored demo examples matched through the API; {len(controls)} benign controls and short input had no match. Not a real-world accuracy benchmark.")
+print(f"{len(patterns)}/{len(patterns)} synthetic catalog examples matched through the API; {len(controls)} benign controls and short input had no match. Not a real-world accuracy benchmark.")
 print(f"{len(queries)} unseeded paraphrases matched with scores from {min(scores)}% to {max(scores)}%; extension adapter passed.")

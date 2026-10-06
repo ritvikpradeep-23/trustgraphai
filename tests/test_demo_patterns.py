@@ -11,8 +11,9 @@ from app.services.pattern_detection import verdict
 from app.services.previous_report_matcher import MATCH_THRESHOLD, find_previous_report_matches, similarity_tier
 from scripts.calibrate_demo_threshold import calibrate
 from scripts.seed_demo_patterns import seed
+from scripts.scam_catalog import load_catalog, seed_metadata, validate_catalog
 
-PATTERNS = json.loads((Path(__file__).resolve().parents[1] / "data/demo_scam_patterns.json").read_text())
+PATTERNS = load_catalog()
 
 
 class FakeDB:
@@ -29,11 +30,29 @@ class FakeDB:
     def commit(self):
         self.commits += 1
     def execute(self, statement):
-        return [(SimpleNamespace(report_id="report_" + p["id"], report_type="Demo: " + p["title"], status="synthetic_demo"),
+        return [(SimpleNamespace(report_id="report_" + p["id"], report_type=seed_metadata(p)[2], status=seed_metadata(p)[1]),
                  SimpleNamespace(submission_id=p["id"], text=p["text"], caption=None, url=None)) for p in PATTERNS]
+    def scalars(self, statement):
+        model = statement.column_descriptions[0]["entity"]
+        return SimpleNamespace(all=lambda: [record for (record_model, _), record in self.records.items() if record_model == model])
 
 
 class PatternTests(unittest.TestCase):
+    def test_300_unique_patterns_preserve_scamshield_provenance(self):
+        self.assertEqual(validate_catalog(PATTERNS), 300)
+        sourced = [p for p in PATTERNS if p.get("source_dataset")]
+        self.assertEqual(len(sourced), 264)
+        self.assertEqual({p["language"] for p in sourced}, {"Hindi", "Hinglish"})
+        self.assertTrue(all(p["license"] == "MIT" and p["redacted"] and p["source_kind"] == "Synthetic_Tier_C" for p in sourced))
+        self.assertTrue(all("[phone redacted]" in p["text"] or not any(len(word) >= 8 and word.isdecimal() for word in p["text"].split()) for p in sourced))
+        app.dependency_overrides[get_db] = lambda: FakeDB()
+        try:
+            result = TestClient(app).post("/api/detect", json={"channel": "other", "text": sourced[0]["text"]}).json()
+            self.assertEqual(result["previous_report_matches"][0]["status"], "synthetic_dataset")
+            self.assertTrue(result["previous_report_matches"][0]["report_type"].startswith("ScamShield: "))
+            self.assertTrue(any("synthetic" in reason for reason in result["reasons"]))
+        finally:
+            app.dependency_overrides.clear()
     def test_threshold_and_hierarchy_boundaries(self):
         for score, expected in ((1, "Exact"), (.999, "Very strong"), (.9, "Very strong"),
                                 (.899, "Strong"), (.8, "Strong"), (.799, "Partial"),

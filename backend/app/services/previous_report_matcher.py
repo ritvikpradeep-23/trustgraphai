@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app.core.database import ReportMatchRecord, ReportRecord, SubmissionRecord
 
 
-# Reproduced by scripts/calibrate_demo_threshold.py on 13 unseeded scam
+# Reproduced against the 300-pattern catalog by scripts/calibrate_demo_threshold.py on 13 unseeded scam
 # paraphrases and 16 benign controls (including similar scam warnings).
 # This is demo calibration, not independent real-world validation.
 MATCH_THRESHOLD = 0.712

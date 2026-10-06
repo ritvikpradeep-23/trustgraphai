@@ -16,7 +16,7 @@ Only `.env.example` is committed; `.env`, frontend `.env.local`, dependencies, v
 
 The projection maps MEDIUM to CAUTION and unsupported/invalid scores to PENDING. It excludes raw submission fields and returns only a URL hostname. Historical backend explanation strings are retained. Current history is unpaginated at the API; the frontend filters/paginates it in memory. Add server-side pagination before large deployments.
 
-Message analysis calls `/api/detect` without a submission ID: previous-report matching reads the database, but no message/result is persisted. URL analysis is deterministic and does not make outbound requests. Text checks now use the existing report matcher directly, without AI. Scores are text similarity, not fraud probability. UNKNOWN means no known match, not safe. Seed 36 synthetic examples using `python scripts/seed_demo_patterns.py`; verify via `python scripts/verify_demo_patterns.py` against the running API. No account tokens or pairing status are produced.
+Message analysis calls `/api/detect` without a submission ID: previous-report matching reads the database, but no message/result is persisted. URL analysis is deterministic and does not make outbound requests. Text checks now use the existing report matcher directly, without AI. Scores are text similarity, not fraud probability. UNKNOWN means no known match, not safe. Seed the 300-message synthetic catalog (36 original + 264 ScamShield samples) using `python scripts/seed_demo_patterns.py`; verify via `python scripts/verify_demo_patterns.py` against the running API. No account tokens or pairing status are produced.
 
 ## Verification
 
