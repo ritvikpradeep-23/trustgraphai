@@ -1,7 +1,7 @@
 """Step 8: install both routines on a schedule (settings in detection_config.json):
 
   accuracy  run_cycle.py   every INTERVAL_HOURS (default 2): scores one unused test batch
-  learning  learn_cycle.py every learning.LEARN_INTERVAL_HOURS (default 1): learns new scams
+  learning  learn_cycle.py every learning.LEARN_INTERVAL_HOURS (default 2): one fresh dataset per run
 
     python install_schedule.py                  # install (or update) both
     python install_schedule.py --show           # check they exist
@@ -42,7 +42,7 @@ def intervals() -> dict:
     from detection_common import check_interval
     cfg = load_config()
     return {"accuracy": cfg["INTERVAL_HOURS"],
-            "learning": check_interval(cfg.get("learning", {}).get("LEARN_INTERVAL_HOURS", 1))}
+            "learning": check_interval(cfg.get("learning", {}).get("LEARN_INTERVAL_HOURS", 2))}
 
 
 def python_for_schedule() -> str:
