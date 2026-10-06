@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from app.api.workspace import detection_view
-from app.core.database import get_db
+from app.core.database import DetectionRecord, get_db
 from app.main import app
 
 
@@ -21,10 +21,16 @@ class WorkspaceTests(unittest.TestCase):
         )
         records = [self.record]
         class FakeSession:
-            def scalars(self, _):
-                return SimpleNamespace(all=lambda: records)
-            def scalar(self, _):
-                return records[0] if records else None
+            # Detection queries get the fake records; the extension tables
+            # (synced verdicts, pairing, heartbeats) are empty.
+            def _detections(self, statement):
+                return any(d.get("entity") is DetectionRecord for d in statement.column_descriptions)
+            def scalars(self, statement):
+                return SimpleNamespace(all=lambda: records if self._detections(statement) else [])
+            def scalar(self, statement):
+                return (records[0] if records else None) if self._detections(statement) else None
+            def get(self, _model, _key):
+                return None
         def override():
             yield FakeSession()
         self.records = records

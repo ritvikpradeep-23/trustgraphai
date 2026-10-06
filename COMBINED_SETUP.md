@@ -34,7 +34,7 @@ The ZIP/source repo intentionally excludes local .env, .git, node_modules, .venv
 
 In Chrome/Edge extensions, enable Developer mode and load the unpacked `trustgraph_extension/` directory yourself. Its default server is port 8000. If running the preview on 8001, change its Backend URL to http://127.0.0.1:8001 in extension settings.
 
-The latest extension uses `/api/detect` for text, `/api/media/check` for media fingerprints, and `/health/database` for connectivity. `/api/score` is also retained for older extension clients. Local rules remain separate from database matching. Account pairing/history sync remains unavailable; extension-local history works separately. No extension install or browser permission was performed automatically.
+The latest extension uses `/api/detect` for text, `/api/media/check` for media fingerprints, and `/health/database` for connectivity. `/api/score` is also retained for older extension clients. Local rules remain separate from database matching. To see the extension's verdicts in the website, open the workspace's **Settings → New code** and enter that code in the extension popup ("Have a pairing code?"). Verdicts (never message text) then sync to the workspace, the dashboard shows the extension as connected, and "Open in workspace" opens the result there. See `docs/WORKSPACE_INTEGRATION.md`. No extension install or browser permission was performed automatically.
 
 ## Dataset and honest score variation
 

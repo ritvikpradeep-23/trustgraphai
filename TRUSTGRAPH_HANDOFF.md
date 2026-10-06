@@ -29,12 +29,13 @@ AI-written text and video/deepfake checks come from the trained engines in `back
 - Health: `GET /health`, `GET /health/database`.
 - Core: `POST /api/submit`, `POST /api/detect`, `GET /api/detections`, `GET /api/detections/{id}`, `POST /api/reports`, `GET /api/reports`, `GET /api/reports/{id}`.
 - Workspace: `/api/workspace/*`; legacy extension scoring: `POST /api/score`.
+- Extension ↔ workspace (`backend/app/api/extension_sync.py`): `POST /api/extension/pairing-code`, `POST /api/extension/pair`, `POST|GET|DELETE /api/results`, `DELETE /api/results/{id}`, `GET /api/export`, `POST /api/feedback`, `POST /api/status` (heartbeat). Results are verdict-only (no text; extra fields rejected); tokens are stored as SHA-256. See `docs/WORKSPACE_INTEGRATION.md`.
 - Optional boundaries: `POST /api/text/ai-check`, `POST /api/video/analyze`, `POST /api/provenance/analyze`.
 - Deterministic features: `POST /api/url/analyze`, `POST /api/relationships`, `GET /api/relationships`, `POST /api/media/check`.
 
 PostgreSQL only: set private `DATABASE_URL`, or `POSTGRES_URL` as fallback. Plain postgres/postgresql URLs select installed psycopg automatically. SQLAlchemy uses pooled-connection pre-ping. Never commit credentials or use a frontend VITE-prefixed database variable.
 
-Tables: submissions, detections, reports, report_matches, relationships and fingerprints. Existing rows are preserved; catalog seeding is idempotent and validates collisions before writing. `Base.metadata.create_all` creates missing tables, not schema migrations. No migration framework exists.
+Tables: submissions, detections, reports, report_matches, relationships, fingerprints, and the extension's extension_tokens, extension_pairing_codes, extension_results and extension_heartbeats. Existing rows are preserved; catalog seeding is idempotent and validates collisions before writing. `Base.metadata.create_all` creates missing tables, not schema migrations. No migration framework exists.
 
 URL analysis parses locally without fetching the site. Registrable domains use a limited suffix heuristic, not a full public-suffix database. Provenance inspection finds metadata/manifest presence but does not verify signatures. Explicit correlation validates relationships between existing entities; automatic graph discovery is not implemented.
 
