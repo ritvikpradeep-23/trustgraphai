@@ -19,6 +19,7 @@ detection_config.json), with the validation scores stored inside the file.
 import argparse
 import hashlib
 import random
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -26,11 +27,14 @@ import cv2
 import numpy as np
 import torch
 
-from app.deepfake_engine import efficientnet_wrapper as effnet
-from app.deepfake_engine.combined_model import new_head, save_head
-from app.deepfake_engine.face_detector import FaceDetector
-from detection_common import ROOT, best_device, load_config, metrics, read_csv, resolve, split_dir
-from video_detector import FACE_MARGIN, face_crops, pixel_batch
+# The AI engine (EfficientNet-B0 + your layer) lives in backend/app/ai, shared with the server.
+sys.path.insert(0, str(Path(__file__).resolve().parent / "backend"))
+
+from app.ai import efficientnet_wrapper as effnet  # noqa: E402
+from app.ai.combined_model import new_head, save_head  # noqa: E402
+from app.ai.face_detector import FaceDetector  # noqa: E402
+from detection_common import ROOT, best_device, load_config, metrics, read_csv, resolve, split_dir  # noqa: E402
+from video_detector import FACE_MARGIN, face_crops, pixel_batch  # noqa: E402
 
 CACHE = ROOT / "data" / "detection" / "cache" / "faces"
 

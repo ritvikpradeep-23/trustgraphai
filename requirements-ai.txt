@@ -1,0 +1,16 @@
+# The AI engines and the two routines (scam engine, deepfake video, AI-written
+# text, accuracy + learning routines). Install on the computer that runs them:
+#   python -m pip install -r requirements-ai.txt
+# The website runs without these: each AI check then answers "pending" and no
+# score is made up. Kept separate so the Vercel deployment stays small.
+# (Hugging Face "datasets" is left out on purpose: its pyarrow crashed on Windows.)
+-r requirements-dev.txt
+joblib==1.6.0
+numpy==2.4.6
+pandas==3.0.6
+scikit-learn==1.9.1
+torch==2.14.1
+torchvision==0.29.1
+transformers==5.18.0
+opencv-python-headless==4.14.0.94
+pillow==12.3.0

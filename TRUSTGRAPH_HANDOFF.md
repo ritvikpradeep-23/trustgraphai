@@ -20,7 +20,7 @@ The catalog contains 300 distinct synthetic example messages: 36 authored demos 
 
 The calibrated threshold is 0.712 (71.2% text similarity). Tiers are exact (100%), very strong (90–<100%), strong (80–<90%), partial (71.2–<80%) and below threshold. Exact copies legitimately score 100%; paraphrase results vary naturally. Similarity is not a fraud probability. No match means UNKNOWN, not safe. Calibration uses 13 unseeded English paraphrases and 16 benign controls; this is not an independent accuracy evaluation and does not establish multilingual accuracy. See `docs/DEMO_SCAM_PATTERNS.md`.
 
-AI-written text, video/deepfake and cryptographic C2PA verification remain unavailable unless a real engine is supplied. Do not turn unavailable responses into invented scores.
+AI-written text and video/deepfake checks come from the trained engines in `backend/app/ai/`, behind the single `TrustGraphAI.analyze` boundary in `backend/app/services/ai_model.py`. An engine answers only when its packages are installed (`pip install -r requirements-ai.txt`, kept out of the Vercel requirements) AND its trained model exists on that computer: `models/text_detector/` (fine-tuned distilroberta-base, `train_text.py`) and `models/efficientnet_head.pt` (EfficientNet-B0 + trained real/fake layer, `train_video.py`). Otherwise the exact "pending" answers are returned. No weights are committed, so the hosted deployment stays "pending". Cryptographic C2PA verification remains unavailable. Do not turn unavailable responses into invented scores. Engine and routine tests are in `tests/engine/` and are skipped when the AI packages are missing; `tests/conftest.py` hides any locally trained model from the website tests.
 
 ## Backend routes and persistence
 

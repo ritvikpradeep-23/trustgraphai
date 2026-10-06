@@ -62,7 +62,7 @@ def media_check(body: MediaCheckRequest, request: Request, db: Session = Depends
     except BadImage as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 
-    model = ai_service.analyze(body.type, {"frames": len(images)})
+    model = ai_service.analyze(body.type, {"frames": len(images), "images": images})  # in memory only
     deepfake = ({"result": "not_checked", "available": False, "reason": model.reasons[0] if model.reasons else ""}
                 if not model.available else
                 {"result": model.risk_level, "available": True, "score": model.risk_score, "reasons": model.reasons})

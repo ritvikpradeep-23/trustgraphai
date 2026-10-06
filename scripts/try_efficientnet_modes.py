@@ -1,17 +1,15 @@
-"""Run one image through all three deepfake modes and print what each gives.
+"""Run one image through the deepfake model (EfficientNet-B0 + your trained layer).
 
     python scripts/try_efficientnet_modes.py --image path/to/face.jpg
     python scripts/try_efficientnet_modes.py                    # uses a drawn test image
     python scripts/try_efficientnet_modes.py --random-weights   # plumbing check, no download
 
-Modes:
-  mine          your TorchScript model at DEEPFAKE_MODEL_PATH (models/deepfake.pt)
-  efficientnet  EfficientNet-B0 features + the trained head at EFFICIENTNET_HEAD_PATH
-  both          the average of the two scores
-
-A mode whose model is missing says so instead of printing a made-up score.
---random-weights uses an UNTRAINED EfficientNet-B0 of the same shape (and a
-random head if none is trained): it only proves the code runs end to end.
+Prints EfficientNet's 1280 features, its ImageNet top-3 (a check that the model
+works, NOT a deepfake verdict) and the fake score from your trained layer at
+EFFICIENTNET_HEAD_PATH (models/efficientnet_head.pt). Without a trained layer it
+says so instead of printing a made-up score. --random-weights uses an UNTRAINED
+EfficientNet-B0 of the same shape (and a random layer if none is trained): it
+only proves the code runs end to end.
 """
 import argparse
 import os
@@ -23,12 +21,10 @@ import cv2
 import numpy as np
 import torch
 
-sys.path[:0] = [str(Path(__file__).resolve().parents[1] / "backend"), str(Path(__file__).resolve().parents[1])]
-from app.config import Settings  # noqa: E402
-from app.deepfake_engine import efficientnet_wrapper as effnet  # noqa: E402
-from app.deepfake_engine.combined_model import (CombinedDeepfakeModel, EfficientNetDeepfakeModel,  # noqa: E402
-                                                new_head, save_head)
-from app.deepfake_engine.model import TorchScriptDeepfakeModel  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT / "backend"), str(ROOT)]
+from app.ai import efficientnet_wrapper as effnet  # noqa: E402
+from app.ai.combined_model import EfficientNetDeepfakeModel, new_head, save_head  # noqa: E402
 
 
 def drawn_test_image() -> np.ndarray:
@@ -41,7 +37,7 @@ def drawn_test_image() -> np.ndarray:
     return img
 
 
-def use_random_weights(model_id: str):
+def use_random_weights(model_id: str = effnet.MODEL_ID):
     """Fill the wrapper's cache with an untrained EfficientNet-B0 (no download)."""
     from transformers import EfficientNetConfig, EfficientNetForImageClassification, EfficientNetImageProcessor
     config = EfficientNetConfig(image_size=224, width_coefficient=1.0, depth_coefficient=1.0, hidden_dim=1280,
@@ -63,55 +59,31 @@ def main(argv=None):
     ap.add_argument("--image", help="image file (a face crop works best)")
     ap.add_argument("--random-weights", action="store_true", help="untrained EfficientNet, no download")
     args = ap.parse_args(argv)
-    s = Settings()
     image = cv2.imread(args.image) if args.image else drawn_test_image()
     if image is None:
         raise SystemExit(f"could not read {args.image}")
     print(f"Image: {args.image or 'drawn test face'} {image.shape[1]}x{image.shape[0]}")
     if args.random_weights:
-        use_random_weights(s.efficientnet_model_id)
+        use_random_weights()
         print("!! --random-weights: UNTRAINED EfficientNet. Numbers below only prove the code runs.")
-
-    # --- mine
-    mine = None
-    if s.deepfake_model_path and os.path.exists(s.deepfake_model_path):
-        mine = TorchScriptDeepfakeModel(s.deepfake_model_path, s.deepfake_input_size)
-        print(f"\n[mine] fake score: {mine.predict_fake_score(image):.4f}")
-    else:
-        print(f"\n[mine] not configured: no model at DEEPFAKE_MODEL_PATH ({s.deepfake_model_path or 'unset'})")
-
-    # --- efficientnet
     try:
-        features = effnet.extract_features(image, s.efficientnet_model_id)
+        features = effnet.extract_features(image)
     except OSError as exc:  # no internet, or huggingface.co blocked
-        raise SystemExit(f"\nCould not download {s.efficientnet_model_id} from Hugging Face ({type(exc).__name__}). "
-                         "Check your internet connection, or run with --random-weights to check the code "
-                         "without downloading.") from None
-    print(f"\n[efficientnet] features: {features.shape[0]} numbers, first 5: {[round(float(v), 4) for v in features[:5]]}")
-    print(f"[efficientnet] ImageNet top-3 (not a deepfake verdict): {effnet.classify_imagenet(image, 3, s.efficientnet_model_id)}")
-    head_path = s.efficientnet_head_path
+        raise SystemExit(f"\nCould not download {effnet.MODEL_ID} from Hugging Face ({type(exc).__name__}). "
+                         "Check your internet connection, or run with --random-weights.") from None
+    print(f"\nfeatures: {features.shape[0]} numbers, first 5: {[round(float(v), 4) for v in features[:5]]}")
+    print(f"ImageNet top-3 (not a deepfake verdict): {effnet.classify_imagenet(image, 3)}")
+    head_path = os.environ.get("EFFICIENTNET_HEAD_PATH", str(ROOT / "models" / "efficientnet_head.pt"))
     if not os.path.exists(head_path) and args.random_weights:
         head_path = os.path.join(tempfile.mkdtemp(), "random_head.pt")
         save_head(new_head(), head_path, note="random, untrained")
-        print("[efficientnet] no trained head: using a RANDOM head for this plumbing check")
-    eff = None
+        print("no trained layer: using a RANDOM one for this plumbing check")
     if os.path.exists(head_path):
-        eff = EfficientNetDeepfakeModel(head_path, s.efficientnet_model_id)
-        frozen = all(not p.requires_grad for p in eff.backbone.parameters())
-        print(f"[efficientnet] fake score: {eff.predict_fake_score(image):.4f}  (backbone frozen: {frozen})")
+        model = EfficientNetDeepfakeModel(head_path)
+        frozen = all(not p.requires_grad for p in model.backbone.parameters())
+        print(f"fake score: {model.predict_fake_score(image):.4f}  (backbone frozen: {frozen})")
     else:
-        print(f"[efficientnet] no deepfake score: train the head first (scripts/train_efficientnet_head.py); "
-              f"looked for {head_path}")
-
-    # --- both
-    if mine and eff:
-        both = CombinedDeepfakeModel("both", mine, eff, s.deepfake_weight_mine)
-        branches = {k: round(v, 4) for k, v in both.scores_by_branch(image).items()}
-        print(f"\n[both] fake score: {both.predict_fake_score(image):.4f}  (branches: {branches}, "
-              f"weight mine {s.deepfake_weight_mine})")
-    else:
-        print("\n[both] needs both models: " + ", ".join(n for n, m in (("your model", mine), ("EfficientNet head", eff))
-                                                       if not m) + " missing")
+        print(f"no deepfake score: train your layer first (python train_video.py); looked for {head_path}")
 
 
 if __name__ == "__main__":

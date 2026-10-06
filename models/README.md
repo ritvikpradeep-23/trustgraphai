@@ -1,52 +1,40 @@
 # models/
 
-Two things live here.
+Three things live here. None of the trained AI weights are committed: you make them on your own computer.
 
-**The original TrustGraph detector's files** (`anomaly_isolation_forest.joblib`, `risk_bands.json`, `candidate/`).
-These are used by `src/trustgraph` and the demo website. The backend in `app/` doesn't use them.
+**The scam engine's files** (`anomaly_isolation_forest.joblib`, `risk_bands.json`, `candidate/`). These are used by
+`src/trustgraph`, the accuracy and learning routines, and the demo website (`run_website.py`).
 
-**The deepfake video model for the backend API.** It is *not* included: no weights are bundled.
-To enable `POST /api/video/analyze`:
+**The AI-written text model**, `models/text_detector/`: distilroberta-base fine-tuned on human vs AI text by
+`python train_text.py`. The website's `POST /api/text/ai-check` uses it (folder: `AI_TEXT_MODEL_DIR`).
 
-1. Put a TorchScript model here, e.g. `models/deepfake.pt`.
-2. Set `DEEPFAKE_MODEL_PATH=models/deepfake.pt` in `.env`.
-3. Restart the server. `GET /health` shows `"deepfake_model": "configured"`.
+**The deepfake model's trained layer**, `models/efficientnet_head.pt` (~6 KB), made by `python train_video.py` or
+`python scripts/train_efficientnet_head.py --data path/to/faces` (`faces/real/...`, `faces/fake/...`). The website's
+`POST /api/video/analyze` and the extension's media check (`POST /api/media/check`) use it (file:
+`EFFICIENTNET_HEAD_PATH`).
 
-What the adapter (`app/deepfake_engine/model.py`) expects from the model:
+## How the website uses them
 
-- **Input:** one face crop as a float tensor of shape `1 x 3 x S x S`. It is RGB, scaled to 0-1, then normalised
-  with the ImageNet mean `(0.485, 0.456, 0.406)` and std `(0.229, 0.224, 0.225)`. `S` is `DEEPFAKE_INPUT_SIZE`
-  (default 224). If your model was trained with different preprocessing, change `_preprocess` to match.
-- **Output:** either one logit (sigmoid gives the fake probability) or two logits `[real, fake]` (softmax, index 1
-  is "fake").
+The engines are in `backend/app/ai/` and are reached only through `TrustGraphAI.analyze` in
+`backend/app/services/ai_model.py`. A check gives a score only when both are true:
 
-Without a model file the endpoint answers `503 {"error": "model_not_configured"}` and never makes up a score.
-`DEEPFAKE_MOCK=1` switches on a fake model for demos only; every answer it gives contains `"mock": true`.
+1. the AI packages are installed: `python -m pip install -r requirements-ai.txt`
+2. its trained model above exists
 
-## EfficientNet-B0 (Hugging Face) and the three deepfake modes
+Otherwise it answers "pending AI integration; no score was produced". No score is ever made up. Restart the server
+after training so it loads the new model. `AI_THRESHOLD` (default 0.5) sets where a score counts as AI-written / fake.
 
-`DEEPFAKE_MODE` picks what scores each face:
+## EfficientNet-B0 (Hugging Face)
 
-| Mode | Uses | Needs |
-|---|---|---|
-| `mine` (default) | your TorchScript model | `models/deepfake.pt` (`DEEPFAKE_MODEL_PATH`) |
-| `efficientnet` | EfficientNet-B0 + a small trained real/fake layer | `models/efficientnet_head.pt` (`EFFICIENTNET_HEAD_PATH`) |
-| `both` | the average of the two scores (`DEEPFAKE_WEIGHT_MINE`, default 0.5) | both files |
-
-A mode whose files are missing answers `503 model_not_configured`: no score is ever made up.
-
-- **The pretrained model downloads on first use.** `google/efficientnet-b0` is public (~21 MB, no token) and is
-  cached by the `transformers` library.
-- **It doesn't spot deepfakes on its own.** It was trained on 1,000 everyday ImageNet objects. The real/fake
-  decision comes from the head, which you train on labelled real and fake faces:
-
-  ```
-  python scripts/train_efficientnet_head.py --data path/to/faces      # faces/real/..., faces/fake/...
-  ```
-
-  This writes `models/efficientnet_head.pt` (~6 KB) and prints validation accuracy. To check all three modes on
-  one image:
+- **The pretrained model downloads on first use.** `google/efficientnet-b0` is public (~21 MB, no token or API key)
+  and is cached by the `transformers` library.
+- **It doesn't spot deepfakes on its own.** It was trained on 1,000 everyday ImageNet objects. It turns each face into
+  1,280 numbers; the real/fake decision comes from your trained layer on top.
+- Each video: 16 frames spread over the whole clip, the largest face in each (OpenCV), each face scored, then
+  averaged. No face in any frame means no score.
+- To check it on one image:
 
   ```
   python scripts/try_efficientnet_modes.py --image some_face.jpg
+  python scripts/try_efficientnet_modes.py --random-weights      # plumbing check, no download
   ```

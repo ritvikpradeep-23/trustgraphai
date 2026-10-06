@@ -2,7 +2,7 @@
 
 Two detectors and a routine that measures them on fresh, labelled data every few hours:
 
-- **Video:** your layer (the head in `app/deepfake_engine/combined_model.py`) on top of a frozen, pretrained
+- **Video:** your layer (the head in `backend/app/ai/combined_model.py`) on top of a frozen, pretrained
   `google/efficientnet-b0`.
 - **Text:** a small pretrained language model (`distilroberta-base`) fine-tuned on human vs AI text.
 - **Routine:** `run_cycle.py` takes the next unused labelled test batch, scores it and reports. It never trains
@@ -13,7 +13,7 @@ All commands run from the project folder (`C:\Users\Ritvik\trustgraphai`).
 ## Quick start
 
 ```
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-ai.txt
 python check_gpu.py                                   # step 2: is the GPU usable?
 python prepare_data.py text --hc3                     # step 3: text data (size printed before download)
 python prepare_data.py video --folder D:\datasets\celebdf
@@ -40,12 +40,12 @@ python install_schedule.py                            # step 8: every INTERVAL_H
 | `show_report.py` | Prints `reports/latest.md` and the trend from `reports/history.csv`. |
 | `install_schedule.py` | Installs, shows or removes the schedule (Task Scheduler on Windows, cron on macOS/Linux). |
 | `.claude/settings.json` | Lets Claude Code run only these project scripts and `pip install -r requirements.txt`, and read and write only inside this folder. |
-| `tests/test_detection_routine.py` | Offline tests of the plumbing: splits, batches used once, lock, reports, schedule. |
+| `tests/engine/test_detection_routine.py` | Offline tests of the plumbing: splits, batches used once, lock, reports, schedule. |
 
 Where things are written (all on your laptop, never committed):
 
 - `data/detection/`: splits, the list of used batches, and the face-crop cache.
-- `models/efficientnet_head.pt`: the API uses the same file with `DEEPFAKE_MODE=efficientnet`.
+- `models/efficientnet_head.pt`: the website backend uses the same file.
 - `models/text_detector/`
 - `logs/`
 
@@ -53,16 +53,16 @@ Where things are written (all on your laptop, never committed):
 
 ## Using the trained detectors from the extension or website
 
-`python run_server.py` (or double-click `start_server.bat`) starts one local service at http://127.0.0.1:8000:
+The website backend (`python backend/run_server.py`, http://127.0.0.1:8000, needs PostgreSQL: see
+`TRUSTGRAPH_HANDOFF.md`) has the same engines built in, in `backend/app/ai/`:
 
-- `POST /api/text/ai-check`: AI-written text check, using `models/text_detector`. `/api/score` replies (the
-  extension's scam check) also get an `ai_written` field.
-- `POST /api/video/analyze`: deepfake video check, using `models/efficientnet_head.pt` once `.env` has
-  `DEEPFAKE_MODE=efficientnet`. The server picks frames spread over the whole video, the same way the routine
-  measures it.
-- `GET /api/accuracy`: the latest routine results and how many unused test batches are left.
+- `POST /api/text/ai-check`: AI-written text check, using `models/text_detector`.
+- `POST /api/video/analyze`: deepfake video check, using `models/efficientnet_head.pt`. It picks 16 frames spread
+  over the whole video, the same way the routine measures it. `POST /api/media/check` (the extension's
+  click-to-check on images and videos) uses the same model on the frames it is sent.
 
-Until a model is trained, its endpoint answers `503 model_not_configured`. It never makes up a score.
+Each answers only when `requirements-ai.txt` is installed and its model is trained; otherwise it says "pending AI
+integration; no score was produced". It never makes up a score. Restart the backend after training.
 
 ## Step 3: data plan
 
