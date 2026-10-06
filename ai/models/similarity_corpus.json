@@ -430,17 +430,22 @@
   ],
   "voice clone family emergency": [
    "Grandpa did you hear my voicemail? I'm in jail in Mexico, they took my phone. The officer here says $3,000 in gift cards gets me out tonight. Please please don't call my parents, they'll kill me.",
-   "Mum my voice sounds weird because my nose is broken, I was in a fight at uni. I need £600 for the dentist before they close, can you send to my flatmate's account? Sort code 20-45-77, I'll pay back Friday x"
+   "Mum my voice sounds weird because my nose is broken, I was in a fight at uni. I need £600 for the dentist before they close, can you send to my flatmate's account? Sort code 20-45-77, I'll pay back Friday x",
+   "Mom please call me back on this number only, the cops took my phone. I need $2,000 bail, the attorney's assistant will text you how to pay. Please hurry."
   ],
   "bereavement fund scam": [
-   "RIP to your mother, she was an angel. She told me before she died she wanted you to have the gold she kept with me. Courier charges and customs are 12,000, send and I'll ship it tomorrow."
+   "RIP to your mother, she was an angel. She told me before she died she wanted you to have the gold she kept with me. Courier charges and customs are 12,000, send and I'll ship it tomorrow.",
+   "Condolences on your father's passing. Our records show he had an unpaid loan of $3,800 with us. To avoid it passing to the family, settle it today by debit card over the phone."
   ],
   "loneliness companion scam": [
    "You told me you feel alone since your wife passed. I feel it too. I want to fly to see you but the airline won't take my card from Ghana. Can you buy the ticket? It's $1,240. I promise you'll never be lonely again.",
-   "Hey handsome, I'm Anna from the dating app. My premium chat costs $9.99 per message on this site but for you I'll do it free if you verify you're real with your card here: annachat-verify.live"
+   "Hey handsome, I'm Anna from the dating app. My premium chat costs $9.99 per message on this site but for you I'll do it free if you verify you're real with your card here: annachat-verify.live",
+   "Good morning dear, I prayed for you today. I'm stuck at the airport in Istanbul, customs want $650 for my luggage. You're the only person I trust. Please don't let me sleep here.",
+   "I haven't stopped thinking about you since we matched. My bank card is blocked abroad, could you send $200 by Apple gift card so I can eat this week? I'll pay you back when we meet."
   ],
   "military romance": [
-   "Darling I'm a surgeon with the UN in Yemen. I have a box with my savings, 750,000 dollars, that I'm shipping to you for safekeeping. The diplomat will call you for the delivery fee. Please trust me, this is our future."
+   "Darling I'm a surgeon with the UN in Yemen. I have a box with my savings, 750,000 dollars, that I'm shipping to you for safekeeping. The diplomat will call you for the delivery fee. Please trust me, this is our future.",
+   "Honey, I'm finally getting out of the base next month. They need $1,500 for my flight clearance and I can't access my pay out here. Please, I want to be with you."
   ],
   "celebrity impersonation romance": [
    "This is the private account of a famous singer you follow. I read your comments and fell for your kindness. Join my VIP fan card for $350 so we can video call, my manager will send you the link."
@@ -451,13 +456,15 @@
   ],
   "old friend guilt": [
    "Bro remember college days, I always helped you. Now I'm in a bad situation, wife in hospital, no one picking up. Just 15k for 2 days, I'll return Monday. Don't ask questions please, I'm already ashamed.",
-   "I never thought I'd have to ask you this. After everything I did for you when you were down, I need $300 today. My new number, old phone got stolen. Please Venmo @help-jess-now."
+   "I never thought I'd have to ask you this. After everything I did for you when you were down, I need $300 today. My new number, old phone got stolen. Please Venmo @help-jess-now.",
+   "Hey long time! It's Meera from school. Sorry to ask like this but I'm stuck at the hospital with my dad and my card isn't working. Can you send 8,000? I'll return tomorrow, promise."
   ],
   "ex-partner pregnancy extortion": [
    "I'm pregnant and it's yours. I don't want to ruin your marriage so just send 1,000 for the clinic and I'll disappear. If not I'll message your wife tonight."
   ],
   "fake animal rescue": [
-   "This dog will be put down at 6pm today unless someone pays the $250 vet bill 💔🐶 We've had no help. Please send to our CashApp $SaveBuddyNow, every dollar saves a life. Share and donate!"
+   "This dog will be put down at 6pm today unless someone pays the $250 vet bill 💔🐶 We've had no help. Please send to our CashApp $SaveBuddyNow, every dollar saves a life. Share and donate!",
+   "Rescue alert: puppies found in a drain need urgent surgery. Our foundation's account is under audit, please send donations to volunteer Priya's UPI. Every rupee counts!"
   ],
   "religious guilt donation": [
    "God put your name on my heart tonight. Sow a seed of $77 into this ministry and your debts will be cancelled within 7 days. If you ignore this you are ignoring God."
@@ -479,7 +486,8 @@
    "Hi, I'm the recruiter you spoke with. Add me on WhatsApp at +44 7xxx to complete your onboarding. We'll need a copy of your passport and bank details to set up pay."
   ],
   "task job scam": [
-   "Congratulations, you've been shortlisted for an Amazon work-from-home role reviewing products. Training is paid. Message our HR on WhatsApp to begin, small registration fee required."
+   "Congratulations, you've been shortlisted for an Amazon work-from-home role reviewing products. Training is paid. Message our HR on WhatsApp to begin, small registration fee required.",
+   "Hello, I'm Emma from a recruitment agency. We saw your CV. Flexible online job, 60-90 minutes per day, $200-$500 per day. Are you interested? Reply YES."
   ],
   "toll smishing": [
    "FasTrak notice: Outstanding toll on your vehicle. Pay $4.15 within 24h to avoid penalty: fastrak-ca.billing-pay.top. Reply Y then reopen this message to activate the link.",
@@ -496,23 +504,35 @@
    "Used John Deere tractor 2019, only $14,500, we ship nationwide. Pay by wire to reserve, delivery in 5 days. Lots of interest so act fast."
   ],
   "pig-butchering investment": [
-   "Welcome to the SEBI-registered stock group! Our analyst's AI picks returned 312% this month. Download our institutional app to get IPO allotment, minimum 50,000."
+   "Welcome to the SEBI-registered stock group! Our analyst's AI picks returned 312% this month. Download our institutional app to get IPO allotment, minimum 50,000.",
+   "Your account shows a profit of $63,000. To withdraw, the platform requires a security deposit of $6,300 to verify your wallet."
   ],
   "account phishing": [
    "Your Apple ID was used to sign in on a Windows PC in Moscow. If this wasn't you, secure your account now: appleid-secure-review.com",
    "Netflix: your payment failed and your membership is on hold. Update your billing within 24h: netflix-billing-update.co",
    "Your ChatGPT Plus subscription renewed for $199.99. If you did not authorise this, call support at 1-855-xxx-xxxx for a refund.",
-   "Google: we noticed a recovery request for your Gmail. If this wasn't you, reply with the code we just sent to cancel it."
+   "Google: we noticed a recovery request for your Gmail. If this wasn't you, reply with the code we just sent to cancel it.",
+   "Your SBI YONO account will be blocked today. Update your PAN card now: sbi-yono-kyc.in"
   ],
   "tax refund phishing": [
    "Income Tax Dept: you are eligible for a refund of Rs 15,490. Verify your bank account to receive it: incometax-refund-verify.in",
-   "HMRC: You are due a tax rebate of £326.80. Claim before the deadline: hmrc-rebate-claim.uk"
+   "HMRC: You are due a tax rebate of £326.80. Claim before the deadline: hmrc-rebate-claim.uk",
+   "IRS: you have a pending tax refund of $1,286. Submit your bank details to process the payment: irs-refund-status.org"
   ],
   "ticket resale scam": [
    "I have 2 floor tickets for the concert next week, can't go anymore. $180 each, below face value. Pay via Zelle friends and family, I'll transfer them right after."
   ],
   "fake refund": [
    "Amazon: your order of iPhone 17 Pro ($1,199) has been placed. If you didn't order this, call 1-844-xxx to cancel and receive a refund."
+  ],
+  "shame extortion": [
+   "Your video from the hotel room is with us. Pay 50,000 rupees in the next 3 hours or we post it to your family WhatsApp group. Don't try to block us."
+  ],
+  "delivery smishing": [
+   "Evri: we couldn't deliver your parcel today. Pay a small 99p fee to rebook: evri-redeliver.uk/pay"
+  ],
+  "esim swap": [
+   "Airtel: your SIM will be deactivated in 24 hours. Upgrade to eSIM by sending the OTP you received to our executive."
   ]
  },
  "legit_messages": [
@@ -673,7 +693,8 @@
   "WhatsApp code: 381-224. Don't share this code with others.",
   "Hi team, CFO approved the vendor payment in the finance system. Please process per normal workflow once both signatures are in.",
   "Did you see the news about the digital arrest scams? Mum got a call yesterday, she hung up. Please warn your parents too.",
-  "Your DHL parcel cleared customs. Duty of £12.40 was paid on your behalf by the sender."
+  "Your DHL parcel cleared customs. Duty of £12.40 was paid on your behalf by the sender.",
+  "I'm using AnyDesk so the IT team can fix my laptop, they're from our company's helpdesk, ticket #4521."
  ],
  "normalized": false
 }
