@@ -206,6 +206,8 @@ added to `/api/score` replies as `ai_written` once the text model is trained), d
 routine's latest results (`GET /api/accuracy`). All endpoints are listed at `/docs`. The older
 `python run_website.py` (scam check + page only) still works; don't run both, they use the same port.
 
+**What it can and can't do, and how to tune it:** [`docs/CAPABILITIES_AND_LIMITS.md`](docs/CAPABILITIES_AND_LIMITS.md).
+
 **Learning new scams:** `learn_cycle.py` takes one fresh dataset it has never used (yours from
 `data/learning/datasets/`, else a new synthetic one) plus reported scams (`POST /api/feedback`, `add_examples.py`),
 records how many it caught *before* learning them, learns the misses, then waits 2 hours before the next dataset. Every new version must pass the safety
