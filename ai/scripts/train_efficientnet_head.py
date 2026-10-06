@@ -29,7 +29,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-sys.path[:0] = [str(Path(__file__).resolve().parents[1] / "backend"), str(Path(__file__).resolve().parents[1])]
+sys.path[:0] = [str(Path(__file__).resolve().parents[2] / "backend"), str(Path(__file__).resolve().parents[1])]  # website backend, ai/
 from app.ai import efficientnet_wrapper as effnet  # noqa: E402
 from app.ai.combined_model import new_head, save_head  # noqa: E402
 

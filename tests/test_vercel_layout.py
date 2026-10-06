@@ -63,7 +63,7 @@ class VercelLayoutTests(unittest.TestCase):
         source = (ROOT / "front end/src/config/appConfig.ts").read_text()
         self.assertIn('VITE_API_BASE_URL ?? "/api"', source)
         ignore = (ROOT / ".vercelignore").read_text()
-        for path in (".env", "/backup/", "/.venv/", "/models/*"):
+        for path in (".env", "/backup/", "/.venv/", "/ai/*", "/ai/models/*"):
             self.assertIn(path, ignore.splitlines())
-        self.assertIn("!/src/trustgraph/", ignore.splitlines())
+        self.assertIn("!/ai/src/trustgraph/", ignore.splitlines())
         self.assertNotIn("src", ignore.splitlines(), "A bare src rule could exclude front end/src")

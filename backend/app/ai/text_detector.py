@@ -1,5 +1,5 @@
 """AI-written text detector: a small pretrained language model (distilroberta-base
-by default) with a 2-class layer, fine-tuned by train_text.py. Label 1 = AI-written."""
+by default) with a 2-class layer, fine-tuned by ai/train_text.py. Label 1 = AI-written."""
 import numpy as np
 
 

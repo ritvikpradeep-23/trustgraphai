@@ -15,12 +15,14 @@ All numbers are on synthetic data, not real-world accuracy.
 """
 import csv
 import json
+import os
 import sys
 import time
 from pathlib import Path
 
 import numpy as np
 
+os.chdir(Path(__file__).resolve().parents[1])  # the ai/ folder: rounds, engine and models are relative to it
 sys.path[:0] = ["src", "."]
 from eval import metrics  # noqa: E402
 from routine import core  # noqa: E402

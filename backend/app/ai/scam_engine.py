@@ -11,25 +11,26 @@ import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[3]
+AI = ROOT / "ai"  # the AI folder: models/, src/trustgraph and data/precedent live here
 URGENCY = re.compile(r"\b(urgent(?:ly)?|immediately|right now|asap|today|tonight|quickly|hurry|final (?:notice|warning)|act now)\b", re.I)
 logger = logging.getLogger("trustgraph.scam")
 
 
 @lru_cache(maxsize=1)
 def engine():
-    if not (ROOT / "models/anomaly_isolation_forest.joblib").is_file():
+    if not (AI / "models/anomaly_isolation_forest.joblib").is_file():
         return None
     try:
-        source = str(ROOT / "src")
+        source = str(AI / "src")
         if source not in sys.path:
             sys.path.insert(0, source)
         from trustgraph import paths
-        paths.DEFAULT_DIR = str(ROOT / "models")
+        paths.DEFAULT_DIR = str(AI / "models")
         from trustgraph.pipeline import score_interaction
         from trustgraph.fusion import risk_band
         # Resolve the baseline paths without changing process working directory.
         from trustgraph.precedent import detector as precedent
-        precedent.REPORTS_PATH = str(ROOT / "data/precedent/reports.json")
+        precedent.REPORTS_PATH = str(AI / "data/precedent/reports.json")
         from trustgraph.anomaly import detector as anomaly
         anomaly._load_bundle()
         return score_interaction, risk_band

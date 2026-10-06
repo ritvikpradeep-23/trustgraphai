@@ -21,8 +21,8 @@ import cv2
 import numpy as np
 import torch
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT / "backend"), str(ROOT)]
+ROOT = Path(__file__).resolve().parents[1]                     # the ai/ folder
+sys.path[:0] = [str(ROOT.parent / "backend"), str(ROOT)]       # the website backend holds the engine code
 from app.ai import efficientnet_wrapper as effnet  # noqa: E402
 from app.ai.combined_model import EfficientNetDeepfakeModel, new_head, save_head  # noqa: E402
 

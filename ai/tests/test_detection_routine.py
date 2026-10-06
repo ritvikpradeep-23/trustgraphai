@@ -25,7 +25,7 @@ import video_detector
 from app.ai import efficientnet_wrapper as effnet
 from detection_common import check_interval, group_split, make_batches
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import try_efficientnet_modes  # noqa: E402
 
 REAL_CONFIG = detection_common.load_config()

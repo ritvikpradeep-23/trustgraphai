@@ -7,26 +7,27 @@ __pycache__/
 *.pyc
 .venv/
 .pytest_cache/
-eval/batches/
-eval/external/
-training/.cache/
+ai/eval/batches/
+ai/eval/external/
+ai/training/.cache/
 
 # Backend: user-submitted reports are private data, never committed
 data/scam_reports.json
+ai/data/scam_reports.json
 # Known-fakes fingerprint database (built by scripts/seed_fingerprints.py)
 data/fingerprints.sqlite3*
 .env
 
 # Detectors + accuracy routine: datasets, caches, trained weights and logs stay on your laptop
-data/detection/
+ai/data/detection/
 logs/
-models/efficientnet_head.pt
-models/text_detector/
+ai/models/efficientnet_head.pt
+ai/models/text_detector/
 
 # New-scam learning: reported and inbox messages are private, and so are versions built from them
-data/learning/
-models/candidate/learn_*/
-runs/learning_best.json
+ai/data/learning/
+ai/models/candidate/learn_*/
+ai/runs/learning_best.json
 
 # Local-only secrets and data backups
 .env.*
@@ -43,3 +44,13 @@ backup/
 *.sqlite
 *.sqlite3
 *.db
+
+# Old places of the AI files (before they moved into ai/). Anything still there on
+# your computer is moved by: python ai/move_local_files.py
+/eval/
+/training/
+/models/
+/data/detection/
+/data/learning/
+/runs/
+/reports/

@@ -2,7 +2,7 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import promote_model  # noqa: E402
 
 from training.bundle import write_bundle  # noqa: E402

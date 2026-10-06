@@ -5,9 +5,9 @@ EfficientNet-B0 (pretrained on ImageNet, from Hugging Face) turns a face into
 into a fake score. The backbone is FROZEN by default: only the head learns,
 which needs little data and can't damage what EfficientNet already knows.
 unfreeze_last_blocks() lets the last blocks adapt later, at a much lower
-learning rate (see train_video.py).
+learning rate (see ai/train_video.py).
 
-The head is trained by train_video.py and saved to models/efficientnet_head.pt.
+The head is trained by ai/train_video.py and saved to ai/models/efficientnet_head.pt.
 """
 import copy
 import logging
