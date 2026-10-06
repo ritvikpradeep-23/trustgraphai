@@ -1,8 +1,7 @@
-"""Compatibility ASGI shim retained from the upstream deployment change.
-
-The canonical root vercel.json uses Services and backend/app/main.py directly;
-it does not route to this legacy function. This shim contains no backend
-implementation and remains importable for integrations that already use it.
+"""Vercel entry point: the FastAPI app in backend/app/main.py as one Python
+function. vercel.json rewrites /api/*, /health*, /docs, /redoc and
+/openapi.json here (FastAPI sees the original path); every other route is the
+React site built from "front end/". No backend code lives here.
 Locally run `python backend/run_server.py` from the repository root.
 """
 import sys

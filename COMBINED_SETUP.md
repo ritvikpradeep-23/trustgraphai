@@ -55,4 +55,4 @@ The current API is unauthenticated and must stay private/local. No new trained A
 
 ## Vercel: import the repository root, not the frontend folder
 
-Root `vercel.json` now defines one Vercel Services project with a Vite frontend and FastAPI backend, with same-origin `/api` routing and SPA deep links. See `docs/VERCEL_DEPLOYMENT.md` for required environment settings, deployment protection, and what local tests do/do not prove. No cloud deployment was performed.
+Root `vercel.json` defines one ordinary Vercel project: the Vite site as static files and the FastAPI backend as one Python function (`api/index.py`), with same-origin `/api` routing and SPA deep links. No beta Services feature is needed. See `docs/VERCEL_DEPLOYMENT.md` for required environment settings, deployment protection, and what local tests do/do not prove. No cloud deployment was performed.
