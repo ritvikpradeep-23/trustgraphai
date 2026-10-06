@@ -115,6 +115,10 @@ def windows(action: str, hours: int, dry_run: bool, routine: dict = ROUTINES["ac
     result = subprocess.run(cmd, capture_output=True, text=True)
     if xml_file:
         Path(xml_file).unlink(missing_ok=True)
+    if result.returncode != 0 and action in ("show", "remove"):
+        # schtasks says "cannot find the file specified" when the task doesn't exist: not an error here.
+        print(f"{name} is not installed." if action == "show" else f"{name} was not installed; nothing to remove.")
+        return
     print((result.stdout or result.stderr).strip())
     if result.returncode != 0:
         raise SystemExit(f"schtasks failed ({result.returncode})")
