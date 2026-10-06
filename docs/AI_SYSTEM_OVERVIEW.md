@@ -1,5 +1,7 @@
 # TrustGraph AI: what is being built
 
+For every function's capabilities, limits and tuning settings, see `docs/CAPABILITIES_AND_LIMITS.md`.
+
 TrustGraph checks what people receive in chats for three things:
 
 1. **Scam messages**: texts that try to trick you (fake bank alerts, OTP requests, fake jobs…).
