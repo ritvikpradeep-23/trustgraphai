@@ -35,7 +35,7 @@ export function ChartHeading({ eyebrow, title, link, to = "/app/analytics" }: { 
   return <div className="section-heading"><div><span className="eyebrow">{eyebrow}</span><h2 data-testid={`section-title-${title.toLowerCase().replaceAll(" ", "-")}`}>{title}</h2></div>{link && <Link to={to} className="section-link"><ArrowUpRight size={14} />{link}</Link>}</div>;
 }
 
-const channelNames = { whatsapp: "WhatsApp", gmail: "Gmail", messenger: "Messenger", instagram: "Instagram", other: "Other" };
+const channelNames = { whatsapp: "WhatsApp", gmail: "Gmail", messenger: "Messenger", instagram: "Instagram", linkedin: "LinkedIn", telegram: "Telegram", discord: "Discord", slack: "Slack", generic: "Other sites", test: "Test page", other: "Other" };
 export function ChannelBars({ data }: { data: AnalyticsData["channels"] }) {
   const max = Math.max(...data.map(item => item.count), 1);
   return <div className="channel-bars" data-testid="channel-breakdown-chart">{data.map(item => <div className="channel-row" key={item.channel}><span>{channelNames[item.channel]}</span><div><i style={{ width: `${item.count / max * 100}%` }} /></div><strong>{item.count}</strong></div>)}</div>;

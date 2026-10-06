@@ -13,8 +13,8 @@ one backend.
 
 Privacy: a Result has no field that can hold message text (the request model
 forbids extra fields and validates every value's shape), and only a SHA-256 of
-each token is stored. This backend has no user accounts: anyone who can reach
-it can create a pairing code, so keep it private (see docs/VERCEL_DEPLOYMENT.md).
+each token is stored. Pairing codes require an account session and CSRF token.
+Extension tokens and synced results are scoped to that account.
 """
 import hashlib
 import re
@@ -22,18 +22,18 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Literal
 
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.core.database import (
-    ExtensionHeartbeatRecord,
     ExtensionResultRecord,
     ExtensionTokenRecord,
     PairingCodeRecord,
     get_db,
 )
+from app.core.accounts import Account, AccountExtension, AccountPairing, current_user, require_csrf, rate_limit
 
 router = APIRouter(tags=["Extension workspace"])
 
@@ -57,16 +57,20 @@ def paired_extension(authorization: str | None = Header(default=None), db: Sessi
     record = db.scalar(select(ExtensionTokenRecord).where(ExtensionTokenRecord.token_hash == _hash(token))) if token else None
     if record is None:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Pair the extension with a code from the workspace first.")
+    if db.get(AccountExtension, record.token_id) is None:
+        raise HTTPException(401, "This legacy pairing has no account owner. Sign in and pair again.")
     return record
 
 
 # --- pairing -----------------------------------------------------------------
-@router.post("/extension/pairing-code")
-def pairing_code(db: Session = Depends(get_db)) -> dict:
+@router.post("/extension/pairing-code", dependencies=[Depends(require_csrf)])
+def pairing_code(request: Request, user: Account = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+    rate_limit(db, request, "pairing-code", user.user_id)
     pick = lambda: "".join(secrets.choice(CODE_LETTERS) for _ in range(4))  # noqa: E731
     code = f"{pick()}-{pick()}"
-    db.execute(delete(PairingCodeRecord).where(PairingCodeRecord.created_at < _now() - CODE_TTL))
     db.add(PairingCodeRecord(code=code, created_at=_now(), used=False))
+    db.flush()
+    db.add(AccountPairing(code=code, user_id=user.user_id))
     db.commit()
     return {"code": code, "expiresAt": (_now() + CODE_TTL).isoformat()}
 
@@ -76,14 +80,19 @@ class PairRequest(BaseModel):
 
 
 @router.post("/extension/pair")
-def pair(body: PairRequest, db: Session = Depends(get_db)) -> dict:
+def pair(body: PairRequest, request: Request, db: Session = Depends(get_db)) -> dict:
+    rate_limit(db, request, "pair")
     code = body.code.strip().upper()
-    record = db.get(PairingCodeRecord, code)
-    if record is None or record.used or record.created_at.replace(tzinfo=record.created_at.tzinfo or timezone.utc) < _now() - CODE_TTL:
+    record = db.scalar(select(PairingCodeRecord).where(PairingCodeRecord.code == code).with_for_update())
+    owner = db.get(AccountPairing, code)
+    if record is None or owner is None or record.used or record.created_at.replace(tzinfo=record.created_at.tzinfo or timezone.utc) < _now() - CODE_TTL:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "That code didn't work. Get a new one from the workspace and try again.")
     record.used = True
     token = "tg_" + secrets.token_urlsafe(32)
-    db.add(ExtensionTokenRecord(token_id=f"ext_{secrets.token_hex(6)}", token_hash=_hash(token), name="TrustGraph workspace", created_at=_now()))
+    ext = ExtensionTokenRecord(token_id=f"ext_{secrets.token_hex(6)}", token_hash=_hash(token), name="TrustGraph workspace", created_at=_now())
+    db.add(ext)
+    db.flush()
+    db.add(AccountExtension(token_id=ext.token_id, user_id=owner.user_id, last_seen=_now()))
     db.commit()
     return {"token": token, "account": {"name": "TrustGraph workspace"}}
 
@@ -95,7 +104,7 @@ class ResultIn(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     id: str
-    timestamp: float
+    timestamp: float = Field(ge=0, le=4102444800000, allow_inf_nan=False)
     riskLevel: Literal["low", "caution", "high"]
     score: int = Field(ge=0, le=100)
     signalIds: list[str] = Field(max_length=8)
@@ -106,28 +115,28 @@ class ResultIn(BaseModel):
     @field_validator("id")
     @classmethod
     def _id(cls, v):
-        if not RESULT_ID.match(v):
+        if not RESULT_ID.fullmatch(v):
             raise ValueError("bad id")
         return v
 
     @field_validator("signalIds")
     @classmethod
     def _signals(cls, v):
-        if not all(TOKEN.match(s) for s in v):
+        if not all(TOKEN.fullmatch(s) for s in v):
             raise ValueError("signal ids are short tokens, never text")
         return v
 
     @field_validator("channel")
     @classmethod
     def _channel(cls, v):
-        if not TOKEN.match(v):
+        if not TOKEN.fullmatch(v):
             raise ValueError("bad channel")
         return v
 
     @field_validator("domain")
     @classmethod
     def _domain(cls, v):
-        if not HOST.match(v):
+        if not HOST.fullmatch(v):
             raise ValueError("domain is a hostname only")
         return v
 
@@ -149,6 +158,7 @@ def save_result(body: ResultIn, ext: ExtensionTokenRecord = Depends(paired_exten
     record.timestamp = datetime.fromtimestamp(body.timestamp / 1000, tz=timezone.utc)
     record.risk_level, record.score, record.signal_ids = body.riskLevel, body.score, body.signalIds
     record.channel, record.domain = body.channel, body.domain
+    db.get(AccountExtension, ext.token_id).last_seen = _now()
     db.commit()
     return {"ok": True, "id": body.id}
 
@@ -188,13 +198,14 @@ class FeedbackIn(BaseModel):
 
 
 @router.post("/feedback")
-def feedback(body: FeedbackIn, db: Session = Depends(get_db)) -> dict:
+def feedback(body: FeedbackIn, ext: ExtensionTokenRecord = Depends(paired_extension), db: Session = Depends(get_db)) -> dict:
     """The verdict id only. Marks a synced Result as a false alarm."""
     record = db.get(ExtensionResultRecord, body.resultId)
-    if record is not None:
+    if record is not None and record.token_id == ext.token_id:
         record.feedback = "false_alarm"
         db.commit()
-    return {"ok": True, "found": record is not None}
+        return {"ok": True, "found": True}
+    return {"ok": True, "found": False}
 
 
 # --- heartbeat --------------------------------------------------------------------
@@ -204,12 +215,7 @@ class HeartbeatIn(BaseModel):
 
 
 @router.post("/status")
-def heartbeat(body: HeartbeatIn, db: Session = Depends(get_db)) -> dict:
-    source = body.source if TOKEN.match(body.source or "") else "extension"
-    record = db.get(ExtensionHeartbeatRecord, source)
-    if record is None:
-        db.add(ExtensionHeartbeatRecord(source=source, last_seen=_now()))
-    else:
-        record.last_seen = _now()
+def heartbeat(body: HeartbeatIn, ext: ExtensionTokenRecord = Depends(paired_extension), db: Session = Depends(get_db)) -> dict:
+    db.get(AccountExtension, ext.token_id).last_seen = _now()
     db.commit()
     return {"ok": True}

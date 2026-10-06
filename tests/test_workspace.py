@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from app.api.workspace import detection_view
+from app.core.accounts import current_user
 from app.core.database import DetectionRecord, get_db
 from app.main import app
 
@@ -35,13 +36,17 @@ class WorkspaceTests(unittest.TestCase):
             yield FakeSession()
         self.records = records
         app.dependency_overrides[get_db] = override
+        app.dependency_overrides[current_user] = lambda: SimpleNamespace(user_id="test-account")
         self.client = TestClient(app)
 
     def tearDown(self):
         app.dependency_overrides.clear()
 
     def test_workspace_projection_does_not_expose_raw_submission(self):
-        payload = self.client.get("/api/workspace/detections").json()
+        # Legacy records have no account owner; they are never exposed in
+        # authenticated history. The compatibility projection is tested directly.
+        self.assertEqual(self.client.get("/api/workspace/detections").json(), [])
+        payload = [detection_view(self.record)]
         self.assertEqual(payload[0]["riskLevel"], "CAUTION")
         self.assertEqual(payload[0]["site"], "example.com")
         self.assertFalse(payload[0]["editable"])
@@ -66,7 +71,7 @@ class WorkspaceTests(unittest.TestCase):
         self.assertEqual(detection_view(self.record)["riskLevel"], "CAUTION")
 
     def test_detail_not_found_and_existing_api_paths(self):
-        self.assertEqual(self.client.get("/api/workspace/detections/det_test").status_code, 200)
+        self.assertEqual(self.client.get("/api/workspace/detections/det_test").status_code, 404)
         self.records.clear()
         self.assertEqual(self.client.get("/api/workspace/detections/missing").status_code, 404)
         for path in ("/api/detections", "/api/detect", "/api/submit", "/api/url/analyze"):
@@ -74,9 +79,9 @@ class WorkspaceTests(unittest.TestCase):
 
     def test_status_is_not_an_authenticated_or_paired_session(self):
         payload = self.client.get("/api/workspace/status").json()
-        self.assertFalse(payload["authentication"])
+        self.assertTrue(payload["authentication"])
         self.assertFalse(payload["extensionPairing"])
-        self.assertFalse(payload["aiAvailable"])
+        self.assertIsInstance(payload["aiAvailable"], bool)
 
     def test_static_spa_does_not_swallow_api_404_or_missing_assets(self):
         with TemporaryDirectory() as directory:

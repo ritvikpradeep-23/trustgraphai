@@ -40,7 +40,8 @@ if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL environment variable is required")
 
 # pre_ping: serverless instances can hold a connection the database closed.
-engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_timeout=5,
+                       connect_args={"connect_timeout": 5})
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 

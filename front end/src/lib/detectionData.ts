@@ -32,14 +32,20 @@ export function buildAnalytics(items: Detection[], range: DateRange = {}, now = 
   const low = detections.filter(item => item.riskLevel === "LOW" || item.riskLevel === "SAFE").length;
   const caution = detections.filter(item => item.riskLevel === "CAUTION").length;
   const high = detections.filter(item => item.riskLevel === "HIGH" || item.riskLevel === "CRITICAL").length;
-  const pending = detections.filter(item => item.riskLevel === "PENDING").length;
+  const pending = detections.filter(item => item.riskLevel === "PENDING" || item.riskLevel === "UNKNOWN").length;
   const assessed = low + caution + high;
   const end = new Date(range.to ?? now);
   const earliest = detections.length ? Math.min(...detections.map(item => new Date(item.createdAt).getTime())) : dateRangeForDays(7, end).from!;
   const start = new Date(range.from ?? earliest);
+  // Reject reversed/invalid ranges before constructing chart dates.
+  if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || start > end) {
+    return { summary: { total: 0, low: 0, caution: 0, high: 0, pending: 0, reviewed: 0, highRate: null }, timeseries: [], distribution: [], channels: [] };
+  }
   start.setHours(0, 0, 0, 0);
   const days: Date[] = [];
-  for (const day = new Date(start); day <= end; day.setDate(day.getDate() + 1)) days.push(new Date(day));
+  // Bound chart work for malformed/very old dates while retaining all totals.
+  const chartStart = new Date(Math.max(start.getTime(), end.getTime() - 365 * 86400000));
+  for (const day = new Date(chartStart); day <= end; day.setDate(day.getDate() + 1)) days.push(new Date(day));
   const count = Math.min(7, days.length);
   const timeseries = Array.from({ length: count }, (_, index) => {
     const day = days[Math.round(index * (days.length - 1) / Math.max(count - 1, 1))];
@@ -57,6 +63,6 @@ export function buildAnalytics(items: Detection[], range: DateRange = {}, now = 
     summary: { total: detections.length, low, caution, high, pending, reviewed: detections.filter(item => item.status === "reviewed").length, highRate: assessed ? Math.round(high / assessed * 100) : null },
     timeseries,
     distribution: [{ label: "Low / safe", count: low, color: "#3EE6A8" }, { label: "Caution", count: caution, color: "#FFB938" }, { label: "High / critical", count: high, color: "#FF5468" }, ...(pending ? [{ label: "Pending", count: pending, color: "#7E92C3" }] : [])],
-    channels: (["whatsapp", "gmail", "messenger", "instagram", "other"] as const).map(channel => ({ channel, count: detections.filter(item => item.channel === channel).length })),
+    channels: (["whatsapp", "gmail", "messenger", "instagram", "linkedin", "telegram", "discord", "slack", "generic", "test", "other"] as const).map(channel => ({ channel, count: detections.filter(item => item.channel === channel).length })),
   };
 }

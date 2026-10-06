@@ -8,13 +8,12 @@ TrustGraph checks what people receive in chats for three things:
 2. **Deepfake videos**: videos where a face has been swapped or generated.
 3. **AI-written text**: messages written by an AI model instead of a person.
 
-Everything runs **on your own laptop**. No accounts, no API keys, no cloud service; message text never leaves the
-computer.
+The full model runtime can run **on your own laptop**, without an external model-provider key. The workspace now has real accounts; remote extension checks transmit text transiently to the backend address you configure. The default Vercel runtime uses catalog fallback rather than the trained scam model. See [current integration and limits](ACCOUNT_EXTENSION_INTEGRATION.md).
 
 > Status: the website backend (`python backend/run_server.py`, http://127.0.0.1:8000) now has the AI-text and
 > deepfake engines built in (`backend/app/ai/`). They answer once you install `requirements-ai.txt` and train them on
 > your computer; until then they say "pending" and never make up a score. Both detectors are **not trained on real
-> data yet**. The 4-signal scam engine and the two routines run as stand-alone Python scripts.
+> data yet**. The original 4-signal scam engine is also connected to `/api/detect` and account Analyze checks when `requirements-scam.txt` is installed. Training routines remain separate.
 
 ---
 
@@ -58,7 +57,7 @@ or without trained model files, each AI check answers "pending AI integration; n
 | **Output** | Low / Caution / High + score + explanation | Fake score 0–1 per video (average of frame scores) | AI score 0–1 per text |
 | **Trained on** | Synthetic scam/legit messages (labelled as synthetic) | Not yet. Plan: Celeb-DF v2 | Not yet. Plan: HC3 |
 | **Code** | `src/trustgraph/` | `backend/app/ai/` (engine), `video_detector.py`, `train_video.py` | `backend/app/ai/text_detector.py`, `text_detector.py`, `train_text.py` |
-| **Reachable over HTTP** | ❌ stand-alone (the website uses its own PostgreSQL matching) | ✅ `POST /api/video/analyze`, `POST /api/media/check` (after training) | ✅ `POST /api/text/ai-check` (after training) |
+| **Reachable over HTTP** | ✅ `/api/detect`, `/api/workspace/checks` when the original model/runtime is installed; catalog fallback otherwise | ✅ `POST /api/video/analyze`, `POST /api/media/check` (after training) | ✅ `POST /api/text/ai-check` (after training) |
 | **Shown by the extension** | via the website's own scam matching | media check result (after training) | ❌ not yet |
 
 ### Your own model's role (deepfake video)

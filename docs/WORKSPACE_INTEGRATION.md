@@ -10,27 +10,28 @@ Only `.env.example` is committed; `.env`, frontend `.env.local`, dependencies, v
 
 ## Adapter contract
 
-- `GET /api/workspace/detections`: read-only frontend DTOs. Existing `/api/detections` contracts remain unchanged.
+- `GET /api/workspace/detections`: signed-in account's metadata DTOs only. Legacy unowned records are preserved but not exposed as account history.
 - `GET /api/workspace/detections/{id}`: projected detail or JSON 404.
-- `GET /api/workspace/status`: the browser extension's state from its heartbeat (`CONNECTED` if it checked in within 2 minutes, `NOT CONNECTED` after that, `UNKNOWN` before the first one), `lastSeen`, and whether any extension is paired. There is still no user authentication. Message checks use deterministic database matching; AI modalities remain unavailable.
+- `GET /api/workspace/status`: signed-in account's extension state (`CONNECTED` if its authenticated heartbeat is within 2 minutes, otherwise `NOT CONNECTED`), `lastSeen`, pairing and original scam-engine availability.
+- `POST /api/workspace/checks`: session/CSRF-protected Analyze request; persists verdict metadata only.
 
-The projection maps MEDIUM to CAUTION and unsupported/invalid scores to PENDING. It excludes raw submission fields and returns only a URL hostname. Historical backend explanation strings are retained. Current history is unpaginated at the API; the frontend filters/paginates it in memory. Add server-side pagination before large deployments.
+Current account history excludes raw messages, sender identities, model explanation text and URL paths. Legacy projection helpers remain for compatibility but are not used to return unowned records. The API is unpaginated; frontend filtering/pagination does not replace bounded server queries before large deployments.
 
-Message analysis calls `/api/detect` without a submission ID: previous-report matching reads the database, but no message/result is persisted. URL analysis is deterministic and does not make outbound requests. Text checks now use the existing report matcher directly, without AI. Scores are text similarity, not fraud probability. UNKNOWN means no known match, not safe. Seed the 300-message synthetic catalog (36 original + 264 ScamShield samples) using `python scripts/seed_demo_patterns.py`; verify via `python scripts/verify_demo_patterns.py` against the running API. No account tokens or pairing status are produced.
+The web Analyze page now calls `/api/workspace/checks`; the extension uses stateless `/api/detect`. Both combine the original trained anomaly/four-signal engine when installed with catalog matching, otherwise explicitly fall back. Scores are review evidence/text similarity, not calibrated fraud probability. UNKNOWN is not safe. URL structure checks do not make outbound requests or save history. Seed the 300-message synthetic catalog (36 original + 264 ScamShield samples) using `python scripts/seed_demo_patterns.py`. See [current account/model setup](ACCOUNT_EXTENSION_INTEGRATION.md).
 
 ## Browser extension ↔ workspace
 
 `backend/app/api/extension_sync.py` implements the contract the extension already spoke (`trustgraph_extension/shared/api-client.js`, `TG.WEBAPP`):
 
-1. Workspace **Settings → New code** calls `POST /api/extension/pairing-code` and shows a one-time code (10 minutes).
+1. Sign in, then workspace **Settings → New code** calls CSRF-protected `POST /api/extension/pairing-code` and shows a one-time code (10 minutes).
 2. In the extension popup, the user enters it under "Have a pairing code?". The extension calls `POST /api/extension/pair` and keeps the returned token; the backend stores only its SHA-256.
 3. From then on, every verdict the extension saves is synced with `POST /api/results` (Bearer token). It is the extension's Result record only: level, 0-100 score, signal type ids, channel, hostname. The request model forbids extra fields and checks each value's shape, so message text, senders or URL paths are rejected (422). Stored in `extension_results`.
-4. `GET /api/workspace/detections` lists these next to backend detections (`engineVersion: "browser-extension"`), and the detail page shows them. "Mark as wrong verdict" in the extension (`POST /api/feedback`, verdict id only) shows as a false alarm. "Open in workspace" opens `/app/detections/<id>`.
-5. The extension's heartbeat (`POST /api/status`, every 15 s on supported sites) drives the dashboard's extension status.
+4. Account-owned extension results appear alongside that account's Analyze checks. "Mark as wrong verdict" requires the owning extension's Bearer token and appears as a false alarm. "Open in workspace" opens `/app/detections/<id>`.
+5. Authenticated heartbeat (`POST /api/status`, every 15 s on supported sites) drives only the owning account's status. The website refreshes history/analytics/status every 15 seconds.
 
-The extension uses its server URL as the workspace unless Settings → Web app URL says otherwise (on-device-only mode keeps the built-in demo web app). Tests: `tests/test_extension_sync.py` (needs `TEST_DATABASE_URL`) and `trustgraph_extension/test/workspace-e2e.js` (real backend + built site + extension in Chromium).
+The extension uses its server URL as the workspace unless Settings → Web app URL says otherwise (on-device-only mode keeps the built-in demo web app). Regression tests: `tests/test_extension_sync.py` (requires a separate disposable `TEST_DATABASE_URL`) and `scripts/verify_account_integration.py` (temporary schema, wholly rolled back). The older browser E2E harness predates account login and was not run as current proof.
 
-Anyone who can reach this API can create a pairing code: there are no user accounts. Keep it private, as below.
+Pairing-code issuance now requires a real account session and CSRF token. Pairing tokens are account-owned; old unowned tokens require pairing again. For the precise auth flow and security limits see `ACCOUNT_EXTENSION_INTEGRATION.md`.
 
 ## Verification
 
@@ -50,6 +51,6 @@ Workspace tests use fake sessions, never the configured database. They verify om
 
 ## Deployment limits
 
-No authentication or per-user authorization is implemented by the backend. Do not expose it to the internet as-is. Existing raw API endpoints can return submission data; the sanitized view is not an access-control boundary. Disabled frontend buttons also are not authorization.
+Accounts and per-user history authorization are implemented. Hosted mode blocks legacy unowned submission/report/history/relationship endpoints; local-only administration remains compatible. These changes are not an independent security audit. Keep the prototype restricted until reviewed.
 
-AI-written/media detection, workspace-side review/feedback writes, notifications, and account deletion remain unavailable (extension pairing, verdict sync and extension feedback are implemented, see above). Analytics reflect stored backend values, not a trained model. Backend startup uses create_all, not migrations. Production needs authorization, migrations, bounded queries, input limits, observability, and trained/validated detectors.
+AI-written/deepfake weights, workspace-side review/delete, notifications, email recovery and account deletion remain unavailable. Analytics reflect stored verdict metadata, not recomputed probabilities. Startup uses additive create_all, not versioned migrations. Production still needs migrations, bounded queries, abuse controls, proxy-aware rate limiting, extension token revocation, observability and independent detector validation. The default lightweight Vercel bundle excludes original scam-model assets/dependencies and uses catalog fallback; local full-runtime inference is connected.

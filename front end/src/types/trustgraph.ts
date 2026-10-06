@@ -1,5 +1,5 @@
 export type RiskLevel = "SAFE" | "LOW" | "CAUTION" | "HIGH" | "CRITICAL" | "PENDING" | "UNKNOWN";
-export type Channel = "whatsapp" | "gmail" | "messenger" | "instagram" | "other";
+export type Channel = "whatsapp" | "gmail" | "messenger" | "instagram" | "linkedin" | "telegram" | "discord" | "slack" | "generic" | "test" | "other";
 export type DetectionStatus = "new" | "reviewed";
 export type Feedback = "none" | "right" | "false_alarm";
 
@@ -19,6 +19,7 @@ export interface Detection {
   site: string;
   riskLevel: RiskLevel;
   riskScore: number | null;
+  scoreMetric?: string;
   explanation: string;
   signals: Signal[];
   confidence?: number;

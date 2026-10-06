@@ -18,7 +18,10 @@ def score(request: ScoreRequest, db: Session = Depends(get_db)):
     result = detect(DetectionRequest(text=request.message_text, channel=request.channel), db)
     if result.risk_score is None:
         raise HTTPException(503, "No database match; use the extension's local rule fallback.")
-    return {"band": "High", "score": result.risk_score,
+    band = {"LOW": "Low", "SAFE": "Low", "CAUTION": "Caution", "HIGH": "High", "CRITICAL": "High"}.get(result.risk_level)
+    if band is None:
+        raise HTTPException(503, "No available verdict; use the extension's local rule fallback.")
+    return {"band": band, "score": result.risk_score,
             "explanation": " ".join(result.reasons),
-            "signals": [{"name": "similarity", "score": result.risk_score}],
+            "signals": [{"name": name, "score": value} for name, value in result.signals.model_dump().items() if value is not None],
             "method": result.method}

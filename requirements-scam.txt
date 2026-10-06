@@ -1,0 +1,5 @@
+# Optional original TrustGraph scam engine only (no Torch downloads).
+-r requirements-dev.txt
+joblib==1.6.0
+pandas==3.0.6
+scikit-learn==1.9.1

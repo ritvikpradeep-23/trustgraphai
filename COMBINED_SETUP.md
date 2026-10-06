@@ -6,8 +6,8 @@ Layout:
 backend/                 FastAPI source, requirements, launcher
 front end/               Complete React/Vite frontend
 trustgraph_extension/    Complete browser extension
-models/                  Existing legacy model assets (not a new AI engine)
-src/, training/, routine/ Existing optional legacy engine/training sources
+models/                  Original anomaly model and preserved candidate assets
+src/, training/, routine/ Existing engine/training sources
 data/                    Synthetic scam catalog and separate judge paraphrases
 scripts/, tests/         Database seeding and verification
 run_server.py           Root launcher forwarding to backend/run_server.py
@@ -22,11 +22,11 @@ Install Python 3.11+ and Node.js 22.18+. Create root `.env` from `.env.example`,
 Run from the root in PowerShell:
 
 ```powershell
-.\setup_combined.ps1 -SeedDemo
+.\setup_combined.ps1 -SeedDemo -ScamModel
 .\.venv\Scripts\python backend/run_server.py
 ```
 
-This installs runtime dependencies, builds the frontend, and optionally adds the synthetic demo patterns. Alternatively follow the manual commands in `front end/README.md`. Open http://127.0.0.1:8000/app/analyze.
+This installs the backend and original scam-model dependencies, builds the frontend, and optionally adds the synthetic catalog. Omit `-ScamModel` for catalog-only mode. Alternatively follow the manual commands in `front end/README.md`. Open http://127.0.0.1:8000/signup, create your own account, then Analyze.
 
 The ZIP/source repo intentionally excludes local .env, .git, node_modules, .venv, build artifacts, logs, and private backups. Reinstall/build on the target machine. No database passwords belong in the frontend or ZIP.
 
@@ -51,7 +51,7 @@ Every eligible pattern is ranked under Exact (100%), Very strong (90–under 100
 .venv\Scripts\python scripts/verify_demo_patterns.py http://127.0.0.1:8000
 ```
 
-The current API is unauthenticated and must stay private/local. No new trained AI weights are included; existing legacy assets are retained but not misrepresented as an active detector.
+Real accounts and account-scoped history are now implemented. The existing original anomaly model is connected locally; no new or rejected weights were promoted. Its four-signal engine returns a review score alongside catalog similarity. The default Vercel bundle deliberately omits model assets/dependencies and falls back to catalog matching. See `docs/ACCOUNT_EXTENSION_INTEGRATION.md` for pairing, security and deployment limits.
 
 ## Vercel: import the repository root, not the frontend folder
 

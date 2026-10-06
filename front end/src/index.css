@@ -6,6 +6,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Authentication uses the same panel, fonts, buttons and network backdrop. */
+.login-page { min-height: 100dvh; display: grid; place-items: center; padding: 92px 20px 36px; position: relative; }
+.login-back { position: absolute; top: 28px; left: max(20px, calc((100vw - 1200px) / 2)); }
+.login-card { width: min(100%, 460px); padding: clamp(24px, 5vw, 38px); background: #0E1A38; box-shadow: 0 24px 70px rgba(0,0,0,.25); }
+.login-brand { margin-bottom: 30px; }
+.login-card h1 { font-size: clamp(28px, 7vw, 34px); margin-top: 12px; letter-spacing: -.035em; }
+.login-card .auth-subtitle { margin: 12px 0 28px; }
+.login-card .auth-form > div > label { display: block; margin-bottom: 9px; }
+.login-card .auth-form > div > input { width: 100%; }
+.login-security { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 28px; border-top: 1px solid #243A6B; padding-top: 20px; color: #7E92C3; font-size: 11px; line-height: 1.6; text-align: center; }
+.login-security svg { flex-shrink: 0; }
+.login-card .field-error { color: #FF5468; font-size: 12px; margin-top: 8px; }
+.login-card .input-help { color: #7E92C3; font-size: 12px; margin-top: 8px; }
+.login-card input[aria-invalid="true"] { border-color: #FF5468; }
+.login-card input:focus-visible, .login-card button:focus-visible, .login-card a:focus-visible { outline: 2px solid #9DBBFF; outline-offset: 3px; }
+.login-card .login-spinner { width: 16px; height: 16px; border-width: 2px; margin: 0; }
+@media (max-width: 450px) { .login-card .form-row { gap: 12px; flex-wrap: wrap; } .login-card { padding: 24px 20px; } }
+
 @theme inline {
   --font-heading: 'Space Grotesk Variable', sans-serif;
   --font-sans: 'DM Sans Variable', sans-serif;

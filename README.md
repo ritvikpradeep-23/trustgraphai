@@ -6,13 +6,13 @@
 
 ## Combined project: backend, frontend, extension
 
-See [one-upload setup](COMBINED_SETUP.md). The canonical API is now in `backend/app/`, alongside `front end/` and the complete `trustgraph_extension/`. Root commands remain compatible. Existing model assets are retained but are not automatically connected to the current API.
+See [one-upload setup](COMBINED_SETUP.md). The canonical API is in `backend/app/`, alongside `front end/` and the complete `trustgraph_extension/`. Root commands remain compatible. The original trained anomaly model is connected through the existing four-signal engine when `requirements-scam.txt` is installed; rejected candidates are not activated.
 
 ## Connected React workspace (current FastAPI backend)
 
 The frontend is in **`front end/`**. See [setup instructions](front%20end/README.md) and [integration details](docs/WORKSPACE_INTEGRATION.md). Configure PostgreSQL in the ignored root `.env`, build the frontend, then run `python run_server.py` to serve both at http://127.0.0.1:8000.
 
-The current backend has no authentication or trained AI detector. Message analysis now uses database pattern matching without AI and is not automatically saved. Seed the synthetic catalog with `python scripts/seed_demo_patterns.py`; see [judge-demo texts](docs/DEMO_SCAM_PATTERNS.md). History reads existing database records; account/pairing/review/delete controls are unavailable. Keep this prototype private/local. Older extension/engine sections below describe separate or legacy components, not features of this connected backend.
+The current workspace has real email/password accounts, opaque cookie sessions, CSRF protection and per-account verdict history. Sign in, create a code in Settings, and pair the extension. Analyze saves verdict metadata, not messages. Message checks combine the original learned anomaly signal with deterministic signals and the 300-message synthetic catalog when the model is installed; otherwise the catalog fallback is explicit. Scores are review evidence, not fraud probabilities. See [current account/extension setup and limits](docs/ACCOUNT_EXTENSION_INTEGRATION.md). AI-written/deepfake weights and email recovery are not configured. The default lightweight Vercel deployment uses catalog matching, not the local trained model.
 
 <p align="center">
   <strong>A privacy-first browser extension that checks any message for scam signals, right where you read it. Only the verdict comes home.</strong>

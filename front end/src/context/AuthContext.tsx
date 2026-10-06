@@ -15,7 +15,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const value = useMemo(() => ({
     user, loading,
-    login: async (email: string, password: string, remember = true) => { const next = await authService.login(email, password, remember); queryClient.clear(); setUser(next); return next; },
+    login: async (email: string, password: string, remember = false) => { const next = await authService.login(email, password, remember); queryClient.clear(); setUser(next); return next; },
     register: async (name: string, email: string, password: string) => { const next = await authService.register(name, email, password); queryClient.clear(); setUser(next); return next; },
     logout: async () => { await authService.logout(); queryClient.clear(); setUser(null); },
     deleteAccount: async () => { await authService.deleteAccount(); queryClient.clear(); setUser(null); },

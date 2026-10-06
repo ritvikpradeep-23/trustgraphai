@@ -49,6 +49,8 @@ class DetectionResponse(BaseModel):
     match_threshold: float = 0.712
     ai_written: ModalityCheckResponse | None = None
     method: str = "database-pattern-matching"
+    model_available: bool = False
+    score_kind: str = "text-similarity"
 
 
 class PreviousReportMatchResponse(BaseModel):

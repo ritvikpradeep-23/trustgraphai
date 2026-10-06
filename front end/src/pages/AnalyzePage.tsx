@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { analyzeService } from "@/services/analyzeService";
 import { RiskBadge } from "@/components/common/RiskBadge";
 import { ScoreRing } from "@/components/common/ScoreRing";
@@ -7,14 +7,17 @@ import { ScoreRing } from "@/components/common/ScoreRing";
 const patternSource = (status: string) => status === "synthetic_dataset" ? "ScamShield synthetic dataset" : status === "synthetic_demo" ? "synthetic demo" : "stored report";
 
 export function AnalyzePage() {
+  const queryClient = useQueryClient();
   const [text, setText] = useState("");
   const [channel, setChannel] = useState("other");
   const [url, setUrl] = useState("");
-  const analysis = useMutation({ mutationFn: () => analyzeService.text(text.trim(), channel) });
+  const analysis = useMutation({ mutationFn: () => analyzeService.text(text.trim(), channel), onSuccess: () => {
+    for (const key of ["analytics", "detections", "dashboard-detections"]) void queryClient.invalidateQueries({ queryKey: [key] });
+  } });
   const urlAnalysis = useMutation({ mutationFn: () => analyzeService.url(url.trim()) });
   return <div className="page-stack">
-    <div className="page-header"><div><span className="eyebrow">Connected backend</span><h1>Analyze a message or link.</h1><p>Use the existing API without submitting content for storage.</p></div></div>
-    <p className="empty-period-note">No AI required. Messages are compared with every eligible stored scam example using word overlap and sequence matching. The match threshold is demo-calibrated using scam paraphrases and benign controls, not a user-chosen percentage. Similarity is not a fraud probability; no match does not mean safe. Checks are not saved to history.</p>
+    <div className="page-header"><div><span className="eyebrow">Your trust workspace</span><h1>Analyze a message or link.</h1><p>Keep the verdict in your account, not the message.</p></div></div>
+    <p className="empty-period-note">The backend uses the original TrustGraph scam engine when its dependencies and weights are installed, plus the stored pattern catalog. Otherwise it explicitly falls back to pattern matching. Similarity and model review scores are not fraud probabilities; no match does not mean safe. Message text is processed transiently. Only verdict metadata is saved to your account; URL checks are not saved.</p>
     <div className="analysis-forms">
       <section className="panel">
         <h2>Message analysis</h2>
@@ -25,8 +28,11 @@ export function AnalyzePage() {
         </form>
         {analysis.error && <p role="alert" className="form-error">{analysis.error.message}</p>}
         {analysis.data && <div className="analysis-result" aria-live="polite">
-          <div className="analysis-verdict"><ScoreRing score={analysis.data.risk_score} level={analysis.data.risk_level} size={90} metric="Text similarity" /><RiskBadge level={analysis.data.risk_level} /></div>
+          <div className="analysis-verdict"><ScoreRing score={analysis.data.risk_score} level={analysis.data.risk_level} size={90} metric={analysis.data.score_kind === "text-similarity" ? "Text similarity" : "Review score"} /><RiskBadge level={analysis.data.risk_level} /></div>
           <ul>{analysis.data.reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul>
+          <h3>Signal hierarchy</h3>
+          <p>Available engine signals, strongest first. Unavailable signals are not treated as zero. Each score is evidence, not fraud probability.</p>
+          <ol>{Object.entries(analysis.data.signals).sort((a, b) => (b[1] ?? -1) - (a[1] ?? -1)).map(([name, score]) => <li key={name}>{name} · {score === null ? "unavailable" : `${(score * 100).toFixed(1)} / 100`}</li>)}</ol>
           {analysis.data.previous_report_matches.length > 0 && <><h3>Matched patterns</h3><ul>{analysis.data.previous_report_matches.map(match => <li key={match.report_id}>{match.report_type} · {Math.round(match.similarity_score * 100)}% similarity · {patternSource(match.status)}</li>)}</ul></>}
           <h3>Pattern hierarchy</h3>
           <p>{analysis.data.comparison_count} eligible patterns compared, ranked by actual similarity. Exact: 100%; very strong: 90–under 100%; strong: 80–under 90%; partial: {(analysis.data.match_threshold * 100).toFixed(1)}–under 80%. Below {(analysis.data.match_threshold * 100).toFixed(1)}% is not a detected match. These tiers describe resemblance, not certainty of fraud.</p>
@@ -36,7 +42,7 @@ export function AnalyzePage() {
             if (!items.length) return null;
             return <details key={tier} open={tier !== "Below threshold"} className="pattern-tier"><summary>{tier} · {items.length} pattern{items.length === 1 ? "" : "s"}</summary><ol start={items[0].rank}>{items.map(match => <li key={match.report_id} value={match.rank}>{match.report_type} · {(match.similarity_score * 100).toFixed(1)}% similarity · {patternSource(match.status)}{match.rank === 1 ? " · closest pattern" : ""}</li>)}</ol></details>;
           })}
-          <p>Engine: database pattern matching. No AI service used. Not saved to history.</p>
+          <p>Engine: {analysis.data.method}. Original model {analysis.data.model_available ? "active" : "unavailable; catalog fallback active"}. Verdict metadata saved; message text not retained.</p>
         </div>}
       </section>
       <section className="panel">

@@ -13,15 +13,20 @@ An earlier version used Vercel Services (beta). On projects without Services it 
 1. Import the whole `trustgraphai` repository as ONE project: Root Directory `./` (not `front end/` or `backend/`). Framework Preset: **Other**. Leave Build/Output/Install command overrides **off** (vercel.json sets them). If the project was created with Services, open Settings → Build and Deployment and set the preset to Other.
 2. Add a hosted PostgreSQL database (Storage → Neon) or set `DATABASE_URL` (or `POSTGRES_URL`) privately in Environment Variables. Plain `postgres://` / `postgresql://` URLs are converted to the psycopg driver. Never use a `VITE_*` variable or commit a connection string. `127.0.0.1` addresses won't work on Vercel.
 3. Redeploy. Seed the catalog once from your PC against the same database: `python scripts/seed_demo_patterns.py`. Do not seed during a Vercel build.
-4. Deployment Protection: while it is on, only signed-in Vercel users can open the site, and the browser extension's requests are rejected (it falls back to its on-device rules and can't pair). For a demo, turn it off or demo locally; this API has no user accounts, so anyone with the link can use it while it's off.
+4. Real workspace accounts are now required for history and pairing. Session cookies are Secure automatically on Vercel; keep the frontend and API on the same HTTPS origin. Legacy unowned submission/report/history/relationship endpoints are blocked in hosted mode. Configure authentication, rate limiting, trusted proxy handling and security review before any public launch.
+5. Deployment Protection can reject extension requests even after account pairing. Demo locally if it is enabled. Changing protection is a user/administrator decision; no protection setting has been changed here.
+
+## Model availability
+
+The default lightweight function intentionally excludes `src/`, `models/` and `data/` and does not install scikit-learn/pandas. Therefore it runs the PostgreSQL catalog fallback, **not** the original trained anomaly model. The full source ZIP retains the model and sources. To run real model inference, use the full combined backend with `requirements-scam.txt` on a suitable Python host; cloud model packaging/limits have not been validated. Do not add heavyweight AI-written/deepfake dependencies and claim a successful Vercel model deployment without checking the actual build and weights.
 
 ## Checks after deploying
 
 - `/health` → `{"status": "ok"}`; `/health/database` → `{"ok": true, ...}`.
-- `/app/analyze` and `/app/analytics` load directly (deep links).
+- `/login` and `/signup` load directly; protected `/app/analyze` and `/app/analytics` require an account.
 - `/api/unknown` → a JSON 404 from FastAPI, not the site.
 - Analyze a non-sensitive test message.
 
 ## Verified here (not on Vercel)
 
-The uploaded file set (repository minus `.vercelignore`) was copied, built with the exact install/build commands, the function's `api/requirements.txt` installed into a fresh environment, and served with `vercel.json`'s rewrites against PostgreSQL 16: health, database round trip, workspace status, docs, pairing codes, deep links and asset 404s all behaved as above. A real Vercel build log is still the final check.
+The pre-account static/API layout was previously tested from the upload file set. Current schema validation, API entrypoint, deep-link/asset routing and authentication tests pass locally; real PostgreSQL account/pairing isolation was checked in a rolled-back temporary schema. No cloud deployment or current clean cloud bundle build was performed. A real Vercel build log remains the final check.

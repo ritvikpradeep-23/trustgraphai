@@ -1,122 +1,107 @@
-"""Read-only, verdict-only projection for the React workspace.
-
-Preserve the existing /api/detections contract. Never send stored submission
-text, captions, senders, media references, or URL query strings to this UI.
-"""
+"""Account-scoped verdict history; no raw messages are exposed or stored."""
 from datetime import datetime, timedelta, timezone
 import math
-from urllib.parse import urlsplit
-
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
-from sqlalchemy.orm import Session, selectinload
-
-from app.core.database import (
-    DetectionRecord,
-    ExtensionHeartbeatRecord,
-    ExtensionResultRecord,
-    ExtensionTokenRecord,
-    get_db,
-)
+from sqlalchemy.orm import Session
+from app.core.accounts import Account, AccountCheck, AccountExtension, aware, current_user, require_csrf
+from app.core.database import ExtensionResultRecord, get_db
+from app.api.detect import detect
+from app.schemas.detection import DetectionRequest
 
 router = APIRouter(prefix="/workspace", tags=["Workspace"])
+CHANNELS = {"whatsapp", "gmail", "messenger", "instagram", "linkedin", "telegram", "discord", "slack", "generic", "test", "other"}
 
 
 def score(value):
-    if not isinstance(value, bool) and isinstance(value, (int, float)) and math.isfinite(value) and 0 <= value <= 1:
-        return value
-    return None
+    return value if not isinstance(value, bool) and isinstance(value, (int, float)) and math.isfinite(value) and 0 <= value <= 1 else None
 
 
 def detection_view(record):
+    # Compatibility projection only; unowned legacy data is not an account's history.
+    from urllib.parse import urlsplit
     submission = record.submission
-    source = submission.source.lower() if submission else "other"
-    channel = next((name for name in ("whatsapp", "gmail", "messenger", "instagram") if name in source), "other")
-    site = submission.source.replace("_", " ") if submission else "Backend result"
+    site = submission.source if submission else "Backend result"
     if submission and submission.url:
         try:
             site = urlsplit(submission.url).hostname or site
         except ValueError:
             pass
     level = {"MEDIUM": "CAUTION"}.get(record.risk_level.upper(), record.risk_level.upper())
-    risk_score = score(record.risk_score)
-    if level not in {"SAFE", "LOW", "CAUTION", "HIGH", "CRITICAL"} or risk_score is None:
-        level, risk_score = "PENDING", None
-    created = record.created_at
-    if created.tzinfo is None:
-        created = created.replace(tzinfo=timezone.utc)
-    return {
-        "id": record.detection_id, "createdAt": created.isoformat(),
-        "channel": channel, "site": site, "riskLevel": level,
-        "riskScore": risk_score, "explanation": " ".join(record.reasons or []) or "No explanation is available.",
-        "signals": [{"name": name, "score": score(value), "explanation": "Signal unavailable" if score(value) is None else "Score returned by the backend"} for name, value in (record.signals or {}).items()],
-        "engineVersion": "backend-v0.1.0", "status": "new", "feedback": "none",
-        "isDemo": False, "editable": False,
-    }
-
-
-# Verdicts synced by the paired browser extension (app/api/extension_sync.py).
-# They carry no message text: only level, score, signal types, channel, domain.
-SIGNAL_NAMES = {
-    "urgency": "Urgency pressure", "money_request": "Request for money, gift cards or crypto",
-    "credential_request": "Credential or OTP request", "suspicious_link": "Suspicious link or lookalike domain",
-    "sender_mismatch": "Sender mismatch", "impersonation": "Impersonation of a contact or brand",
-    "continuity_break": "Unusual continuity break", "pattern_similarity": "Similar to known scam patterns",
-}
-EXTENSION_CHANNELS = {"whatsapp", "gmail", "messenger", "instagram"}
+    risk = score(record.risk_score)
+    if level not in {"SAFE", "LOW", "CAUTION", "HIGH", "CRITICAL", "UNKNOWN"} or risk is None:
+        level, risk = "UNKNOWN" if level == "UNKNOWN" else "PENDING", None
+    return {"id": record.detection_id, "createdAt": aware(record.created_at).isoformat(),
+            "channel": next((c for c in ("whatsapp", "gmail", "messenger", "instagram") if submission and c in submission.source.lower()), "other"),
+            "site": site, "riskLevel": level, "riskScore": risk,
+            "explanation": " ".join(record.reasons or []) or "No explanation available.",
+            "signals": [{"name": n, "score": score(v), "explanation": "Signal unavailable" if score(v) is None else "Score returned by the backend"} for n, v in (record.signals or {}).items()],
+            "engineVersion": "backend", "status": "new", "feedback": "none", "isDemo": False, "editable": False}
 
 
 def extension_view(record):
-    ts = record.timestamp if record.timestamp.tzinfo else record.timestamp.replace(tzinfo=timezone.utc)
-    names = [SIGNAL_NAMES.get(s, s.replace("_", " ").capitalize()) for s in (record.signal_ids or [])]
-    explanation = ("Signs found by the browser extension: " + ", ".join(n.lower() for n in names) + "."
-                   if names else "The browser extension found no scam signs.")
-    return {
-        "id": record.result_id, "createdAt": ts.isoformat(),
-        "channel": record.channel if record.channel in EXTENSION_CHANNELS else "other",
-        "site": record.domain or "Browser extension",
-        "riskLevel": record.risk_level.upper(), "riskScore": max(0, min(100, record.score)) / 100,
-        "explanation": explanation,
-        "signals": [{"name": n, "score": None, "explanation": "Found by the browser extension"} for n in names],
-        "engineVersion": "browser-extension", "status": "new",
-        "feedback": "false_alarm" if record.feedback == "false_alarm" else "none",
-        "isDemo": False, "editable": False,
-    }
+    names = [s.replace("_", " ") for s in record.signal_ids or []]
+    return {"id": record.result_id, "createdAt": aware(record.timestamp).isoformat(),
+            "channel": record.channel if record.channel in CHANNELS else "other",
+            "site": record.domain or "Browser extension", "riskLevel": record.risk_level.upper(),
+            "riskScore": score(record.score / 100), "scoreMetric": "Review score",
+            "explanation": "Extension signals: " + ", ".join(names) if names else "No configured rule raised concern; this is not proof of safety.",
+            "signals": [{"name": n, "score": None, "explanation": "Extension signal"} for n in names],
+            "engineVersion": "browser-extension", "status": "new", "feedback": record.feedback,
+            "isDemo": False, "editable": False}
+
+
+def owned_extensions(user, db):
+    return select(AccountExtension.token_id).where(AccountExtension.user_id == user.user_id)
 
 
 @router.get("/detections")
-def detections(db: Session = Depends(get_db)):
-    statement = select(DetectionRecord).options(selectinload(DetectionRecord.submission)).order_by(DetectionRecord.created_at.desc())
-    items = [detection_view(record) for record in db.scalars(statement).all()]
-    items += [extension_view(record) for record in db.scalars(select(ExtensionResultRecord)).all()]
-    return sorted(items, key=lambda item: item["createdAt"], reverse=True)
+def detections(response: Response, user: Account = Depends(current_user), db: Session = Depends(get_db)):
+    response.headers["Cache-Control"] = "no-store"
+    items = [row.view for row in db.scalars(select(AccountCheck).where(AccountCheck.user_id == user.user_id)).all()]
+    items += [extension_view(row) for row in db.scalars(
+        select(ExtensionResultRecord).where(ExtensionResultRecord.token_id.in_(owned_extensions(user, db)))).all()]
+    return sorted(items, key=lambda i: i["createdAt"], reverse=True)
 
 
 @router.get("/detections/{detection_id}")
-def detection(detection_id: str, db: Session = Depends(get_db)):
-    statement = select(DetectionRecord).options(selectinload(DetectionRecord.submission)).where(DetectionRecord.detection_id == detection_id)
-    record = db.scalar(statement)
-    if record is not None:
-        return detection_view(record)
-    synced = db.get(ExtensionResultRecord, detection_id)
-    if synced is not None:
-        return extension_view(synced)
-    raise HTTPException(status_code=404, detail="Detection not found")
+def detection(detection_id: str, response: Response, user: Account = Depends(current_user), db: Session = Depends(get_db)):
+    response.headers["Cache-Control"] = "no-store"
+    row = db.scalar(select(AccountCheck).where(AccountCheck.detection_id == detection_id, AccountCheck.user_id == user.user_id))
+    if row:
+        return row.view
+    row = db.scalar(select(ExtensionResultRecord).where(
+        ExtensionResultRecord.result_id == detection_id,
+        ExtensionResultRecord.token_id.in_(owned_extensions(user, db))))
+    if row:
+        return extension_view(row)
+    raise HTTPException(404, "Detection not found")
 
 
-# The extension sends a heartbeat every 15 s while a supported page is open.
-CONNECTED_WITHIN = timedelta(minutes=2)
+@router.post("/checks", dependencies=[Depends(require_csrf)])
+def check(body: DetectionRequest, user: Account = Depends(current_user), db: Session = Depends(get_db)):
+    if body.submission_id:
+        raise HTTPException(400, "Account checks do not attach to legacy submissions.")
+    result = detect(body, db)
+    view = {"id": result.detection_id, "createdAt": datetime.now(timezone.utc).isoformat(),
+            "channel": body.channel if body.channel in CHANNELS else "other",
+            "site": "Web analysis", "riskLevel": result.risk_level, "riskScore": result.risk_score,
+            "scoreMetric": "Text similarity" if result.method == "database-pattern-matching" else "Review score",
+            "explanation": f"Account check via {result.method}; {len(result.previous_report_matches)} catalog matches. Scores are review signals, not a fraud probability. Raw analysis text and model explanations are not retained.", "signals": [
+                {"name": n, "score": v, "explanation": "Backend signal" if v is not None else "Unavailable"}
+                for n, v in result.signals.model_dump().items()],
+            "engineVersion": result.method, "status": "new", "feedback": "none", "isDemo": False, "editable": False}
+    db.add(AccountCheck(detection_id=result.detection_id, user_id=user.user_id, view=view))
+    db.commit()
+    return result
 
 
 @router.get("/status")
-def status(db: Session = Depends(get_db)):
-    last = db.scalar(select(ExtensionHeartbeatRecord.last_seen).order_by(ExtensionHeartbeatRecord.last_seen.desc()).limit(1))
-    paired = db.scalar(select(ExtensionTokenRecord.token_id).limit(1)) is not None
-    if last is not None and last.tzinfo is None:
-        last = last.replace(tzinfo=timezone.utc)
-    if last is None:
-        state = "UNKNOWN"
-    else:
-        state = "CONNECTED" if datetime.now(timezone.utc) - last <= CONNECTED_WITHIN else "NOT CONNECTED"
-    return {"state": state, "lastSeen": last.isoformat() if last else None, "authentication": False,
-            "extensionPairing": paired, "aiAvailable": False}
+def status(response: Response, user: Account = Depends(current_user), db: Session = Depends(get_db)):
+    from app.ai.scam_engine import engine
+    response.headers["Cache-Control"] = "no-store"
+    records = db.scalars(select(AccountExtension).where(AccountExtension.user_id == user.user_id)).all()
+    last = max((aware(r.last_seen) for r in records if r.last_seen), default=None)
+    state = "CONNECTED" if last and datetime.now(timezone.utc) - last <= timedelta(minutes=2) else "NOT CONNECTED"
+    return {"state": state, "lastSeen": last.isoformat() if last else None, "authentication": True,
+            "extensionPairing": bool(records), "aiAvailable": engine() is not None}

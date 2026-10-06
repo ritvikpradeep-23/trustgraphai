@@ -3,6 +3,8 @@ import { appConfig } from "@/config/appConfig";
 import type { RiskLevel } from "@/types/trustgraph";
 
 export interface AnalysisResult {
+  model_available: boolean;
+  score_kind: string;
   method: string;
   previous_report_matches: { report_id: string; report_type: string; status: string; similarity_score: number }[];
   pattern_comparisons: { report_id: string; report_type: string; status: string; similarity_score: number; rank: number; tier: string }[];
@@ -28,7 +30,7 @@ function liveOnly() {
 export const analyzeService = {
   text: (text: string, channel: string) => {
     liveOnly();
-    return apiClient.post<AnalysisResult>("/detect", { text, channel });
+    return apiClient.post<AnalysisResult>("/workspace/checks", { text, channel });
   },
   url: (url: string) => {
     liveOnly();

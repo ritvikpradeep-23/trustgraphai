@@ -5,7 +5,7 @@ import { getLocalPreferences, updateLocalPreferences } from "@/lib/localPreferen
 import { detectionService } from "./detectionService";
 import type { Settings } from "@/types/trustgraph";
 export const settingsService = {
-  get: async () => appConfig.USE_MOCK ? mockApi.settings() : getLocalPreferences(),
+  get: async () => appConfig.USE_MOCK ? mockApi.settings() : { ...getLocalPreferences(), extensionKey: "Click New code to pair your extension" },
   update: async (patch: Partial<Settings>) => appConfig.USE_MOCK ? mockApi.updateSettings(patch) : updateLocalPreferences(patch),
   // A one-time code the browser extension trades for its sync token (POST /api/extension/pair). Valid 10 minutes.
   regenerateKey: async () => appConfig.USE_MOCK ? mockApi.regenerateKey() : { ...getLocalPreferences(), extensionKey: (await apiClient.post<{ code: string }>("/extension/pairing-code")).code },

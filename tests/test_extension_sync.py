@@ -5,6 +5,7 @@ Needs a real PostgreSQL in TEST_DATABASE_URL (skipped otherwise); each test
 runs inside a transaction that is rolled back.
 """
 import os
+import secrets
 import time
 import unittest
 
@@ -44,6 +45,13 @@ class ExtensionSyncTests(unittest.TestCase):
 
         app.dependency_overrides[get_db] = override_db
         self.client = TestClient(app)
+        csrf = self.client.get("/api/auth/session").json()["csrfToken"]
+        signup = self.client.post("/api/auth/register", json={
+            "name": "Extension test", "email": secrets.token_hex(8) + "@example.invalid",
+            "password": secrets.token_urlsafe(24),
+        }, headers={"X-CSRF-Token": csrf})
+        self.assertEqual(signup.status_code, 201, signup.text)
+        self.csrf = {"X-CSRF-Token": signup.json()["csrfToken"]}
 
     def tearDown(self):
         app.dependency_overrides.clear()
@@ -52,7 +60,7 @@ class ExtensionSyncTests(unittest.TestCase):
         self.conn.close()
 
     def pair(self):
-        code = self.client.post("/api/extension/pairing-code").json()["code"]
+        code = self.client.post("/api/extension/pairing-code", headers=self.csrf).json()["code"]
         r = self.client.post("/api/extension/pair", json={"code": code.lower()})
         self.assertEqual(r.status_code, 200, r.text)
         return {"Authorization": "Bearer " + r.json()["token"]}, code
@@ -101,13 +109,15 @@ class ExtensionSyncTests(unittest.TestCase):
         items = self.client.get("/api/workspace/detections").json()
         mine = next(i for i in items if i["id"] == rid)
         self.assertEqual((mine["riskLevel"], mine["riskScore"], mine["channel"], mine["site"]), ("HIGH", 0.92, "whatsapp", "web.whatsapp.com"))
-        self.assertIn("request for money", mine["explanation"])
+        self.assertIn("money request", mine["explanation"])
         self.assertEqual(mine["engineVersion"], "browser-extension")
-        self.client.post("/api/feedback", json={"resultId": rid})
+        self.client.post("/api/feedback", json={"resultId": rid}, headers=auth)
         self.assertEqual(self.client.get(f"/api/workspace/detections/{rid}").json()["feedback"], "false_alarm")
 
     def test_heartbeat_drives_workspace_status(self):
-        self.client.post("/api/status", json={"source": "whatsapp", "ts": 1})
+        auth, _ = self.pair()
+        self.assertEqual(self.client.post("/api/status", json={"source": "whatsapp", "ts": 1}).status_code, 401)
+        self.client.post("/api/status", json={"source": "whatsapp", "ts": 1}, headers=auth)
         status = self.client.get("/api/workspace/status").json()
         self.assertEqual(status["state"], "CONNECTED")
         self.assertIsNotNone(status["lastSeen"])

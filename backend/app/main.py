@@ -1,9 +1,10 @@
 import os
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from app.api.ai_detectors import router as ai_detectors_router
 from app.api.detect import router as detect_router
@@ -19,6 +20,7 @@ from app.api.extension_score import router as extension_score_router
 from app.api.extension_sync import router as extension_sync_router
 from app.api.database_health import router as database_health_router
 from app.api.media_check import router as media_check_router
+from app.api.auth import router as auth_router
 
 
 app = FastAPI(
@@ -28,6 +30,7 @@ app = FastAPI(
 )
 
 app.include_router(detect_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
 app.include_router(detection_history_router, prefix="/api")
 app.include_router(report_router, prefix="/api")
 app.include_router(submission_router, prefix="/api")
@@ -41,11 +44,37 @@ app.include_router(extension_sync_router, prefix="/api")
 app.include_router(media_check_router, prefix="/api")
 app.include_router(database_health_router)
 
+
+@app.exception_handler(RequestValidationError)
+async def validation_error(_request: Request, exception: RequestValidationError):
+    # Pydantic includes invalid input values by default, including passwords.
+    # Expose field names/messages only; never echo credentials into API errors.
+    return JSONResponse(status_code=422, content={"detail": [
+        {key: value for key, value in error.items() if key in {"loc", "msg", "type"}}
+        for error in exception.errors()
+    ]})
+
+
+@app.middleware("http")
+async def protect_legacy_data(request: Request, call_next):
+    # Legacy tables have no owner; do not expose them to new cloud accounts.
+    # Local-only administration/seed contracts remain intact.
+    hosted = bool(os.getenv("VERCEL")) or request.url.scheme == "https" or os.getenv("AUTH_COOKIE_SECURE") == "true"
+    path = request.url.path
+    if hosted and any(path == prefix or path.startswith(prefix + "/")
+                      for prefix in ("/api/detections", "/api/reports", "/api/submit", "/api/relationships")):
+        return JSONResponse(status_code=403, content={"detail": "Legacy unowned records are not exposed by the account workspace."})
+    response = await call_next(request)
+    if path.startswith(("/api/auth/", "/api/workspace/")):
+        response.headers["Cache-Control"] = "no-store"
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[origin.strip() for origin in os.getenv("CORS_ORIGINS", "http://127.0.0.1:5173,http://localhost:5173").split(",") if origin.strip()],
-    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-CSRF-Token"],
+    allow_credentials=True,
 )
 
 

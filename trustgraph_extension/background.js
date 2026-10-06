@@ -444,6 +444,7 @@ async function pair(code) {
   try {
     const { token, name } = await api.pair(code);
     await chrome.storage.local.set({ account: { state: "signed_in", token, name, since: Date.now() } });
+    await sendHeartbeat("extension");
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err instanceof Api.ApiError && err.status === 0 ? "Couldn't reach the web app. Check the address in Settings." : err.message };
@@ -477,9 +478,10 @@ async function markWrong(id) {
 
 async function sendHeartbeat(source) {
   const settings = await readSettings();
-  if (settings.engine !== "remote") return;
+  const account = await getAccountRaw();
+  if (!workspaceUrl(settings) || account.state !== "signed_in") return;
   try {
-    await backendFetch(TG.ENDPOINTS.status, { method: "POST", body: { source, ts: Date.now() } });
+    await (await apiClient()).heartbeat(source);
   } catch (_) {}
 }
 
