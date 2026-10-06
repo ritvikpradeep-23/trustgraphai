@@ -16,7 +16,8 @@ with httpx.Client(base_url=base, timeout=30, trust_env=False) as client:
         response = client.post("/api/detect", json={"channel": "other", "text": p["text"]})
         response.raise_for_status()
         result = response.json()
-        assert result["method"] in {"database-pattern-matching", "original-scam-engine+database-pattern-matching"}
+        assert result["method"] == "database-pattern-matching"
+        assert result["decision_source"] == "records" and not result["model_used"]
         assert result["risk_level"] == "HIGH"
         assert any(m["report_id"] == "report_" + p["id"] for m in result["previous_report_matches"])
         assert result["comparison_count"] >= len(patterns)

@@ -23,7 +23,8 @@
 //                 and reads its reported-scam matches (verdict.database);
 //                 also accepts {riskLevel, score 0-100, explanation,
 //                 signals} or the older {band, score 0..1, explanation,
-//                 signals}. The local rules still run; the higher verdict wins.
+//                 signals}. Records-first API results are final. Local rules
+//                 are the offline/unavailable fallback; legacy answers still merge.
 // background.js picks one from Settings (engine: "local" | "remote").
 (function (root) {
   "use strict";
@@ -148,7 +149,7 @@
     const sensitivity = opts.sensitivity || "balanced";
     // Balanced keeps the engine's own band (it also knows the one-sign cap
     // and a server's raised verdict); other sensitivities re-threshold.
-    let riskLevel = sensitivity === "balanced" ? String(result.band || "Low").toLowerCase() : levelFor(score, sensitivity);
+    let riskLevel = sensitivity === "balanced" || ["records", "model"].includes(result.decisionSource) ? String(result.band || "Low").toLowerCase() : levelFor(score, sensitivity);
     if (!(riskLevel in LEVEL_RANK)) riskLevel = "caution";
     const hits = result.hits || result.flags || [];
     // combine() adds a "server" flag (not a hit) when the server raised the verdict.
@@ -165,7 +166,7 @@
       id: opts.id || newId(),
       riskLevel,
       score,
-      explanation: explain(result, riskLevel, signals),
+      explanation: ["records", "model"].includes(result.decisionSource) ? result.explanation : explain(result, riskLevel, signals),
       signals,
       continuity: opts.continuity || { state: "single", text: "Single message: there's no earlier thread to compare with." },
       similarity: similarityFrom(result),
@@ -303,7 +304,8 @@
         signals.push({ name, score: top.similarity, explanation: matchText });
       }
     }
-    return { band: best.band, score: best.score, explanation: best === match ? matchText : reasons || matchText, signals, database };
+    return { band: best.band, score: best.score, explanation: best === match ? matchText : reasons || matchText, signals, database,
+      decisionSource: model && ["records", "model"].includes(data.decision_source) ? data.decision_source : null };
   }
 
   function normalizeRemote(data) {

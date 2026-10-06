@@ -54,7 +54,7 @@ def fetch():
             raise RuntimeError("Source changed during import")
     return rows
 
-def select_sample(rows, count=264):
+def select_sample(rows, count=302):
     existing = json.loads((ROOT / "data/demo_scam_patterns.json").read_text(encoding="utf-8"))
     seen = {skeleton(p["text"]) for p in existing}
     groups = defaultdict(deque)
@@ -104,12 +104,13 @@ if __name__ == "__main__":
     parser.add_argument("--summary", action="store_true")
     parser.add_argument("--inspect", action="store_true")
     parser.add_argument("--compact", action="store_true", help="Emit compact reviewed message rows; no file writes")
+    parser.add_argument("--count", type=int, default=302, help="Distinct source messages required; never pad with duplicates")
     args = parser.parse_args()
     rows = fetch()
     if args.inspect:
         print(json.dumps({"sources": dict(Counter(r["source_dataset"] for r in rows)), "scam_sources": dict(Counter(r["source_dataset"] for r in rows if r["is_scam"] == 1))}))
         sys.exit(0)
-    result = select_sample(rows)
+    result = select_sample(rows, count=args.count)
     if args.compact:
         print(json.dumps({"rows": [[p["source_row_id"], p["title"], p["language"], p["text"]] for p in result["patterns"]], "provenance": result["provenance"]}, ensure_ascii=False))
     else:

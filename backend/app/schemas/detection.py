@@ -50,6 +50,8 @@ class DetectionResponse(BaseModel):
     ai_written: ModalityCheckResponse | None = None
     method: str = "database-pattern-matching"
     model_available: bool = False
+    model_used: bool = False
+    decision_source: str = "records"
     score_kind: str = "text-similarity"
 
 

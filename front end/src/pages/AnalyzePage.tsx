@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { analyzeService } from "@/services/analyzeService";
 import { RiskBadge } from "@/components/common/RiskBadge";
@@ -17,7 +18,7 @@ export function AnalyzePage() {
   const urlAnalysis = useMutation({ mutationFn: () => analyzeService.url(url.trim()) });
   return <div className="page-stack">
     <div className="page-header"><div><span className="eyebrow">Your trust workspace</span><h1>Analyze a message or link.</h1><p>Keep the verdict in your account, not the message.</p></div></div>
-    <p className="empty-period-note">The backend uses the original TrustGraph scam engine when its dependencies and weights are installed, plus the stored pattern catalog. Otherwise it explicitly falls back to pattern matching. Similarity and model review scores are not fraud probabilities; no match does not mean safe. Message text is processed transiently. Only verdict metadata is saved to your account; URL checks are not saved.</p>
+    <p className="empty-period-note">First, compare the message fingerprint and wording with stored scam records. A qualifying match gives the result without calling the model. If no record matches strongly enough, the original TrustGraph scam model provides the final review result when available. Similarity and model review scores are not fraud probabilities; no match does not mean safe. Message text is processed transiently. Only verdict metadata is saved to your account; URL checks are not saved.</p>
     <div className="analysis-forms">
       <section className="panel">
         <h2>Message analysis</h2>
@@ -28,6 +29,7 @@ export function AnalyzePage() {
         </form>
         {analysis.error && <p role="alert" className="form-error">{analysis.error.message}</p>}
         {analysis.data && <div className="analysis-result" aria-live="polite">
+          <p role="status">Saved to your account history. <Link to={`/app/detections/${analysis.data.detection_id}`} className="text-link">View saved detection</Link></p>
           <div className="analysis-verdict"><ScoreRing score={analysis.data.risk_score} level={analysis.data.risk_level} size={90} metric={analysis.data.score_kind === "text-similarity" ? "Text similarity" : "Review score"} /><RiskBadge level={analysis.data.risk_level} /></div>
           <ul>{analysis.data.reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul>
           <h3>Signal hierarchy</h3>
@@ -42,7 +44,7 @@ export function AnalyzePage() {
             if (!items.length) return null;
             return <details key={tier} open={tier !== "Below threshold"} className="pattern-tier"><summary>{tier} · {items.length} pattern{items.length === 1 ? "" : "s"}</summary><ol start={items[0].rank}>{items.map(match => <li key={match.report_id} value={match.rank}>{match.report_type} · {(match.similarity_score * 100).toFixed(1)}% similarity · {patternSource(match.status)}{match.rank === 1 ? " · closest pattern" : ""}</li>)}</ol></details>;
           })}
-          <p>Engine: {analysis.data.method}. Original model {analysis.data.model_available ? "active" : "unavailable; catalog fallback active"}. Verdict metadata saved; message text not retained.</p>
+          <p>Engine: {analysis.data.method}. {analysis.data.method === "database-pattern-matching" ? "Stored record matched; model skipped." : analysis.data.model_available ? "No qualifying record match; original model used." : "No qualifying record match and model unavailable; result unknown."} Verdict metadata saved; message text not retained.</p>
         </div>}
       </section>
       <section className="panel">

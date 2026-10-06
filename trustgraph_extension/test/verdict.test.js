@@ -46,6 +46,15 @@ const check = (ok, name) => {
   check(d.offline === true && d.riskLevel === "low", "unreachable server falls back to local (offline)");
   const e = await V.RemoteEngine("u", fake({ ok: true, status: 200, data: { band: "Low", score: 0.1, explanation: "ok", signals: [] } })).scoreMessage({ text: "Share the OTP now, urgent, account blocked", channel: "x" });
   check(e.riskLevel !== "low", "local rules still win when they are higher than the server");
+  const sequential = {ok: true, status: 200, data: {risk_level: "CAUTION", risk_score: .884,
+    reasons: ["No qualifying record match; scam model used."], signals: {similarity: .88},
+    previous_report_matches: [], decision_source: "model", model_used: true}};
+  const ordered = await V.RemoteEngine("u", fake(sequential)).scoreMessage({text: "Buy gift cards and send me the codes urgently, do not tell anyone"}, {sensitivity: "strict"});
+  check(ordered.riskLevel === "caution" && ordered.score === 88 && ordered.source === "server", "records-first model result is final, even when local rules/sensitivity would rank higher");
+  check(/scam model used/.test(ordered.explanation), "ordered server explanation is preserved");
+  const ESequential = require("../shared/rules/engine.js");
+  const batchFinal = ESequential.combine(ESequential.analyze("Share the OTP now, urgent, account blocked"), V.normalizeRemote({...sequential.data, risk_level: "LOW", risk_score: .12}), "server");
+  check(batchFinal.band === "Low" && batchFinal.score === .12 && batchFinal.hits.length === 0, "chat-batch merge also preserves the final ordered result without local override");
   // A server with its own cut-offs: level and number must still agree.
   const cal = await V.RemoteEngine("u", fake({ ok: true, status: 200, data: { band: "Caution", score: 0.89, explanation: "x", signals: [] } })).scoreMessage(text);
   check(cal.riskLevel === "caution" && cal.score === 89, `server Caution preserves its calibrated score: ${cal.score}`);

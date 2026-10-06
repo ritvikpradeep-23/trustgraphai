@@ -90,7 +90,8 @@ def check(body: DetectionRequest, user: Account = Depends(current_user), db: Ses
             "explanation": f"Account check via {result.method}; {len(result.previous_report_matches)} catalog matches. Scores are review signals, not a fraud probability. Raw analysis text and model explanations are not retained.", "signals": [
                 {"name": n, "score": v, "explanation": "Backend signal" if v is not None else "Unavailable"}
                 for n, v in result.signals.model_dump().items()],
-            "engineVersion": result.method, "status": "new", "feedback": "none", "isDemo": False, "editable": False}
+            "engineVersion": result.method, "decisionSource": result.decision_source,
+            "modelUsed": result.model_used, "status": "new", "feedback": "none", "isDemo": False, "editable": False}
     db.add(AccountCheck(detection_id=result.detection_id, user_id=user.user_id, view=view))
     db.commit()
     return result

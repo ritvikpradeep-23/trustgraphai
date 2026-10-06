@@ -17,9 +17,10 @@ PATTERNS = load_catalog()
 
 
 class FakeDB:
-    def __init__(self):
+    def __init__(self, patterns=None):
         self.records = {}
         self.commits = 0
+        self.patterns = PATTERNS if patterns is None else patterns
     def get(self, model, key):
         return self.records.get((model, key))
     def add(self, record):
@@ -31,17 +32,17 @@ class FakeDB:
         self.commits += 1
     def execute(self, statement):
         return [(SimpleNamespace(report_id="report_" + p["id"], report_type=seed_metadata(p)[2], status=seed_metadata(p)[1]),
-                 SimpleNamespace(submission_id=p["id"], text=p["text"], caption=None, url=None)) for p in PATTERNS]
+                 SimpleNamespace(submission_id=p["id"], text=p["text"], caption=None, url=None)) for p in self.patterns]
     def scalars(self, statement):
         model = statement.column_descriptions[0]["entity"]
         return SimpleNamespace(all=lambda: [record for (record_model, _), record in self.records.items() if record_model == model])
 
 
 class PatternTests(unittest.TestCase):
-    def test_300_unique_patterns_preserve_scamshield_provenance(self):
-        self.assertEqual(validate_catalog(PATTERNS), 300)
+    def test_unique_patterns_preserve_scamshield_provenance(self):
+        self.assertEqual(validate_catalog(PATTERNS), 1038)
         sourced = [p for p in PATTERNS if p.get("source_dataset")]
-        self.assertEqual(len(sourced), 264)
+        self.assertEqual(len(sourced), 302)
         self.assertEqual({p["language"] for p in sourced}, {"Hindi", "Hinglish"})
         self.assertTrue(all(p["license"] == "MIT" and p["redacted"] and p["source_kind"] == "Synthetic_Tier_C" for p in sourced))
         self.assertTrue(all("[phone redacted]" in p["text"] or not any(len(word) >= 8 and word.isdecimal() for word in p["text"].split()) for p in sourced))
@@ -86,12 +87,29 @@ class PatternTests(unittest.TestCase):
         for p in PATTERNS:
             for text in (p["text"], p["text"].upper().replace(".", "!!!")):
                 with self.subTest(pattern=p["title"]):
-                    matches = find_previous_report_matches(FakeDB(), text=text, url=None, submission_id=None)
+                    matches = find_previous_report_matches(FakeDB([p]), text=text, url=None, submission_id=None)
                     score, level, reasons = verdict(matches)
                     self.assertEqual(level, "HIGH")
                     self.assertEqual(score, 1)
                     self.assertTrue(any(m.report_id == "report_" + p["id"] for m in matches))
                     self.assertTrue(any("synthetic" in reason for reason in reasons))
+
+    def test_representative_families_match_against_the_full_catalog(self):
+        by_family = {p["title"]: p for p in PATTERNS}
+        for p in by_family.values():
+            matches = find_previous_report_matches(FakeDB(), text=p["text"], url=None, submission_id=None)
+            self.assertEqual(matches[0].similarity_score, 1)
+            self.assertTrue(any(m.submission_id == p["id"] for m in matches))
+
+    def test_authored_variants_are_reproducible_and_not_relabeled_scamshield(self):
+        from scripts.build_authored_scam_catalog import build, provenance
+        authored = [p for p in PATTERNS if p.get("source_kind") == "TrustGraph_authored_synthetic"]
+        self.assertEqual(authored, build())
+        self.assertEqual(len(authored), 700)
+        self.assertEqual(len({p["family"] for p in authored}), 25)
+        self.assertTrue(all("source_dataset" not in p for p in authored))
+        metadata = json.loads((Path(__file__).resolve().parents[1] / "data/authored_scam_provenance.json").read_text())
+        self.assertEqual(metadata, provenance(authored))
 
     def test_benign_controls_and_short_input_do_not_become_safe_verdicts(self):
         for text in ("hh", "Lunch at the canteen at one? Please bring your exam notes.",
@@ -150,7 +168,7 @@ class PatternTests(unittest.TestCase):
         db = FakeDB()
         app.dependency_overrides[get_db] = lambda: db
         try:
-            with patch("app.services.ai_model.TrustGraphAI.analyze", side_effect=AssertionError("AI must not be called")):
+            with patch("app.api.detect.scam_analyze", side_effect=AssertionError("AI must not be called")):
                 response = TestClient(app).post("/api/detect", json={"channel": "other", "text": PATTERNS[0]["text"]})
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json()["risk_level"], "HIGH")

@@ -1,0 +1,10 @@
+[
+  {"title":"Safe-account impersonation", "text":"You are speaking with regional fraud prevention. Ignore the branch staff and migrate your savings to the secure holding account I specify."},
+  {"title":"Boss gift-card impersonation", "text":"I'm the interim office lead. Pick up Apple gift cards, scratch their backs and email me the redemption codes; do not contact your manager."},
+  {"title":"Remote-access credential theft", "text":"For a warranty diagnostic session, start TeamViewer and give me the access code. Keep your online banking signed in while I investigate."},
+  {"title":"OTP takeover", "text":"To restore the backup of your chats, forward the WhatsApp verification code you just received to my private inbox."},
+  {"title":"Fake government threat", "text":"An arrest warrant will be executed unless you buy gift cards and transmit the redemption codes to this investigator. Do not contact the police."},
+  {"title":"Private-video extortion", "text":"I recorded you through your camera. Transfer bitcoin to my wallet address before midnight or I will send the private video to your family."},
+  {"title":"Ordinary planning control", "text":"The volunteer committee moved our planning session to Wednesday afternoon. Please bring your notes and a reusable water bottle."},
+  {"title":"Security advice control", "text":"Never share your OTP or password with callers. If someone asks for a verification code, contact your bank through its official app."}
+]

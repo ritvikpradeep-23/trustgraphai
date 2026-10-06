@@ -3,11 +3,11 @@
   "revision": "059dee884476a45e380808e68d09e74baff67291",
   "license": "MIT",
   "source_rows_checked": 1004,
-  "imported": 264,
+  "imported": 302,
   "rejected": {
     "duplicate_or_number_only_variant": 702
   },
-  "selection_sha256": "5b7d183ad88ee8c07420d3698a8772feab63ced558608c3584b74998e3ee6f2c",
+  "selection_sha256": "6e8998add609a3d3ba9a90cfd50bd54363e026742b5c0afd87b26ee567210acf",
   "categories": {
     "Bank Account Freeze": 4,
     "Courier Scam": 25,
@@ -15,12 +15,12 @@
     "Fake KYC": 51,
     "Lottery / Prize": 8,
     "Telegram Job": 4,
-    "Traffic e-Challan": 96,
+    "Traffic e-Challan": 134,
     "UPI Fraud": 8
   },
   "languages": {
-    "Hindi": 130,
-    "Hinglish": 134
+    "Hindi": 152,
+    "Hinglish": 150
   },
   "selection": "Sorted source IDs, round-robin category/language; exact normalized and number-only variants removed after redaction. Synthetic scam rows only; benign and general-spam classes excluded."
 }

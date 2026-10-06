@@ -1,8 +1,8 @@
-# ScamShield sample: 264 additional synthetic messages
+# ScamShield sample: 302 synthetic messages
 
-These are source-authored synthetic messages from [sidzzz07/scamshield-dataset](https://huggingface.co/datasets/sidzzz07/scamshield-dataset), revision `059dee884476a45e380808e68d09e74baff67291`, whose publisher declares MIT. They are not verified incidents or official government ScamShield data. 130 messages are Hindi and 134 are Hinglish. Phone/email details and usable links are redacted. Exact/normalized and number-only duplicates were excluded; categories/templates recur, so these are 264 distinct messages, not 264 different scam mechanisms.
+These are source-authored synthetic messages from [sidzzz07/scamshield-dataset](https://huggingface.co/datasets/sidzzz07/scamshield-dataset), revision `059dee884476a45e380808e68d09e74baff67291`, whose publisher declares MIT. They are not verified incidents or official government ScamShield data. The expanded source file contains 152 Hindi and 150 Hinglish messages. Phone/email details and common links are redacted; do not visit addresses retained in source text. Exact/normalized and number-only duplicates were excluded; categories/templates recur, so distinct messages do not mean independent scam mechanisms.
 
-Together with the original 36 TrustGraph examples this makes a 300-message database catalog. Provenance: `data/scamshield_provenance.json`. Attribution/license: `data/SCAMSHIELD_NOTICE.md`. Exact-copy checks are not evidence of real-world accuracy. English demo calibration does not validate Hindi/Hinglish generalization.
+The source file now contains 302 unique messages (152 Hindi, 150 Hinglish); the original 264 listed below are retained unchanged and 38 more are in `data/scamshield_patterns.json`. Together with 36 original TrustGraph examples and 700 additional authored variants, this makes a 1,038-message database catalog. The authored variants are NOT ScamShield-origin data. Provenance: `data/scamshield_provenance.json`. Attribution/license: `data/SCAMSHIELD_NOTICE.md`. Exact-copy checks are not evidence of real-world accuracy. English demo calibration does not validate Hindi/Hinglish generalization.
 
 ### 37. Bank Account Freeze — Hindi
 

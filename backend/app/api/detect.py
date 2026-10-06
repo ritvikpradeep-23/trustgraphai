@@ -54,16 +54,19 @@ def detect(request: DetectionRequest, db: Session = Depends(get_db), http_reques
         )
 
     similarity, level, reasons = verdict(previous_report_matches)
-    model = scam_analyze(request.text, request.sender, request.url)
+    # Records first. A qualified stored pattern is the final result for this
+    # request; do not load/call the model or mix two different score meanings.
+    model = None if previous_report_matches else scam_analyze(request.text, request.sender, request.url)
     model_score = model["score"] if model else None
-    # A known pattern is separate evidence; never average an unavailable model
-    # into zero or let a model dismiss a qualified catalog match.
-    ranks = {"UNKNOWN": -1, "LOW": 0, "CAUTION": 1, "HIGH": 2}
-    if model and ranks.get(model["level"], -1) > ranks.get(level, -1):
-        level = model["level"]
-    result_score = max(v for v in (model_score, similarity) if v is not None) if model or similarity is not None else None
     if model:
-        reasons = model["reasons"] + reasons
+        level = model["level"]
+    result_score = model_score if model else similarity
+    if model:
+        reasons = ["Stage 1: no qualifying record match. Stage 2: original scam model produced the final review result.", *model["reasons"], *reasons]
+    elif previous_report_matches:
+        reasons = ["Stage 1: qualifying record match found. Stage 2: model skipped.", *reasons]
+    else:
+        reasons = ["Stage 1: no qualifying record match. Stage 2: scam model unavailable; no score was produced.", *reasons]
     return DetectionResponse(
         detection_id=f"det_{uuid4().hex[:12]}",
         risk_score=result_score,
@@ -71,7 +74,7 @@ def detect(request: DetectionRequest, db: Session = Depends(get_db), http_reques
         signals=DetectionSignals(
             anomaly=model["signals"].get("anomaly") if model else None,
             continuity=model["signals"].get("continuity") if model else None,
-            similarity=max(similarity or 0, model["signals"].get("similarity", 0)) if model else similarity,
+            similarity=model["signals"].get("similarity") if model else similarity,
             precedent=model["signals"].get("precedent") if model else similarity,
         ),
         reasons=reasons,
@@ -82,7 +85,9 @@ def detect(request: DetectionRequest, db: Session = Depends(get_db), http_reques
         comparison_count=len(comparisons),
         match_threshold=MATCH_THRESHOLD,
         ai_written=None,
-        method="original-scam-engine+database-pattern-matching" if model else "database-pattern-matching",
+        method="original-scam-engine" if model else "database-pattern-matching" if previous_report_matches else "unavailable",
         model_available=bool(model),
+        model_used=bool(model),
+        decision_source="model" if model else "records" if previous_report_matches else "unavailable",
         score_kind="review-score" if model else "text-similarity",
     )

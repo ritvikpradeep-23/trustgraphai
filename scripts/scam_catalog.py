@@ -8,11 +8,14 @@ SCAMSHIELD_DATASET = "sidzzz07/scamshield-dataset"
 
 def load_catalog():
     return [*json.loads((ROOT / "data/demo_scam_patterns.json").read_text(encoding="utf-8")),
-            *json.loads((ROOT / "data/scamshield_patterns.json").read_text(encoding="utf-8"))]
+            *json.loads((ROOT / "data/scamshield_patterns.json").read_text(encoding="utf-8")),
+            *json.loads((ROOT / "data/authored_scam_patterns.json").read_text(encoding="utf-8"))]
 
 def seed_metadata(item):
     if item.get("source_dataset") == SCAMSHIELD_DATASET:
         return "scamshield_dataset", "synthetic_dataset", "ScamShield: " + item["title"]
+    if item.get("source_kind") == "TrustGraph_authored_synthetic":
+        return "authored_pattern", "synthetic_demo", "Authored: " + item["title"]
     return "demo_pattern", "synthetic_demo", "Demo: " + item["title"]
 
 def skeleton(text):

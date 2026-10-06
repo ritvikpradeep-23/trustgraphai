@@ -1,4 +1,5 @@
 import re
+import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from difflib import SequenceMatcher
@@ -10,7 +11,7 @@ from sqlalchemy.orm import Session
 from app.core.database import ReportMatchRecord, ReportRecord, SubmissionRecord
 
 
-# Reproduced against the 300-pattern catalog by scripts/calibrate_demo_threshold.py on 13 unseeded scam
+# Reproduced against the 1,038-pattern catalog by scripts/calibrate_demo_threshold.py on 13 unseeded scam
 # paraphrases and 16 benign controls (including similar scam warnings).
 # This is demo calibration, not independent real-world validation.
 MATCH_THRESHOLD = 0.712
@@ -46,6 +47,11 @@ def _normalize_content(*parts: str | None) -> str:
 def _similarity_score(candidate: str, reported: str) -> float | None:
     if min(len(candidate), len(reported)) < MIN_CONTENT_LENGTH:
         return None
+
+    # Normalized text fingerprint: punctuation/case-only copies are exact.
+    # This is content identity, not certainty that the message is fraudulent.
+    if hashlib.sha256(candidate.encode()).digest() == hashlib.sha256(reported.encode()).digest():
+        return 1.0
 
     candidate_tokens = set(candidate.split())
     reported_tokens = set(reported.split())

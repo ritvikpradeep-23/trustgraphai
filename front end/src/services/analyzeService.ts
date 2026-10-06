@@ -4,6 +4,8 @@ import type { RiskLevel } from "@/types/trustgraph";
 
 export interface AnalysisResult {
   model_available: boolean;
+  model_used: boolean;
+  decision_source: "records" | "model" | "unavailable";
   score_kind: string;
   method: string;
   previous_report_matches: { report_id: string; report_type: string; status: string; similarity_score: number }[];

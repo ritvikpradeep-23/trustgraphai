@@ -1,10 +1,10 @@
-# Judge demo: 300 messages + naturally varied similarity scores
+# Judge demo: 1,038 messages + naturally varied similarity scores
 
-300 distinct synthetic scam messages are stored in PostgreSQL: the original 36 authored examples listed here plus 264 redacted ScamShield messages listed in `SCAMSHIELD_SAMPLE.md`. They illustrate common categories, not verified real-world incidents. Links use reserved .invalid domains. See `data/SCAMSHIELD_NOTICE.md` for source, license, uniqueness filtering, and limitations.
+1,038 distinct synthetic scam messages are stored in PostgreSQL: the original 36 authored examples listed here, 302 redacted ScamShield messages, and 700 clearly labeled TrustGraph-authored variants. Templates recur; this does not mean 1,038 independent scam mechanisms. See `SCAM_MESSAGE_PIPELINE.md` for the records-first/model-second flow and more demo cases, and `data/SCAMSHIELD_NOTICE.md` for attribution. Do not visit addresses retained in source text.
 
 Open http://127.0.0.1:8001/app/analyze. For natural score variation, use the 13 paraphrases below: they are NOT stored as exact patterns. Results range from 72.3% to 96%. Exact normalized copies correctly return 100% text similarity. No scores are randomized or capped.
 
-These scores are word/sequence similarity, not fraud probability. This is a seeded demonstration, not a real-world accuracy benchmark. No known match does not prove safety. Checks are not automatically saved. The service is unauthenticated: keep it private/local.
+These scores are word/sequence similarity, not fraud probability. This is a seeded demonstration, not a real-world accuracy benchmark. No known match does not prove safety. The current workspace requires login and saves only verdict metadata; the stateless detection API remains available to extension checks. Keep the prototype restricted until reviewed.
 
 ## Copy-paste paraphrases for the judges
 
@@ -88,7 +88,7 @@ Attention customer, your Lotus Bank account is suspended. Verify your password a
 
 ## Limits and hierarchy
 
-Recalibration against all 300 messages retained the 71.2% match threshold, from maximizing balanced accuracy on these 13 unseeded English paraphrases and 16 benign controls (`data/demo_benign_controls.json`), not an arbitrary requested percentage. It lies midway between the nearest benign warning (70.1%) and scam paraphrase (72.3%). All 13 pass and all 16 controls are rejected on this calibration set. This is threshold tuning on a small synthetic set, NOT independent validation, Hindi/Hinglish evaluation, or real-world accuracy.
+Recalibration against all 1,038 messages retained the 71.2% match threshold, from maximizing balanced accuracy on these 13 unseeded English paraphrases and 16 benign controls (`data/demo_benign_controls.json`), not an arbitrary requested percentage. It lies midway between the nearest benign warning (70.1%) and scam paraphrase (72.3%). All 13 pass and all 16 controls are rejected on this calibration set. This is threshold tuning on a small synthetic set, NOT independent validation, Hindi/Hinglish evaluation, or real-world accuracy.
 
 Every eligible database pattern receives its own rank, similarity, and tier. The closest appears first. Tiers describe resemblance only:
 
@@ -413,4 +413,4 @@ From the repository root:
 .venv\Scripts\python scripts/verify_demo_patterns.py http://127.0.0.1:8001
 ```
 
-Use port 8000 for the default launcher. Seeding is additive/idempotent and does not overwrite existing records. The matcher averages normalized token Jaccard overlap and sequence similarity, then applies the demo-calibrated 71.2% threshold. Reproduce calibration with `python scripts/calibrate_demo_threshold.py`. New scams/paraphrases may be missed; similar benign messages may be flagged. The verifier checks all 300 exact patterns, 13 paraphrases, 16 benign controls, and short input. Exact-copy matching does not measure generalization.
+Use port 8000 for the default launcher (current preview: 8002). Seeding is additive/idempotent and does not overwrite existing records. The matcher checks normalized text fingerprints, averages normalized token Jaccard overlap and sequence similarity for non-exact copies, then applies the demo-calibrated 71.2% threshold. Reproduce calibration with `python scripts/calibrate_demo_threshold.py`. New scams/paraphrases may be missed; similar benign messages may be flagged. `verify_demo_patterns.py` can check every loaded catalog row, 13 paraphrases, 16 benign controls, and short input against a running API; it was not run exhaustively over all 1,038 HTTP requests during this change. Unit tests cover all exact/normalized pairs and representative full-catalog searches; real PostgreSQL/API checks cover both decision branches and persistence. Exact-copy matching does not measure generalization.
