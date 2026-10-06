@@ -28,7 +28,7 @@ import numpy as np
 import torch
 
 # The AI engine (EfficientNet-B0 + your layer) lives in backend/app/ai, shared with the server.
-sys.path.insert(0, str(Path(__file__).resolve().parent / "backend"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))  # the website backend holds the engine code
 
 from app.ai import efficientnet_wrapper as effnet  # noqa: E402
 from app.ai.combined_model import new_head, save_head  # noqa: E402

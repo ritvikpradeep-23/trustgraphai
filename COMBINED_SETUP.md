@@ -6,8 +6,7 @@ Layout:
 backend/                 FastAPI source, requirements, launcher
 front end/               Complete React/Vite frontend
 trustgraph_extension/    Complete browser extension
-models/                  Original anomaly model and preserved candidate assets
-src/, training/, routine/ Existing engine/training sources
+ai/                      Everything AI: models, scam engine (src/), training, routines (ai/README.md)
 data/                    Synthetic scam catalog and separate judge paraphrases
 scripts/, tests/         Database seeding and verification
 run_server.py           Root launcher forwarding to backend/run_server.py

@@ -84,7 +84,7 @@ The user hovers a message on Gmail, WhatsApp Web, LinkedIn, Telegram, Discord, S
                                              └──────────────────────────────┘    └──────────────────────┘
 ```
 
-Optional Python server (this repository's `app/` and `src/trustgraph/`):
+Optional Python server (this repository's `app/` and `ai/src/trustgraph/`):
 
 ```text
   text  -> normalize -> embed (MiniLM) -> match explicitly reported scams -> LOW / MEDIUM / HIGH + evidence ids
@@ -154,7 +154,7 @@ Optional Python server (this repository's `app/` and `src/trustgraph/`):
 
 > **Note:** The test set (`trustgraph_extension/test/rules.test.js`) was written by the team, including tricky benign cases (bank alerts, developer chats about OTP flows). It is not a real-world benchmark; expect lower numbers on live traffic.
 
-**Python detection engine** (`src/trustgraph`, the 4-signal server). **All numbers come from synthetic (AI-written) messages**,
+**Python detection engine** (`ai/src/trustgraph`, the 4-signal server). **All numbers come from synthetic (AI-written) messages**,
 except the real-SMS row; they are not real-world accuracy:
 
 | Metric | Result |
@@ -214,22 +214,22 @@ python -m pytest                              # Python tests (or double-click ru
 added to `/api/score` replies as `ai_written` once the text model is trained), deepfake video
 (`POST /api/video/analyze`), similar-report search (`/api/text/report`, `/api/text/analyze`) and the accuracy
 routine's latest results (`GET /api/accuracy`). All endpoints are listed at `/docs`. The older
-`python run_website.py` (scam check + page only) still works; don't run both, they use the same port.
+`python ai/run_website.py` (scam check + page only) still works; don't run both, they use the same port.
 
-**What it can and can't do, and how to tune it:** [`docs/CAPABILITIES_AND_LIMITS.md`](docs/CAPABILITIES_AND_LIMITS.md).
+**What it can and can't do, and how to tune it:** [`ai/docs/CAPABILITIES_AND_LIMITS.md`](ai/docs/CAPABILITIES_AND_LIMITS.md).
 
-**Learning new scams:** `learn_cycle.py` takes one fresh dataset it has never used (yours from
-`data/learning/datasets/`, else a new synthetic one) plus reported scams (`POST /api/feedback`, `add_examples.py`),
+**Learning new scams:** `ai/learn_cycle.py` takes one fresh dataset it has never used (yours from
+`ai/data/learning/datasets/`, else a new synthetic one) plus reported scams (`POST /api/feedback`, `ai/add_examples.py`),
 records how many it caught *before* learning them, learns the misses, then waits 2 hours before the next dataset. Every new version must pass the safety
-gate and goes live only when you promote it. See [`docs/NEW_SCAM_LEARNING.md`](docs/NEW_SCAM_LEARNING.md).
+gate and goes live only when you promote it. See [`ai/docs/NEW_SCAM_LEARNING.md`](ai/docs/NEW_SCAM_LEARNING.md).
 
 Settings for the API (thresholds, video limits, `DEEPFAKE_MODE` = mine / efficientnet / both, CORS origins) are listed in
 `.env.example`. The deepfake endpoint answers `503 model_not_configured` until a trained model is installed
-(`models/README.md`); it never makes up a score.
+(`ai/models/README.md`); it never makes up a score.
 
-**Deepfake video + AI-text detectors with a scheduled accuracy routine:** `train_video.py`, `train_text.py`,
-`run_cycle.py` (scores one fresh, never-reused test batch every `INTERVAL_HOURS`) and `show_report.py`. Setup,
-datasets and what the numbers mean: [`docs/DETECTION_ROUTINE.md`](docs/DETECTION_ROUTINE.md).
+**Deepfake video + AI-text detectors with a scheduled accuracy routine:** `ai/train_video.py`, `ai/train_text.py`,
+`ai/run_cycle.py` (scores one fresh, never-reused test batch every `INTERVAL_HOURS`) and `ai/show_report.py`. Setup,
+datasets and what the numbers mean: [`ai/docs/DETECTION_ROUTINE.md`](ai/docs/DETECTION_ROUTINE.md).
 
 The welcome page opens on install. To try it without real chats, open the toolbar popup → **Use without account** → Settings → **Demo data**, or serve the test chat:
 
@@ -346,14 +346,12 @@ The project focuses on addressing emerging forms of fraud enabled or amplified b
 │   ├── dev/                # Component gallery
 │   ├── store/              # Chrome Web Store listing and policies
 │   └── scripts/            # Mock server, icon and zip builders
-├── app/                    # Python API (FastAPI): text matching, deepfake video, adapter interface
-├── src/trustgraph/         # Python 4-signal detection engine + demo page (web/)
-├── models/                 # Engine model files, candidate bundles, deepfake model slot (see models/README.md)
-├── data/  eval/            # Synthetic sample data and the evaluation set
-├── training/  routine/     # Training experiments and the 10-round improvement routine
-├── reports/                # Results (marked synthetic where they are)
-├── scripts/                # Seeding, promote/rollback, rounds, EfficientNet training and demo scripts
-├── tests/                  # Python tests (pytest)
+├── backend/                # Website API (FastAPI + PostgreSQL); backend/app/ai connects it to ai/
+├── front end/              # React website
+├── ai/                     # Everything AI: models, scam engine, training, both routines, tests (ai/README.md)
+├── data/                   # Website scam catalog (synthetic + ScamShield sample)
+├── scripts/                # Website seeding, catalog and check scripts
+├── tests/                  # Website tests (pytest); the AI tests are in ai/tests/
 ├── docs/
 │   ├── screenshots/        # Screenshots of every surface
 │   ├── redesign-handoff.md # Notes on the UI redesign

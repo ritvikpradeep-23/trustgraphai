@@ -18,18 +18,20 @@
 /logs/
 # Only public baseline scam runtime files; no training data or rejected models.
 /data/*
-!/data/precedent/
-/data/precedent/*
-!/data/precedent/reports.json
-/models/*
-!/models/anomaly_isolation_forest.joblib
-!/models/risk_bands.json
-/src/*
-!/src/trustgraph/
-/training/
-/routine/
-/eval/
-/reports/
-/runs/
+# The ai/ folder ships only that runtime: the engine code, two model files and
+# the precedent reports. No training data, candidates, tests, reports or backups.
+/ai/*
+!/ai/models/
+/ai/models/*
+!/ai/models/anomaly_isolation_forest.joblib
+!/ai/models/risk_bands.json
+!/ai/src/
+/ai/src/*
+!/ai/src/trustgraph/
+!/ai/data/
+/ai/data/*
+!/ai/data/precedent/
+/ai/data/precedent/*
+!/ai/data/precedent/reports.json
 /trustgraph_extension/
 /dist/

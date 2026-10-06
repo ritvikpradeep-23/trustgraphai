@@ -9,7 +9,7 @@ from eval.leakage import max_similarity
 from routine import core
 from routine.generate import FINAL, IMPROVE, MANIFEST, OUT
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import run_round  # noqa: E402
 
 

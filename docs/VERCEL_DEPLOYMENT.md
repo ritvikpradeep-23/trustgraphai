@@ -18,7 +18,7 @@ An earlier version used Vercel Services (beta). On projects without Services it 
 
 ## Model availability
 
-The function now installs the CPU scam runtime by default: pinned numpy, scipy, joblib, pandas and scikit-learn, with Python 3.12 in `.python-version`. It uploads `src/trustgraph/`, `models/anomaly_isolation_forest.joblib` (~1.4 MB), `models/risk_bands.json` and `data/precedent/reports.json` (public synthetic identifiers). `.vercelignore` keeps all other data and model directories out, including private reports, training inputs, rejected candidates and media weights. `excludeFiles` no longer discards the required precedent file.
+The function now installs the CPU scam runtime by default: pinned numpy, scipy, joblib, pandas and scikit-learn, with Python 3.12 in `.python-version`. It uploads `ai/src/trustgraph/`, `ai/models/anomaly_isolation_forest.joblib` (~1.4 MB), `ai/models/risk_bands.json` and `ai/data/precedent/reports.json` (public synthetic identifiers). `.vercelignore` keeps all other data and model directories out, including private reports, training inputs, rejected candidates and media weights. `excludeFiles` no longer discards the required precedent file.
 
 Records-first order is unchanged: a qualifying PostgreSQL match skips the model; otherwise the original engine produces the final review score. No Torch, Hugging Face download, external provider or new training is required for scam messages. The model still has false negatives/positives; inference availability is not proof of accuracy.
 
