@@ -3,6 +3,11 @@
 How to check that the universal click-to-check (`trustgraph_extension/content/universal.js`)
 works on a site, and what has been checked so far.
 
+> **Since extension v0.3.1 the click-to-check is text only.** The image and video check was
+> removed: the extension no longer reads, downloads or screenshots images or videos. The
+> image, video, capture and deepfake rows below record the earlier version's test runs and no
+> longer apply. Only the text rows do.
+
 ## The seven checks
 
 | # | Check | How to verify |
