@@ -19,7 +19,7 @@ Settings now reads account identity from the server rather than claiming a brows
 ## Verification
 
 - Frontend production build and all 21 regression tests passed.
-- 86 backend tests and 2,101 subtests passed, with 14 disposable-database fixtures skipped. Unit/API, model and isolated-upload regressions are exercised with `python -m pytest tests --ignore=tests/engine -q`; real PostgreSQL controls were checked separately below.
+- 86 backend tests and 2,101 subtests passed, with 14 disposable-database fixtures skipped. Unit/API, model and isolated-upload regressions are exercised with `python -m pytest tests -q`; optional AI training/media suites live in `ai/tests/`. Real PostgreSQL controls were checked separately below.
 - `scripts/verify_account_controls.py` creates two temporary accounts and paired extensions inside a temporary PostgreSQL schema. It checks profile persistence, review ownership, immutable scores, password/session rotation, stale-CSRF rejection, owner-only history deletion, account-dependent cleanup and extension-token revocation. The second account is checked throughout. All rows/schema are rolled back; existing user data is untouched.
 - The live preview is `http://127.0.0.1:8002`. Browser inspection verified the account name is server-derived, new password controls are enabled, privacy actions are available and account deletion requires a password. The dialog was cancelled; no real account mutation was performed through the browser.
 - The original scam-model health probe remains available. No rejected classifier was promoted, no model retrained, and records-first website detection order is unchanged.
@@ -32,10 +32,10 @@ Settings now reads account identity from the server rather than claiming a brows
 | Notifications | An actual notification delivery service; disabled toggles do not pretend to deliver alerts |
 | Contact page | A delivery destination/backend inquiry workflow and agreed handling of personal data; the form is clearly labelled demo-only |
 | AI-written / deepfake / audio | Applicable trained artifacts and optional runtimes. Audio has no implemented trained adapter. Parameters alone cannot supply missing models |
-| Experimental scam text classifier | `models/candidate/classifier_v1` is marked rejected by its own evaluation. It was not activated without informed experimental-use approval |
+| Experimental scam text classifier | `ai/models/candidate/classifier_v1` is marked rejected by its own evaluation. It was not activated without informed experimental-use approval |
 | Extension-result review from website | Synced extension snapshots remain read-only. Extension false-alarm feedback can be submitted by the extension; website-authored checks now support both review and feedback |
 | URL analysis | Structural inspection only; does not visit or verify a site, and is not saved as a scam-message detection |
 | Deleted synced history | Website deletion does not erase the extension's local cache. Future extension sync can add results again |
-| Deployment | Local runtime/build checked; no new Git push or cloud deployment performed |
+| Deployment | Local runtime/build checked; a Git push does not deploy or verify a cloud build |
 
 Deletion is permanent when the account owner confirms it. Shared scam catalog rows and unowned legacy records are never removed by these account controls. Short-lived hashed authentication rate-limit counters expire independently of account deletion. Before public launch, further abuse/concurrency testing, trusted-proxy configuration and broader model validation remain necessary.
