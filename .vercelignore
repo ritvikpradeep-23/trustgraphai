@@ -25,6 +25,7 @@
 /ai/models/*
 !/ai/models/anomaly_isolation_forest.joblib
 !/ai/models/risk_bands.json
+!/ai/models/similarity_corpus.json
 !/ai/src/
 /ai/src/*
 !/ai/src/trustgraph/
