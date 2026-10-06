@@ -1,139 +1,80 @@
-# TrustGraph Continuation Guide
+# TrustGraph continuation guide
 
-## Purpose and architecture
+## Current canonical layout
 
-TrustGraph is a scam-content analysis API with a small Next.js web app and a Manifest V3 browser extension. The backend is FastAPI, with Pydantic request/response schemas and SQLAlchemy persistence on PostgreSQL. `app/main.py` registers API routers and creates declared tables at startup. No migration framework is present.
+- `front end/`: React + Vite application; built assets go to `front end/dist/`.
+- `backend/app/`: complete FastAPI application, schemas, SQLAlchemy models, services, API routes and fingerprint package.
+- `backend/run_server.py`: local launcher. Root `run_server.py` and `requirements.txt` are compatibility forwarders.
+- `trustgraph_extension/`: complete Manifest V3 extension, settings, content scripts and tests.
+- `data/`, `scripts/`, `docs/`, `tests/`: public synthetic catalog, seed/import/calibration tools, documentation and verification.
+- `api/index.py`: tiny upstream compatibility deployment shim, updated to import from `backend/`. Root Vercel Services config does not use it.
+- `web-app/` and `browser-extension/`, if present, are older prototypes, not the canonical frontend/extension.
 
-## Phase status in the current implementation
+The old root `app/` is gone, not the backend: 30 of 31 original source files were moved to `backend/app/`. The obsolete SQLite fingerprint health route was replaced by PostgreSQL `/health/database` upstream. Do not recreate a competing root backend.
 
-There is no phase roadmap/status file in the repository, so status below describes code present, not project-wide completion claims.
+## Detection and dataset
 
-- **Core submissions, detection history, reports and previous-report matching:** implemented.
-- **Phase 13 URL/domain analysis:** implemented as a deterministic parser and endpoint; see limitations below.
-- **Provenance/C2PA inspection:** implemented as bounded metadata/container inspection; cryptographic verification is unavailable.
-- **Phase 15 scam graph/correlation:** partial relational foundation. Typed relationship records can be created and listed, with deterministic checks. Relationships are not automatically discovered/populated and the model is not a graph database.
-- **AI/model integration:** adapter boundaries and explicit unavailable responses exist; no detector is connected.
-- **Web app and browser extension:** basic analyze/history experience exists; neither exposes Phase 13/15 features.
+Scam messages use deterministic normalized token-Jaccard and sequence similarity against PostgreSQL report texts. No AI service, AI URL, model download or external text analysis is required. Every eligible report is ranked; qualified matches are distinct from the full comparison list.
 
-## Repository map
+The catalog contains 300 distinct synthetic example messages: 36 authored demos plus 264 redacted Hindi/Hinglish synthetic fraud messages from the MIT-listed Hugging Face dataset `sidzzz07/scamshield-dataset`. This is not the official Singapore ScamShield service, not 300 different scam mechanisms and not a verified real-incident collection. Source revision, file checksum, selection rules and licensing are in `data/SCAMSHIELD_NOTICE.md` and `data/scamshield_provenance.json`. The complete judge list is in `docs/DEMO_SCAM_PATTERNS.md` and `docs/SCAMSHIELD_SAMPLE.md`.
 
-- `app/main.py` — FastAPI app, router registration, startup table creation, `/health`.
-- `app/api/` — route modules: `detect.py`, `submission.py`, `report.py`, `detection_history.py`, `ai_detectors.py`, `provenance.py`, `url_analysis.py`, `relationships.py`.
-- `app/core/database.py` — PostgreSQL engine/session, SQLAlchemy models, `Base.metadata.create_all`.
-- `app/schemas/` — Pydantic schemas for submissions, detections, reports and provenance.
-- `app/services/` — detection adapters/model boundary, submission processing, previous-report matching, URL analysis, provenance parsing, correlation validation.
-- `tests/` — unittest endpoint and service tests: AI boundaries, provenance, relationships, URL analysis.
-- `web-app/` — Next.js app (`app/page.tsx`, `app/dashboard/page.tsx`), backend proxy routes under `app/api/`, backend URL helper in `lib/backend.ts`.
-- `browser-extension/` — popup UI, config, manifest and client-side `/api/detect` request.
-- Root `requirements.txt`, `.env.example`; `web-app/package.json`, `web-app/.env.local.example`.
+The calibrated threshold is 0.712 (71.2% text similarity). Tiers are exact (100%), very strong (90–<100%), strong (80–<90%), partial (71.2–<80%) and below threshold. Exact copies legitimately score 100%; paraphrase results vary naturally. Similarity is not a fraud probability. No match means UNKNOWN, not safe. Calibration uses 13 unseeded English paraphrases and 16 benign controls; this is not an independent accuracy evaluation and does not establish multilingual accuracy. See `docs/DEMO_SCAM_PATTERNS.md`.
 
-## Backend API
+AI-written text, video/deepfake and cryptographic C2PA verification remain unavailable unless a real engine is supplied. Do not turn unavailable responses into invented scores.
 
-- `GET /health`
-- `POST /api/submit`
-- `POST /api/detect`
-- `GET /api/detections`
-- `GET /api/detections/{detection_id}`
-- `POST /api/reports`
-- `GET /api/reports`
-- `GET /api/reports/{report_id}`
-- `POST /api/text/ai-check`
-- `POST /api/video/analyze` (multipart file)
-- `POST /api/provenance/analyze` (multipart file)
-- `POST /api/url/analyze`
-- `POST /api/relationships`
-- `GET /api/relationships` (optional `entity_type`, `entity_id`, `relationship_type` query filters)
+## Backend routes and persistence
 
-## PostgreSQL schema
+`backend/app/main.py` registers all routers. Routes include:
 
-`DATABASE_URL` is mandatory; `app/core/database.py` passes it to SQLAlchemy `create_engine`. Requirements include `psycopg[binary]`. No SQLite fallback/configuration is present.
+- Health: `GET /health`, `GET /health/database`.
+- Core: `POST /api/submit`, `POST /api/detect`, `GET /api/detections`, `GET /api/detections/{id}`, `POST /api/reports`, `GET /api/reports`, `GET /api/reports/{id}`.
+- Workspace: `/api/workspace/*`; legacy extension scoring: `POST /api/score`.
+- Optional boundaries: `POST /api/text/ai-check`, `POST /api/video/analyze`, `POST /api/provenance/analyze`.
+- Deterministic features: `POST /api/url/analyze`, `POST /api/relationships`, `GET /api/relationships`, `POST /api/media/check`.
 
-- `submissions` (`submission_id` PK): source/content type, text/caption, URL, media reference, sender, source timestamp, consent and creation time.
-- `detections` (`detection_id` PK): FK to submission, score/level, JSON signals/reasons and timestamp.
-- `reports` (`report_id` PK): FK to submission, report type/status and timestamp.
-- `report_matches` (`match_id` PK): FKs to candidate submission, report and matched submission; similarity score and timestamp. Unique `(submission_id, report_id)` prevents repeat matches.
-- `relationships` (`relationship_id` PK): relationship type, typed source/target IDs, JSON evidence and timestamp. Check constraints restrict relationship types to `similar_content`, `same_reported_content`, `same_sender`, `same_url_domain`, `related_report`; entity types to submission/report/detection. Unique canonicalized edge constraint prevents duplicate unordered edges. Entity IDs are polymorphic strings, not foreign keys.
+PostgreSQL only: set private `DATABASE_URL`, or `POSTGRES_URL` as fallback. Plain postgres/postgresql URLs select installed psycopg automatically. SQLAlchemy uses pooled-connection pre-ping. Never commit credentials or use a frontend VITE-prefixed database variable.
 
-There are no separate sender, URL/domain, or content tables. Relationships are recorded between existing submission/report/detection entities, with matching evidence stored on the edge. The correlation endpoint validates stored values before insertion.
+Tables: submissions, detections, reports, report_matches, relationships and fingerprints. Existing rows are preserved; catalog seeding is idempotent and validates collisions before writing. `Base.metadata.create_all` creates missing tables, not schema migrations. No migration framework exists.
 
-## URL/domain analysis
+URL analysis parses locally without fetching the site. Registrable domains use a limited suffix heuristic, not a full public-suffix database. Provenance inspection finds metadata/manifest presence but does not verify signatures. Explicit correlation validates relationships between existing entities; automatic graph discovery is not implemented.
 
-`app/services/url_analysis.py` uses Python URL parsing, IDNA and IP parsing only; there are no outbound requests. It accepts a bare domain by prepending HTTPS, permits HTTP(S), normalizes host/scheme, removes userinfo and fragments from returned normalized URL, and extracts hostname, estimated registrable domain, port, path and query. Deterministic signals: HTTP, IP hostname, unusual port, more than three subdomains, suspicious encoding/pattern, URL length over 2048, embedded userinfo. Inputs over 4096 characters and malformed/unsupported URLs are rejected. Registrable-domain extraction uses a small hard-coded multi-label suffix list, not a complete public suffix database; treat it as heuristic.
+Image fingerprints use perceptual hashes, four indexed 16-bit bands and PostgreSQL storage; images/frames are decoded in memory, not retained. Optional limits are defined in `backend/app/fingerprint/config.py`. Fingerprint demo seeding is separate from the scam catalog and is not necessary for message matching.
 
-## Provenance and C2PA
+## One Vercel project
 
-`app/services/provenance.py` inspects uploaded files locally with a 50 MiB analysis limit, safe basename handling, content-signature detection, and supported metadata/container readers (including PNG, JPEG, PDF, DOCX and common media signatures). It extracts selected metadata and detects a C2PA manifest-store identifier in a JUMBF description. This is presence/metadata inspection only: `c2pa_verified` remains unavailable (`null`); no claim signature validation is implemented. Unsupported or malformed files return unavailable results/warnings. No external calls are made.
+The canonical root `vercel.json` uses Vercel Services: Vite frontend rooted at `front end/`, FastAPI backend rooted at `backend/` with `app.main:app` entrypoint. Ordered rewrites route API, health and docs to the backend while preserving paths; extensionless frontend navigation receives the SPA fallback. Missing API/asset paths must not become HTML.
 
-## Correlation
+Import the whole repository as one project with Root Directory `.`, not either subfolder. Use Services support and remove conflicting old dashboard build overrides. Set private database configuration, `VITE_USE_MOCK=false` and `VITE_API_BASE_URL=/api`. See `docs/VERCEL_DEPLOYMENT.md` for settings and post-deployment checks. No Vercel account settings, secrets or cloud deployment were changed here.
 
-`app/services/correlation.py` validates shared sender, registrable URL domain, exact normalized content, thresholded similar content using `previous_report_matcher` (`MATCH_THRESHOLD = 0.72`), and reports attached to the same submission. `POST /api/relationships` accepts typed source/target entities and a relationship type, rejects unsupported/unsubstantiated edges and canonicalizes endpoint order. `GET` lists edges with filters. Relationship writes are explicit API calls, not automatic graph discovery. `related_report` currently means two reports share the same submission.
+Keep Deployment Protection enabled until authentication/authorization is implemented. Do not expose raw submissions/history publicly. Extension access to a protected deployment requires an authorized plan; no bypass is supplied. The unpacked extension defaults to a local backend URL and must be configured separately for an authorized hosted URL.
 
-## AI architecture and connection status
+## Local setup and checks
 
-- `TrustGraphAI` in `app/services/ai_model.py` is the existing scam detector boundary. It always returns the pending fallback: zero-valued signals/score, `LOW`, and `AI model integration pending`.
-- `ScamDetectorAdapter` preserves that interface for `/api/detect`. Detection also checks previous report matches; no trained scam model is bundled.
-- `AIWrittenTextAdapter` and `VideoDeepfakeAdapter` define injectable protocols. With no engine connected, their endpoints return `available: false`, `score: null`, and explicitly say no score was produced.
-- Future integrations can be supplied as adapter engines (`AIWrittenTextEngine.analyze(text)` and `VideoEngine.analyze(video)`), or implement the existing `TrustGraphAI.predict(channel, sender, text, url)` boundary. Do not report a score as available unless a real engine returns it.
-
-## Web app and extension
-
-The Next.js app provides a text analyze form and a dashboard for detections/reports/details. Its server routes proxy detection POST and detection/report GET calls to the backend. It does not currently expose URL analysis, provenance or relationship APIs. Run scripts are `dev`, `build`, `start` in `web-app/package.json`.
-
-The browser extension is a user-triggered popup: paste text, call backend `/api/detect`, display risk/reasons/previous matches. Its `config.js` points to `http://127.0.0.1:8000`; manifest host permissions include localhost and loopback only. No URL scanning of visited pages is implemented.
-
-## Setup and verification
-
-PowerShell example from the repository root:
+From the repository root in PowerShell:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-Copy-Item .env.example .env
-# Set DATABASE_URL in .env to a PostgreSQL DSN; do not commit credentials.
-uvicorn app.main:app --reload
-python -m unittest discover -s tests -v
-python -m compileall -q app tests
+python -m pip install -r requirements-dev.txt
+# Create private .env from .env.example and configure PostgreSQL locally.
+python scripts/seed_demo_patterns.py
+npm ci --prefix "front end"
+npm run build --prefix "front end"
+python backend/run_server.py
 ```
 
-Web app: `cd web-app; npm install; Copy-Item .env.local.example .env.local; npm run dev`. The optional `TRUSTGRAPH_API_URL` defaults to `http://127.0.0.1:8000`.
+The default local API/site port is 8000; set PORT for a different port. For hot-reload frontend development use `npm run dev` in `front end/`; its development proxy is not a production deployment solution.
 
-Extension: load `browser-extension/` as an unpacked extension in a Chromium-based browser while the backend is running at its configured local URL.
+Checks:
 
-Environment variables evidenced by templates/code:
-
-- `DATABASE_URL` — required PostgreSQL SQLAlchemy DSN; value must be supplied locally.
-- `TRUSTGRAPH_API_URL` — optional web-app backend URL; defaults to `http://127.0.0.1:8000`.
-
-## Known limitations and next steps
-
-- No schema migration tool; `create_all` creates missing tables but does not migrate existing table definitions. Add a migration strategy before future incompatible schema changes.
-- Relationship records have no polymorphic foreign keys and are created only when clients request them. Consider a safe automatic correlation workflow and stronger referential integrity before treating this as a complete graph.
-- Domain extraction is heuristic (small suffix list); improve with a maintained public suffix source only if adding that dependency/data is explicitly approved for the project.
-- No detector is connected and current scam risk output is a placeholder. Keep unavailable/fallback status truthful until real detector implementations and evaluation are supplied.
-- C2PA detection does not validate signatures/manifests; do not label media authentic based on current output.
-- Add integration tests against PostgreSQL for schema creation, relationship uniqueness under concurrent requests, and endpoint persistence; current tests use mocked sessions for DB-backed route behavior.
-- Phase/roadmap history is absent from the repo. Confirm the intended next phase from project owners before starting phase-specific work.
-
-## Browser extension (`trustgraph_extension/`) connection
-
-The Chrome extension in `trustgraph_extension/` (the full one: shields on WhatsApp, Gmail and other sites, chat scans, click-to-check on any website) talks to this API at its Settings → server URL (default `http://127.0.0.1:8000`):
-
-- `POST /api/detect` `{text, channel}` for every message check (no `submission_id`, so nothing is stored). `previous_report_matches` is shown in the extension and raises its verdict (Caution from 0.72 similarity, High from 0.90). `risk_level: "PENDING"` is never shown as a verdict; the extension's on-device rules decide until a model is connected.
-- `POST /api/media/check` (`app/api/media_check.py`) for images and video frames from click-to-check: decoded in memory, never stored, matched against the `fingerprints` table (perceptual hashes of known fakes, `app/fingerprint/`, four indexed 16-bit hash bands). Its `deepfake` field goes through `TrustGraphAI` and stays unavailable until an engine is connected.
-- `GET /health/database` (`app/api/database_health.py`): counts reports/submissions/fingerprints and writes, finds and rolls back a probe fingerprint.
-- Seed: `python scripts/seed_fingerprints.py --demo` (two reported scam messages as submissions + reports, one demo image fingerprint), or a `data/known_fakes/manifest.json`.
-- Tests: `tests/test_fingerprint.py` (database tests need `TEST_DATABASE_URL` to a throwaway PostgreSQL database; skipped otherwise) and `trustgraph_extension/test/universal-e2e.js` (Playwright + `DATABASE_URL`).
-- Extra optional env vars (defaults in `app/fingerprint/config.py`): `FINGERPRINT_IMAGE_THRESHOLD`, `FINGERPRINT_FULL_SCAN_MAX`, `MEDIA_MAX_BODY`, `MEDIA_MAX_IMAGE_BYTES`, `MEDIA_MAX_FRAMES`. Extra requirements: `numpy`, `Pillow`.
-
-## START HERE — Codex on another PC
-
-```text
-Read TRUSTGRAPH_HANDOFF.md and inspect the current repository before editing.
-Use PostgreSQL only; never add SQLite fallback. Preserve existing routes and contracts.
-Treat TrustGraphAI, AI-written detection, video/deepfake detection, and C2PA verification as unavailable unless a real implementation is present.
-Do not infer phase status beyond files/tests in the checkout. Ask for or locate the project roadmap before choosing the next phase.
-For an approved change, add focused unittest coverage and run:
-  python -m unittest discover -s tests -v
-  python -m compileall -q app tests
+```powershell
+python -m pytest tests -q
+npm test --prefix "front end" -- --run
+python scripts/check_vercel_config.py
 ```
+
+Fingerprint DB integration fixtures require a separate throwaway `TEST_DATABASE_URL`; never point them at the existing demonstration database. Schema validation/local builds do not prove a cloud deployment. Inspect the extension test scripts under `trustgraph_extension/test/` before running live-browser or DB-dependent tests.
+
+## Continuation rules
+
+Read this guide and inspect current git status before editing. Preserve existing user changes and remote commits. Keep backend implementation in `backend/`, PostgreSQL only, secrets private, matching explanations honest, no invented AI scores and no automatic dataset overwrite. Maintain tests for API JSON paths, SPA deep links, varied similarity, catalog uniqueness and deployment layout.
