@@ -240,18 +240,45 @@
   Panel.onOpenChange = () => updateLauncher();
 
   // --- One message (hover shield) ------------------------------------------
-  async function checkSingle(text, sender) {
+  // rec (optional, from the adapter): {sender, senderName, links}. They let
+  // the rules spot an unsaved number, a display name that doesn't match the
+  // address, or a link that shows one site and opens another. Memory only.
+  async function checkSingle(text, rec) {
+    const sender = rec ? rec.sender || null : null;
+    const extra = rec ? { senderName: rec.senderName || null, links: (rec.links || []).slice(0, 20).map((l) => ({ href: l.href, text: l.text || "" })) } : {};
     inFlight = true;
     shieldButton.setAttribute("aria-busy", "true");
     Panel.showChecking({}, layoutOpts());
-    const context = { onRetry: () => checkSingle(text, sender) };
+    const context = { onRetry: () => checkSingle(text, rec) };
+    const ask = () => send({ type: TG.MSG.SCORE, text, channel: adapter.channel, sender, ...extra });
+    let response = null;
+    let problem = "";
     try {
       // The sender lets the rules weigh an unsaved number; it isn't stored.
       // A short scanning state (the pulsing ring) even when the answer is instant.
-      const [response] = await Promise.all([send({ type: TG.MSG.SCORE, text, channel: adapter.channel, sender }), new Promise((r) => setTimeout(r, 450))]);
-      Panel.showSingle(response, context, layoutOpts());
-    } catch (_) {
-      Panel.showSingle({ error: "TrustGraph was updated or reloaded. Refresh this page and try again." }, {}, layoutOpts());
+      [response] = await Promise.all([ask(), new Promise((r) => setTimeout(r, 450))]);
+      // No answer usually means Chrome was still waking TrustGraph's
+      // background up: ask once more.
+      if (!response || (!response.verdict && !response.error)) response = await ask();
+    } catch (err) {
+      problem = String((err && err.message) || err);
+    }
+    try {
+      if (response && response.verdict) {
+        Panel.showSingle(response, context, layoutOpts());
+      } else {
+        // Always an answer: score it right here with the on-device rules
+        // (already loaded on this page), and say why.
+        if (!problem) problem = response && response.error ? response.error : "no answer";
+        console.warn(LOG, "background didn't answer the check:", problem);
+        const verdict = await Verdict.LocalEngine.scoreMessage({ text, channel: adapter.channel, sender, ...extra }, { sensitivity: settings.sensitivity, status: "offline" });
+        context.notice = /context invalidated/i.test(problem)
+          ? "TrustGraph was updated: checked on this page only. Refresh the page to save results again."
+          : "TrustGraph's background didn't answer, so this was checked on this page only (not saved). If this keeps happening, reload TrustGraph in chrome://extensions.";
+        Panel.showSingle({ verdict }, context, layoutOpts());
+      }
+    } catch (err) {
+      Panel.showSingle({ error: "Couldn't check this message here: " + String((err && err.message) || err) }, context, layoutOpts());
     } finally {
       inFlight = false;
       shieldButton.removeAttribute("aria-busy");
@@ -267,13 +294,13 @@
     const viaFallback = fallbackEls.has(message);
     const record = !viaFallback && adapter.record ? safe(() => adapter.record(message), null) : null;
     const extract = () => (viaFallback ? TrustGraphKit.text(message, "time, button, [aria-hidden='true']") : adapter.extractText(message));
-    const text = TrustGraphKit.clean(record ? record.text : safe(extract, ""));
+    const text = TrustGraphKit.clean(record ? (record.subject ? `Subject: ${record.subject}\n` : "") + record.text : safe(extract, ""));
     stopScan(); // a single check replaces any chat scan in the panel
     if (!text) {
       Panel.showSingle({ verdict: { empty: true } }, {}, layoutOpts());
       return;
     }
-    checkSingle(text, record ? record.sender : null);
+    checkSingle(text, record);
   });
 
   // --- Whole chat (launcher) -----------------------------------------------
@@ -349,8 +376,9 @@
           // Emails: include the subject so subject-line scams count.
           text: m.subject ? `Subject: ${m.subject}\n${m.text}` : m.text,
           sender: m.sender,
+          senderName: m.senderName || null,
           timestamp: m.timestamp,
-          links: (m.links || []).map((l) => l.href),
+          links: (m.links || []).map((l) => ({ href: l.href, text: l.text || "" })),
           senderHistory: history,
           prevSameSender: sameRun,
           inChat: true,
@@ -381,7 +409,8 @@
         // known to be down (Retry clears that).
         const ask = s.server === "offline" || s.server === "local" ? [] : items.filter((it) => !s.serverCache.has(it.id));
         if (ask.length) {
-          const out = await send({ type: TG.MSG.SCORE_SERVER, items: ask.map((it) => ({ id: it.id, text: it.text })), channel: adapter.channel });
+          // If the background can't be reached, carry on with the on-device rules.
+          const out = (await send({ type: TG.MSG.SCORE_SERVER, items: ask.map((it) => ({ id: it.id, text: it.text })), channel: adapter.channel }).catch(() => null)) || { results: {}, server: "offline" };
           if (scan !== s) return; // closed or restarted meanwhile
           for (const it of ask) s.serverCache.set(it.id, (out.results || {})[it.id] || null);
           s.server = out.server;
@@ -413,7 +442,7 @@
     const v = s.verdict;
     const summary = { id: v.id, riskLevel: v.riskLevel, score: v.score, signals: v.signals.map((x) => ({ id: x.id })) };
     if (!s.record) {
-      const res = await send({ type: TG.MSG.RECORD_RESULT, verdict: summary, channel: adapter.channel });
+      const res = await send({ type: TG.MSG.RECORD_RESULT, verdict: summary, channel: adapter.channel }).catch(() => null); // not saved, still shown
       if (res && res.record) {
         s.record = res.record;
         s.saved = !!res.saved;
@@ -422,7 +451,7 @@
     }
     const changed = RANK_L[v.riskLevel] !== RANK_L[s.record.riskLevel] || v.score !== s.record.score || summary.signals.length !== s.record.signalIds.length;
     if (changed && s.saved) {
-      const res = await send({ type: TG.MSG.RECORD_RESULT, verdict: summary, channel: adapter.channel, update: true });
+      const res = await send({ type: TG.MSG.RECORD_RESULT, verdict: summary, channel: adapter.channel, update: true }).catch(() => null);
       if (res && res.record) s.record = res.record;
     }
   }
