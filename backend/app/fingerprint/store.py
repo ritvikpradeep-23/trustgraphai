@@ -1,145 +1,87 @@
-"""The known-fakes database: one table of fingerprints, looked up by Hamming
-distance.
+"""Known-fakes lookups in PostgreSQL (the `fingerprints` table in
+app/core/database.py), by Hamming distance.
 
-The connection string comes from FINGERPRINT_DB_URL (default
-sqlite:///data/fingerprints.sqlite3). Only SQLite is implemented; another
-database needs a class with the same methods (add, lookup, count, self_test).
-
-Fast lookups as the table grows: each 64-bit hash is also stored as four
-16-bit bands, each with an index. A record within 3 bits of the query must
-share at least one band exactly, so the indexed query finds it without a
-table scan. Re-compressed copies are usually that close. While the table has
-at most FINGERPRINT_FULL_SCAN_MAX rows of a kind, the rest of the rows are
-also compared directly, so every record within the threshold is found.
+Fast as the table grows: each 64-bit hash is also stored as four 16-bit
+bands, each indexed. A record within 3 bits of the query shares at least one
+band exactly, so the indexed query finds it without a table scan; re-compressed
+copies are usually that close. While the table has at most
+FINGERPRINT_FULL_SCAN_MAX rows of a kind, the rest are compared directly too,
+so every record within the threshold is found.
 """
-import sqlite3
-import threading
-import uuid
-from contextlib import closing, contextmanager
 from datetime import datetime, timezone
-from pathlib import Path
+from uuid import uuid4
 
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
+
+from app.core.database import FingerprintRecord
+from app.fingerprint import config
 from app.fingerprint.hashing import bands, hamming, similarity, to_signed, to_unsigned
 
-SCHEMA = """
-CREATE TABLE IF NOT EXISTS fingerprints (
-    id          TEXT PRIMARY KEY,
-    kind        TEXT NOT NULL CHECK (kind IN ('image', 'text')),
-    label       TEXT NOT NULL,
-    source      TEXT NOT NULL DEFAULT '',
-    created_at  TEXT NOT NULL,
-    hash        INTEGER NOT NULL,   -- pHash (image) or SimHash (text), signed 64-bit
-    hash2       INTEGER,            -- dHash (image only)
-    b0 INTEGER NOT NULL, b1 INTEGER NOT NULL, b2 INTEGER NOT NULL, b3 INTEGER NOT NULL
-);
-CREATE INDEX IF NOT EXISTS ix_fp_b0 ON fingerprints (kind, b0);
-CREATE INDEX IF NOT EXISTS ix_fp_b1 ON fingerprints (kind, b1);
-CREATE INDEX IF NOT EXISTS ix_fp_b2 ON fingerprints (kind, b2);
-CREATE INDEX IF NOT EXISTS ix_fp_b3 ON fingerprints (kind, b3);
-CREATE INDEX IF NOT EXISTS ix_fp_hash ON fingerprints (kind, hash);
-"""
-
-# One indexed lookup per band (a UNION, so SQLite uses ix_fp_b0..b3 rather
-# than scanning every row of the kind).
-BAND_QUERY = " UNION ".join(
-    f"SELECT id, label, hash, hash2 FROM fingerprints WHERE kind = ? AND b{i} = ?" for i in range(4))
+NO_MATCH = {"db_match": False, "similarity": None, "matched_record_id": None}
 
 
-class StoreUnavailable(RuntimeError):
-    pass
+def add(db: Session, kind: str, hash_: int, label: str, source: str = "", hash2: int | None = None,
+        commit: bool = True) -> str:
+    b0, b1, b2, b3 = bands(hash_)
+    record = FingerprintRecord(
+        fingerprint_id=f"fp_{uuid4().hex[:12]}", kind=kind, label=label[:128], source=source[:256],
+        hash=to_signed(hash_), hash2=None if hash2 is None else to_signed(hash2),
+        b0=b0, b1=b1, b2=b2, b3=b3, created_at=datetime.now(timezone.utc),
+    )
+    db.add(record)
+    if commit:
+        db.commit()
+    else:
+        db.flush()
+    return record.fingerprint_id
 
 
-def sqlite_path(url: str) -> str:
-    if url.startswith("sqlite:///"):
-        return url[len("sqlite:///"):]
-    raise StoreUnavailable(f"unsupported FINGERPRINT_DB_URL scheme (only sqlite:///path is implemented): {url.split(':', 1)[0]}")
+def count(db: Session, kind: str | None = None) -> int:
+    statement = select(func.count()).select_from(FingerprintRecord)
+    if kind:
+        statement = statement.where(FingerprintRecord.kind == kind)
+    return db.scalar(statement) or 0
 
 
-class FingerprintStore:
-    def __init__(self, url: str, full_scan_max: int = 20000):
-        self.path = sqlite_path(url)
-        self.full_scan_max = full_scan_max
-        self._lock = threading.Lock()  # one writer at a time; SQLite handles readers
-        if self.path != ":memory:":
-            Path(self.path).parent.mkdir(parents=True, exist_ok=True)
-        try:
-            with self._connect() as db:
-                db.executescript(SCHEMA)
-        except sqlite3.Error as exc:
-            raise StoreUnavailable(str(exc)) from exc
+def _candidates(db: Session, kind: str, hash_: int, full_scan_max: int):
+    b0, b1, b2, b3 = bands(hash_)
+    F = FingerprintRecord
+    rows = db.scalars(select(F).where(F.kind == kind, or_(F.b0 == b0, F.b1 == b1, F.b2 == b2, F.b3 == b3))).all()
+    total = count(db, kind)
+    if total <= full_scan_max and total > len(rows):
+        rows = db.scalars(select(F).where(F.kind == kind)).all()
+    return rows
 
-    @contextmanager
-    def _connect(self):
-        try:
-            conn = sqlite3.connect(self.path, timeout=5)
-        except sqlite3.Error as exc:
-            raise StoreUnavailable(str(exc)) from exc
-        with closing(conn):
-            with conn:  # commit on success, roll back on error
-                yield conn
 
-    def add(self, kind: str, hash_: int, label: str, source: str = "", hash2: int | None = None) -> str:
-        record_id = uuid.uuid4().hex
-        row = (record_id, kind, label, source, datetime.now(timezone.utc).isoformat(timespec="seconds"),
-               to_signed(hash_), None if hash2 is None else to_signed(hash2), *bands(hash_))
-        with self._lock, self._connect() as db:
-            db.execute("INSERT INTO fingerprints (id, kind, label, source, created_at, hash, hash2, b0, b1, b2, b3) "
-                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", row)
-        return record_id
+def lookup(db: Session, kind: str, hash_: int, threshold: int, hash2: int | None = None,
+           threshold2: int | None = None, full_scan_max: int | None = None) -> dict:
+    """Closest record within the threshold(s):
+    {db_match, similarity, matched_record_id, distance, label}."""
+    best = None
+    for row in _candidates(db, kind, hash_, config.FULL_SCAN_MAX if full_scan_max is None else full_scan_max):
+        d = hamming(hash_, to_unsigned(row.hash))
+        if d > threshold:
+            continue
+        if hash2 is not None and row.hash2 is not None and threshold2 is not None \
+                and hamming(hash2, to_unsigned(row.hash2)) > threshold2:
+            continue
+        if best is None or d < best[0]:
+            best = (d, row)
+    if best is None:
+        return dict(NO_MATCH)
+    d, row = best
+    return {"db_match": True, "similarity": similarity(d), "matched_record_id": row.fingerprint_id,
+            "distance": d, "label": row.label}
 
-    def count(self, kind: str | None = None) -> int:
-        with self._connect() as db:
-            if kind:
-                return db.execute("SELECT COUNT(*) FROM fingerprints WHERE kind = ?", (kind,)).fetchone()[0]
-            return db.execute("SELECT COUNT(*) FROM fingerprints").fetchone()[0]
 
-    def _candidates(self, db, kind: str, hash_: int):
-        b = bands(hash_)
-        rows = db.execute(BAND_QUERY, [v for band in b for v in (kind, band)]).fetchall()
-        n = db.execute("SELECT COUNT(*) FROM fingerprints WHERE kind = ?", (kind,)).fetchone()[0]
-        if n <= self.full_scan_max and n > len(rows):
-            rows = db.execute("SELECT id, label, hash, hash2 FROM fingerprints WHERE kind = ?", (kind,)).fetchall()
-        return rows
-
-    def lookup(self, kind: str, hash_: int, threshold: int, hash2: int | None = None,
-               threshold2: int | None = None, db=None) -> dict:
-        """Closest record within the threshold(s):
-        {db_match, similarity, matched_record_id, distance, label}."""
-        def run(conn):
-            best = None
-            for record_id, label, h, h2 in self._candidates(conn, kind, hash_):
-                d = hamming(hash_, to_unsigned(h))
-                if d > threshold:
-                    continue
-                if hash2 is not None and h2 is not None and threshold2 is not None and hamming(hash2, to_unsigned(h2)) > threshold2:
-                    continue
-                if best is None or d < best[0]:
-                    best = (d, record_id, label)
-            if best is None:
-                return {"db_match": False, "similarity": None, "matched_record_id": None}
-            return {"db_match": True, "similarity": similarity(best[0]), "matched_record_id": best[1],
-                    "distance": best[0], "label": best[2]}
-
-        if db is not None:
-            return run(db)
-        with self._connect() as conn:
-            return run(conn)
-
-    def self_test(self) -> dict:
-        """Write a probe fingerprint, find it again, then roll back, so the
-        round trip is proven without leaving anything behind."""
-        probe = 0x5A5A_F00D_C0DE_1234
-        with self._lock:
-            conn = sqlite3.connect(self.path, timeout=5)
-            try:
-                conn.execute("BEGIN")
-                conn.execute("INSERT INTO fingerprints (id, kind, label, source, created_at, hash, hash2, b0, b1, b2, b3) "
-                             "VALUES ('health-probe', 'text', 'probe', 'health', '', ?, NULL, ?, ?, ?, ?)",
-                             (to_signed(probe), *bands(probe)))
-                found = self.lookup("text", probe ^ 0b11, threshold=2, db=conn)
-                records = conn.execute("SELECT COUNT(*) FROM fingerprints WHERE id != 'health-probe'").fetchone()[0]
-            finally:
-                conn.rollback()
-                conn.close()
-        return {"ok": found["matched_record_id"] == "health-probe", "records": records,
-                "probe_found": found["matched_record_id"] == "health-probe"}
+def self_test(db: Session) -> bool:
+    """Write a probe fingerprint, find it again, roll it back: proves the
+    round trip without leaving anything behind."""
+    probe = 0x5A5A_F00D_C0DE_1234
+    try:
+        record_id = add(db, "text", probe, "health-probe", "health", commit=False)
+        found = lookup(db, "text", probe ^ 0b11, threshold=2)
+        return found["matched_record_id"] == record_id
+    finally:
+        db.rollback()

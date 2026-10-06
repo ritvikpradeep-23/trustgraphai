@@ -11,7 +11,7 @@ def verdict(matches):
     similarity = max(match.similarity_score for match in matches)
     demo = any(match.status == "synthetic_demo" for match in matches)
     return similarity, "HIGH", [
-        f"Matched {len(matches)} stored scam pattern(s); best text similarity {similarity:.0%} (threshold {MATCH_THRESHOLD:.0%}).",
+        f"Matched {len(matches)} stored scam pattern(s); best text similarity {similarity:.1%} (demo-calibrated threshold {MATCH_THRESHOLD:.1%}).",
         "Deterministic word overlap and sequence matching; the score is similarity, not a fraud probability.",
         *(["Matched examples include synthetic judge-demo patterns, not verified real-world reports."] if demo else []),
     ]

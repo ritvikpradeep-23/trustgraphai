@@ -8,9 +8,12 @@ from app.schemas.detection import (
     DetectionRequest,
     DetectionResponse,
     DetectionSignals,
+    PatternComparisonResponse,
 )
 from app.services.pattern_detection import verdict
 from app.services.previous_report_matcher import (
+    MATCH_THRESHOLD,
+    similarity_tier,
     find_previous_report_matches,
     store_previous_report_matches,
 )
@@ -29,12 +32,14 @@ def detect(request: DetectionRequest, db: Session = Depends(get_db)):
             detail="Submission not found",
         )
 
-    previous_report_matches = find_previous_report_matches(
+    comparisons = find_previous_report_matches(
         db,
         text=request.text,
         url=request.url,
         submission_id=request.submission_id,
+        include_below_threshold=True,
     )
+    previous_report_matches = [match for match in comparisons if match.similarity_score >= MATCH_THRESHOLD]
     if request.submission_id:
         store_previous_report_matches(
             db,
@@ -55,5 +60,10 @@ def detect(request: DetectionRequest, db: Session = Depends(get_db)):
         ),
         reasons=reasons,
         previous_report_matches=previous_report_matches,
+        pattern_comparisons=[PatternComparisonResponse(
+            **vars(match), rank=index + 1, tier=similarity_tier(match.similarity_score)
+        ) for index, match in enumerate(comparisons)],
+        comparison_count=len(comparisons),
+        match_threshold=MATCH_THRESHOLD,
         ai_written=None,
     )

@@ -5,12 +5,12 @@ Layout:
 ```text
 backend/                 FastAPI source, requirements, launcher
 front end/               Complete React/Vite frontend
-trustgraph_extension/    Complete browser extension (96 tracked files)
+trustgraph_extension/    Complete browser extension
 models/                  Existing legacy model assets (not a new AI engine)
 src/, training/, routine/ Existing optional legacy engine/training sources
 data/                    Synthetic scam catalog and separate judge paraphrases
 scripts/, tests/         Database seeding and verification
-app/, run_server.py      Compatibility shims for old commands
+run_server.py           Root launcher forwarding to backend/run_server.py
 ```
 
 No nested Git repositories are needed. Push from the repository root. Do not initialize another Git repo in backend/front end/extension.
@@ -34,13 +34,15 @@ The ZIP/source repo intentionally excludes local .env, .git, node_modules, .venv
 
 In Chrome/Edge extensions, enable Developer mode and load the unpacked `trustgraph_extension/` directory yourself. Its default server is port 8000. If running the preview on 8001, change its Backend URL to http://127.0.0.1:8001 in extension settings.
 
-Its remote score endpoint is now implemented. When no database match is available, existing on-device rules are used. Account pairing/history sync remains unavailable; extension-local history works separately. No extension install or browser permission was performed automatically.
+The latest extension uses `/api/detect` for text, `/api/media/check` for media fingerprints, and `/health/database` for connectivity. `/api/score` is also retained for older extension clients. Local rules remain separate from database matching. Account pairing/history sync remains unavailable; extension-local history works separately. No extension install or browser permission was performed automatically.
 
 ## Dataset and honest score variation
 
-36 authored synthetic scam examples are seeded additively in PostgreSQL (up from 12); repeated seeding makes no duplicates. Twelve separate unseeded judge queries paraphrase stored examples. Their measured similarities vary naturally. Exact normalized copies still correctly score 100% similarity: scores are never randomized or capped for appearance.
+36 authored synthetic scam examples are seeded additively in PostgreSQL (up from 12); repeated seeding makes no duplicates. Thirteen separate unseeded judge queries paraphrase stored examples, including a partial match. Their similarities vary naturally. Exact normalized copies still correctly score 100% similarity: scores are never randomized or capped for appearance.
 
-The score is word/sequence similarity, not fraud probability or a claim of AI accuracy. A 72% threshold triggers a known-pattern match. No known match does not prove safety. Read `docs/DEMO_SCAM_PATTERNS.md` for all full texts and demonstration queries.
+The score is word/sequence similarity, not fraud probability or a claim of AI accuracy. The 71.2% demo-calibrated threshold maximizes balanced accuracy on 13 unseeded scam paraphrases and 16 benign controls, including similar scam warnings. It is the midpoint between the nearest benign score (70.1%) and scam score (72.3%). Those calibration inputs are not independent validation, and this is not a production safety threshold. Reproduce with `python scripts/calibrate_demo_threshold.py`.
+
+Every eligible pattern is ranked under Exact (100%), Very strong (90–under 100%), Strong (80–under 90%), Partial (71.2–under 80%), or Below threshold. The tier boundaries are descriptive display bands, not separately validated fraud decisions. Below-threshold comparisons are not detected matches. No known match does not prove safety. Read `docs/DEMO_SCAM_PATTERNS.md` for all full texts and demonstration queries.
 
 ```text
 .venv\Scripts\python scripts/seed_demo_patterns.py

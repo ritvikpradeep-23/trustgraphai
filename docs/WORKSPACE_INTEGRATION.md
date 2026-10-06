@@ -1,6 +1,6 @@
 # React workspace + PostgreSQL backend
 
-The React application lives in `front end/`. FastAPI serves its generated `dist/` output and its existing API on the same origin. Existing submission, detection, report, provenance, URL, and relationship routes are preserved. No database models or stored records were changed by this integration.
+The React application lives in `front end/`; canonical backend source is in `backend/app/`. FastAPI serves its generated `dist/` output and its existing API on the same origin. Existing submission, detection, report, provenance, URL, and relationship routes are preserved. The merged extension backend adds PostgreSQL fingerprint storage; existing stored records are preserved.
 
 ## Start
 
@@ -26,11 +26,11 @@ Install `requirements-dev.txt`, then run current backend tests with a dummy Post
 
 ```powershell
 $env:DATABASE_URL='postgresql+psycopg://test:test@127.0.0.1:5432/test'
-.\.venv\Scripts\python -m pytest -q --ignore=tests/test_fingerprint.py
+.\.venv\Scripts\python -m pytest -q -p no:cacheprovider
 Remove-Item Env:DATABASE_URL
 ```
 
-`tests/test_fingerprint.py` belongs to an older removed backend and imports nonexistent `app.config` / `create_app`; it must be migrated separately. The targeted suite does not verify that legacy subsystem.
+Fingerprint unit tests are included. Seven fingerprint database integration tests require a separate `TEST_DATABASE_URL` and skip when it is absent. Do not point destructive test fixtures at your production database.
 
 Workspace tests use fake sessions, never the configured database. They verify omitted private fields, pending/null semantics, existing routes, CORS, static SPA handling, and missing-asset/API 404s. Frontend tests cover live data calculations and local preferences as well as optional demo behavior.
 

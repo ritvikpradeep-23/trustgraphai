@@ -44,6 +44,9 @@ class DetectionResponse(BaseModel):
     signals: DetectionSignals
     reasons: list[str]
     previous_report_matches: list["PreviousReportMatchResponse"] = Field(default_factory=list)
+    pattern_comparisons: list["PatternComparisonResponse"] = Field(default_factory=list)
+    comparison_count: int = 0
+    match_threshold: float = 0.712
     ai_written: ModalityCheckResponse | None = None
     method: str = "database-pattern-matching"
 
@@ -56,6 +59,11 @@ class PreviousReportMatchResponse(BaseModel):
     report_type: str
     status: str
     similarity_score: float
+
+
+class PatternComparisonResponse(PreviousReportMatchResponse):
+    rank: int
+    tier: str
 
 
 class StoredSubmissionResponse(BaseModel):

@@ -5,6 +5,9 @@ import type { RiskLevel } from "@/types/trustgraph";
 export interface AnalysisResult {
   method: string;
   previous_report_matches: { report_id: string; report_type: string; status: string; similarity_score: number }[];
+  pattern_comparisons: { report_id: string; report_type: string; status: string; similarity_score: number; rank: number; tier: string }[];
+  comparison_count: number;
+  match_threshold: number;
   detection_id: string;
   risk_score: number | null;
   risk_level: RiskLevel;

@@ -16,6 +16,8 @@ from app.api.url_analysis import router as url_analysis_router
 from app.core.database import create_tables
 from app.api.workspace import router as workspace_router
 from app.api.extension_score import router as extension_score_router
+from app.api.database_health import router as database_health_router
+from app.api.media_check import router as media_check_router
 
 
 app = FastAPI(
@@ -34,6 +36,8 @@ app.include_router(url_analysis_router, prefix="/api")
 app.include_router(relationships_router, prefix="/api")
 app.include_router(workspace_router, prefix="/api")
 app.include_router(extension_score_router, prefix="/api")
+app.include_router(media_check_router, prefix="/api")
+app.include_router(database_health_router)
 
 app.add_middleware(
     CORSMiddleware,

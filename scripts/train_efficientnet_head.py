@@ -29,7 +29,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path[:0] = [str(Path(__file__).resolve().parents[1] / "backend"), str(Path(__file__).resolve().parents[1])]
 from app.deepfake_engine import efficientnet_wrapper as effnet  # noqa: E402
 from app.deepfake_engine.combined_model import new_head, save_head  # noqa: E402
 

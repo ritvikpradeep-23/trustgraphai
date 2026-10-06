@@ -23,7 +23,7 @@ import cv2
 import numpy as np
 import torch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path[:0] = [str(Path(__file__).resolve().parents[1] / "backend"), str(Path(__file__).resolve().parents[1])]
 from app.config import Settings  # noqa: E402
 from app.deepfake_engine import efficientnet_wrapper as effnet  # noqa: E402
 from app.deepfake_engine.combined_model import (CombinedDeepfakeModel, EfficientNetDeepfakeModel,  # noqa: E402

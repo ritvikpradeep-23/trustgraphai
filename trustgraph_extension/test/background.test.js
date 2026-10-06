@@ -91,7 +91,8 @@ function send(msg, sender = { tab: { url: "https://web.whatsapp.com/chat?x=secre
   check(r1.verdict && r1.verdict.riskLevel === "high" && r1.verdict.offline, "score: high verdict from local rules while the server is down");
   check(r1.saved === true && r1.record && r1.record.domain === "web.whatsapp.com", "score: Result saved with the hostname only");
   const raw = JSON.stringify(store);
-  check(!/gift|google play|mum|dad|codes|7700/i.test(raw), "nothing from the message text is anywhere in storage");
+  // Word boundaries avoid mistaking a random hex ID/hash containing "dad" for text.
+  check(!/\b(gift|google play|mum|dad|codes)\b/i.test(raw) && !raw.includes("+44 7700 900123"), "nothing from the message text is anywhere in storage");
 
   // Same text again: dedupe by salted hash keeps one entry.
   await send({ type: TG.MSG.SCORE, text: SCAM, channel: "whatsapp" });

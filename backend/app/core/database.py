@@ -4,11 +4,14 @@ from typing import Generator
 
 from dotenv import load_dotenv
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     CheckConstraint,
     DateTime,
     Float,
     ForeignKey,
+    Index,
+    Integer,
     JSON,
     String,
     Text,
@@ -127,6 +130,35 @@ class RelationshipRecord(Base):
     target_entity_type: Mapped[str] = mapped_column(String(32), nullable=False)
     target_entity_id: Mapped[str] = mapped_column(String(64), nullable=False)
     evidence: Mapped[dict] = mapped_column(JSON, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class FingerprintRecord(Base):
+    """Perceptual fingerprint of a known fake (app/fingerprint). Only the
+    hashes, a label and a source are kept, never the image itself. Each
+    64-bit hash is also split into four indexed 16-bit bands so a lookup
+    by Hamming distance doesn't scan the table."""
+
+    __tablename__ = "fingerprints"
+    __table_args__ = (
+        CheckConstraint("kind IN ('image', 'text')", name="ck_fingerprints_kind"),
+        Index("ix_fingerprints_b0", "kind", "b0"),
+        Index("ix_fingerprints_b1", "kind", "b1"),
+        Index("ix_fingerprints_b2", "kind", "b2"),
+        Index("ix_fingerprints_b3", "kind", "b3"),
+        Index("ix_fingerprints_hash", "kind", "hash"),
+    )
+
+    fingerprint_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    label: Mapped[str] = mapped_column(String(128), nullable=False)
+    source: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+    hash: Mapped[int] = mapped_column(BigInteger, nullable=False)  # pHash, signed 64-bit
+    hash2: Mapped[int | None] = mapped_column(BigInteger)  # dHash
+    b0: Mapped[int] = mapped_column(Integer, nullable=False)
+    b1: Mapped[int] = mapped_column(Integer, nullable=False)
+    b2: Mapped[int] = mapped_column(Integer, nullable=False)
+    b3: Mapped[int] = mapped_column(Integer, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 

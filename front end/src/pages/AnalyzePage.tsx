@@ -12,7 +12,7 @@ export function AnalyzePage() {
   const urlAnalysis = useMutation({ mutationFn: () => analyzeService.url(url.trim()) });
   return <div className="page-stack">
     <div className="page-header"><div><span className="eyebrow">Connected backend</span><h1>Analyze a message or link.</h1><p>Use the existing API without submitting content for storage.</p></div></div>
-    <p className="empty-period-note">No AI required. Messages are compared with stored scam examples using word overlap and sequence matching (72% threshold). Similarity is not a fraud probability; no match does not mean safe. Checks are not saved to history.</p>
+    <p className="empty-period-note">No AI required. Messages are compared with every eligible stored scam example using word overlap and sequence matching. The match threshold is demo-calibrated using scam paraphrases and benign controls, not a user-chosen percentage. Similarity is not a fraud probability; no match does not mean safe. Checks are not saved to history.</p>
     <div className="analysis-forms">
       <section className="panel">
         <h2>Message analysis</h2>
@@ -26,6 +26,14 @@ export function AnalyzePage() {
           <div className="analysis-verdict"><ScoreRing score={analysis.data.risk_score} level={analysis.data.risk_level} size={90} metric="Text similarity" /><RiskBadge level={analysis.data.risk_level} /></div>
           <ul>{analysis.data.reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul>
           {analysis.data.previous_report_matches.length > 0 && <><h3>Matched patterns</h3><ul>{analysis.data.previous_report_matches.map(match => <li key={match.report_id}>{match.report_type} · {Math.round(match.similarity_score * 100)}% similarity · {match.status === "synthetic_demo" ? "synthetic demo" : "stored report"}</li>)}</ul></>}
+          <h3>Pattern hierarchy</h3>
+          <p>{analysis.data.comparison_count} eligible patterns compared, ranked by actual similarity. Exact: 100%; very strong: 90–under 100%; strong: 80–under 90%; partial: {(analysis.data.match_threshold * 100).toFixed(1)}–under 80%. Below {(analysis.data.match_threshold * 100).toFixed(1)}% is not a detected match. These tiers describe resemblance, not certainty of fraud.</p>
+          {analysis.data.comparison_count === 0 && <p>No comparable patterns. Messages need at least 24 normalized characters.</p>}
+          {["Exact", "Very strong", "Strong", "Partial", "Below threshold"].map(tier => {
+            const items = analysis.data!.pattern_comparisons.filter(match => match.tier === tier);
+            if (!items.length) return null;
+            return <details key={tier} open={tier !== "Below threshold"} className="pattern-tier"><summary>{tier} · {items.length} pattern{items.length === 1 ? "" : "s"}</summary><ol start={items[0].rank}>{items.map(match => <li key={match.report_id} value={match.rank}>{match.report_type} · {(match.similarity_score * 100).toFixed(1)}% similarity · {match.status === "synthetic_demo" ? "synthetic demo" : "stored report"}{match.rank === 1 ? " · closest pattern" : ""}</li>)}</ol></details>;
+          })}
           <p>Engine: database pattern matching. No AI service used. Not saved to history.</p>
         </div>}
       </section>

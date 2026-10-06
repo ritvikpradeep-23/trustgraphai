@@ -9,7 +9,7 @@ brands, placeholder links, no real numbers or people.
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 from app.config import get_settings  # noqa: E402
 from app.scam_engine.embedder import Embedder  # noqa: E402
 from app.scam_engine.repository import InMemoryReportRepository  # noqa: E402

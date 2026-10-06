@@ -1,0 +1,7 @@
+# Source-upload archives exclude local/legacy backup and scratch collections.
+backup export-ignore
+backup/** export-ignore
+.claude export-ignore
+.claude/** export-ignore
+scratch export-ignore
+scratch/** export-ignore

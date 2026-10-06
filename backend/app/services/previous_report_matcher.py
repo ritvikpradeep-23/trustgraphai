@@ -10,8 +10,23 @@ from sqlalchemy.orm import Session
 from app.core.database import ReportMatchRecord, ReportRecord, SubmissionRecord
 
 
-MATCH_THRESHOLD = 0.72
+# Reproduced by scripts/calibrate_demo_threshold.py on 13 unseeded scam
+# paraphrases and 16 benign controls (including similar scam warnings).
+# This is demo calibration, not independent real-world validation.
+MATCH_THRESHOLD = 0.712
 MIN_CONTENT_LENGTH = 24
+
+
+def similarity_tier(score: float) -> str:
+    if score == 1:
+        return "Exact"
+    if score >= .90:
+        return "Very strong"
+    if score >= .80:
+        return "Strong"
+    if score >= MATCH_THRESHOLD:
+        return "Partial"
+    return "Below threshold"
 
 
 @dataclass
@@ -48,6 +63,7 @@ def find_previous_report_matches(
     text: str,
     url: str | None,
     submission_id: str | None,
+    include_below_threshold: bool = False,
 ) -> list[PreviousReportMatch]:
     candidate = _normalize_content(text, url)
     if len(candidate) < MIN_CONTENT_LENGTH:
@@ -68,7 +84,7 @@ def find_previous_report_matches(
             reported_submission.url,
         )
         similarity_score = _similarity_score(candidate, reported_content)
-        if similarity_score is not None and similarity_score >= MATCH_THRESHOLD:
+        if similarity_score is not None and (include_below_threshold or similarity_score >= MATCH_THRESHOLD):
             matches.append(
                 PreviousReportMatch(
                     report_id=report.report_id,
@@ -79,7 +95,7 @@ def find_previous_report_matches(
                 )
             )
 
-    return sorted(matches, key=lambda match: match.similarity_score, reverse=True)
+    return sorted(matches, key=lambda match: (-match.similarity_score, match.report_id))
 
 
 def store_previous_report_matches(

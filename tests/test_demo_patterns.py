@@ -8,7 +8,8 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.core.database import get_db, SubmissionRecord
 from app.services.pattern_detection import verdict
-from app.services.previous_report_matcher import find_previous_report_matches
+from app.services.previous_report_matcher import MATCH_THRESHOLD, find_previous_report_matches, similarity_tier
+from scripts.calibrate_demo_threshold import calibrate
 from scripts.seed_demo_patterns import seed
 
 PATTERNS = json.loads((Path(__file__).resolve().parents[1] / "data/demo_scam_patterns.json").read_text())
@@ -33,6 +34,35 @@ class FakeDB:
 
 
 class PatternTests(unittest.TestCase):
+    def test_threshold_and_hierarchy_boundaries(self):
+        for score, expected in ((1, "Exact"), (.999, "Very strong"), (.9, "Very strong"),
+                                (.899, "Strong"), (.8, "Strong"), (.799, "Partial"),
+                                (.712, "Partial"), (.711, "Below threshold")):
+            with self.subTest(score=score):
+                self.assertEqual(similarity_tier(score), expected)
+        with patch("app.services.previous_report_matcher._similarity_score", return_value=.712):
+            self.assertEqual(len(find_previous_report_matches(FakeDB(), text=PATTERNS[0]["text"], url=None, submission_id=None)), len(PATTERNS))
+        with patch("app.services.previous_report_matcher._similarity_score", return_value=.711):
+            self.assertEqual(find_previous_report_matches(FakeDB(), text=PATTERNS[0]["text"], url=None, submission_id=None), [])
+
+    def test_all_patterns_ranked_but_only_threshold_hits_are_matches(self):
+        app.dependency_overrides[get_db] = lambda: FakeDB()
+        try:
+            result = TestClient(app).post("/api/detect", json={"channel": "other", "text": PATTERNS[0]["text"]}).json()
+            ranked = result["pattern_comparisons"]
+            self.assertEqual(len(ranked), len(PATTERNS))
+            self.assertEqual(result["comparison_count"], len(PATTERNS))
+            self.assertEqual(ranked[0]["tier"], "Exact")
+            self.assertEqual([p["rank"] for p in ranked], list(range(1, len(PATTERNS) + 1)))
+            self.assertEqual([p["similarity_score"] for p in ranked], sorted((p["similarity_score"] for p in ranked), reverse=True))
+            self.assertTrue(any(p["tier"] == "Below threshold" for p in ranked))
+            self.assertTrue(all(p["similarity_score"] >= MATCH_THRESHOLD for p in result["previous_report_matches"]))
+            self.assertTrue(all("text" not in p for p in ranked))
+            short = TestClient(app).post("/api/detect", json={"channel": "other", "text": "hh"}).json()
+            self.assertEqual(short["pattern_comparisons"], [])
+        finally:
+            app.dependency_overrides.clear()
+
     def test_all_demo_messages_and_normalized_variants_match(self):
         for p in PATTERNS:
             for text in (p["text"], p["text"].upper().replace(".", "!!!")):
@@ -74,6 +104,16 @@ class PatternTests(unittest.TestCase):
             self.assertLess(score, 1, query["title"])
             scores.append(round(score * 100))
         self.assertGreater(len(set(scores)), 3)
+        self.assertTrue(any(MATCH_THRESHOLD <= s.similarity_score < .80 for s in matches))
+
+    def test_calibration_is_reproducible_and_rejects_similar_benign_warnings(self):
+        result = calibrate()
+        self.assertEqual(result["threshold"], MATCH_THRESHOLD)
+        self.assertEqual(result["true_positives"], 13)
+        self.assertEqual(result["false_positives"], 0)
+        controls = json.loads((Path(__file__).resolve().parents[1] / "data/demo_benign_controls.json").read_text())
+        for text in controls:
+            self.assertEqual(find_previous_report_matches(FakeDB(), text=text, url=None, submission_id=None), [])
 
     def test_extension_adapter_and_unknown_fallback(self):
         app.dependency_overrides[get_db] = lambda: FakeDB()

@@ -46,5 +46,9 @@
   {
     "title": "Digital arrest / police impersonation",
     "text": "This is the cyber police. A parcel in your name contains illegal items and you are under digital arrest. Transfer Rs 45000 to our verification account immediately and do not contact anyone."
+  },
+  {
+    "title": "Bank suspension — partial match",
+    "text": "Attention customer, your Lotus Bank account is suspended. Verify your password and card PIN at https://bank-demo.invalid before tomorrow or your account will be permanently closed. Please handle this request quickly."
   }
 ]
