@@ -27,7 +27,7 @@ Run the commands from this folder (`cd ai`). The website itself is started from 
 | `backup/` | The demo-safe copy of the original engine. |
 | `scratch/` | Old one-off check scripts. |
 | `tests/` | The AI and routine tests: `python -m pytest tests -q` (no database needed). |
-| `docs/` | What it does, its limits, how to tune it (`docs/CAPABILITIES_AND_LIMITS.md`), and how the routines work. |
+| `docs/` | How it works, step by step (`docs/HOW_IT_WORKS.md`), what it can't do and how to tune it (`docs/CAPABILITIES_AND_LIMITS.md`), and how the routines work. |
 | `requirements-ai.txt` | The extra packages for the deepfake and AI-text detectors (PyTorch, transformers, OpenCV). |
 | `move_local_files.py` | A one-time helper for after the move (below). |
 
