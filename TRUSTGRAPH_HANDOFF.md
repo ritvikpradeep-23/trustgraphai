@@ -115,6 +115,17 @@ Environment variables evidenced by templates/code:
 - Add integration tests against PostgreSQL for schema creation, relationship uniqueness under concurrent requests, and endpoint persistence; current tests use mocked sessions for DB-backed route behavior.
 - Phase/roadmap history is absent from the repo. Confirm the intended next phase from project owners before starting phase-specific work.
 
+## Browser extension (`trustgraph_extension/`) connection
+
+The Chrome extension in `trustgraph_extension/` (the full one: shields on WhatsApp, Gmail and other sites, chat scans, click-to-check on any website) talks to this API at its Settings → server URL (default `http://127.0.0.1:8000`):
+
+- `POST /api/detect` `{text, channel}` for every message check (no `submission_id`, so nothing is stored). `previous_report_matches` is shown in the extension and raises its verdict (Caution from 0.72 similarity, High from 0.90). `risk_level: "PENDING"` is never shown as a verdict; the extension's on-device rules decide until a model is connected.
+- `POST /api/media/check` (`app/api/media_check.py`) for images and video frames from click-to-check: decoded in memory, never stored, matched against the `fingerprints` table (perceptual hashes of known fakes, `app/fingerprint/`, four indexed 16-bit hash bands). Its `deepfake` field goes through `TrustGraphAI` and stays unavailable until an engine is connected.
+- `GET /health/database` (`app/api/database_health.py`): counts reports/submissions/fingerprints and writes, finds and rolls back a probe fingerprint.
+- Seed: `python scripts/seed_fingerprints.py --demo` (two reported scam messages as submissions + reports, one demo image fingerprint), or a `data/known_fakes/manifest.json`.
+- Tests: `tests/test_fingerprint.py` (database tests need `TEST_DATABASE_URL` to a throwaway PostgreSQL database; skipped otherwise) and `trustgraph_extension/test/universal-e2e.js` (Playwright + `DATABASE_URL`).
+- Extra optional env vars (defaults in `app/fingerprint/config.py`): `FINGERPRINT_IMAGE_THRESHOLD`, `FINGERPRINT_FULL_SCAN_MAX`, `MEDIA_MAX_BODY`, `MEDIA_MAX_IMAGE_BYTES`, `MEDIA_MAX_FRAMES`. Extra requirements: `numpy`, `Pillow`.
+
 ## START HERE — Codex on another PC
 
 ```text
