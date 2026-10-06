@@ -1,0 +1,679 @@
+{
+ "scam_scripts": {
+  "bank safe-account scam": [
+   "This is the fraud department at your bank. Your account has been compromised and you need to move your money to a safe account we have set up for you today.",
+   "We have detected suspicious activity on your account. To protect your savings please transfer the full balance to the secure holding account I will give you now.",
+   "Hello, calling from your bank's security team. Criminals have access to your account, so move your funds into this new protected account before they empty it.",
+   "Your card has been cloned. For your protection we need you to transfer your savings to a temporary safe account while we investigate.",
+   "This is the police working with your bank. A staff member there is corrupt, so do not speak to the branch; withdraw the cash and move it to the account we give you.",
+   "Main bank ki fraud team se bol raha hoon. Aapke account mein hacking hui hai, saare paise abhi is surakshit account mein transfer kar dijiye.",
+   "Bank security team aanu. Ningalude account hack aayi, ella panavum njan tharunna safe account ilekku ippol thanne maattuka."
+  ],
+  "gift-card request from a boss or colleague": [
+   "Are you available? I need you to buy some gift cards for a client quickly. I'm in a meeting and can't talk, just send me the codes by email.",
+   "I need a favour, please pick up six Apple gift cards of 100 each, scratch off the back and send me photos of the codes. I'll reimburse you later.",
+   "Can you get Google Play cards for the staff reward today? Keep it confidential, it's a surprise. Send the card numbers to me directly.",
+   "Quick task: purchase Amazon gift cards worth 500 and text me the redemption codes. Don't mention it to anyone else in the office.",
+   "I'm stuck in a conference and need iTunes cards for a vendor, please buy them at the nearest shop and send me the numbers asap.",
+   "Main meeting mein hoon, call nahi kar sakta. Client ke liye 5 Amazon gift cards le aao aur codes ki photo mujhe bhej do.",
+   "Njan meeting il aanu, vilikkan pattilla. Client nu vendi Google Play cards vangi codes ente number il ayakku, aarodum parayanda."
+  ],
+  "invoice or bank-details change": [
+   "Please note our bank details have changed. Kindly make this and all future payments to the new account below.",
+   "Due to an audit our old account is on hold, please remit the outstanding invoice to our updated bank account instead.",
+   "We have switched banks. Use the new sort code and account number attached for the payment due today, not the one on file.",
+   "Our finance team has updated our payment details. Please update your records and pay invoice 4471 to the account in this email.",
+   "Important: do not pay to the previous account. Our banking details have changed, the correct account details are below.",
+   "Hamare bank details badal gaye hain. Is invoice ka payment aur aage ke saare payment naye account mein bhejiye.",
+   "Njangalude bank details maari. Ee invoice um iniyulla ella payment um puthiya account ilekku ayakkuka."
+  ],
+  "family emergency or new-number scam": [
+   "Hi Mum, this is my new number, I dropped my phone in the toilet. Can you help me pay a bill urgently, I can't log into my banking app.",
+   "Grandma it's me, I'm in trouble. I was arrested and need money for bail, please don't tell Mum and Dad, send it to my lawyer's account.",
+   "Hey Dad, lost my phone so using a friend's. I need to pay rent today or I'll be evicted, can you transfer it to this account and I'll pay you back.",
+   "Mum it's me on a new number, save this one. I've got an urgent payment to make and my card isn't working, could you send it for me?",
+   "I've had an accident abroad and the hospital won't treat me until I pay. Please send money to this account, and please don't tell anyone yet.",
+   "Papa, yeh mera naya number hai, phone kho gaya. Ek urgent payment karna hai, abhi is account mein paise bhej do please, mummy ko mat batana.",
+   "Amma, ithu ente puthiya number aanu, phone poyi. Urgent aayi oru payment cheyyanam, ee account ilekku paisa ayakku, achanodu parayanda."
+  ],
+  "tech support remote-access scam": [
+   "This is Microsoft support. Your computer is sending us error messages and is infected. Please install AnyDesk so our technician can fix it.",
+   "We detected a virus on your device. Download TeamViewer and give me the access code so I can remove it before your data is stolen.",
+   "Your internet will be disconnected today because your router has been hacked. Let me connect remotely to your computer to secure it.",
+   "Warning: your PC is blocked. Call this number immediately and allow our engineer screen sharing access to restore your files.",
+   "To process your refund I need remote access to your computer. Log in to your online banking while I am connected so I can check it.",
+   "Aapke computer mein virus mila hai. AnyDesk download kijiye aur code bataiye, hamara technician abhi theek kar dega.",
+   "Ningalude computer il virus undu. AnyDesk install cheythu code parayu, njangalude technician remote aayi sheriyakkum."
+  ],
+  "tax or government threat": [
+   "This is HMRC. You owe unpaid tax and a warrant has been issued for your arrest. Pay today to avoid legal action.",
+   "Final notice from the IRS: a lawsuit has been filed against you. Call back immediately or the police will come to your address.",
+   "Your National Insurance number has been suspended due to suspicious activity. Press 1 to speak to an officer and avoid arrest.",
+   "The tax office has found an error in your return. You must pay the penalty now by bank transfer or face court proceedings.",
+   "This is the immigration department. Your visa has an issue and you will be deported unless you pay the processing fee today.",
+   "Income tax vibhag se notice: aapka tax baaki hai. Aaj payment nahi kiya to aapke naam par warrant jaari hoga aur arrest ho sakta hai.",
+   "Income tax department il ninnu: ningalkku tax kudishika undu. Innu adachillenkil warrant varum, arrest cheyyum."
+  ],
+  "parcel or delivery fee": [
+   "Your parcel is on hold due to an unpaid shipping fee of 1.99. Pay now via this link to reschedule delivery.",
+   "Royal Mail: we missed you. A redelivery fee is required, please confirm your card details at the link below.",
+   "Your package could not be delivered because of incomplete address information. Update your details and pay the customs charge here.",
+   "DHL: customs duty is owed on your item. Pay within 24 hours or the parcel will be returned to sender.",
+   "Your order is waiting at the depot. A small handling fee must be paid before we can release it, follow the link.",
+   "Aapka parcel warehouse mein ruka hua hai. Redelivery fee Rs 49 is link par bharein warna parcel wapas chala jayega: [LINK]",
+   "Ningalude parcel warehouse il kudungi. Redelivery fee Rs 49 ee link il adachillenkil parcel thirichu pokum: [LINK]"
+  ],
+  "investment or crypto scam": [
+   "I made thousands with this crypto trading platform, my mentor guarantees 20 percent returns a week. Send bitcoin to this wallet to start.",
+   "Exclusive investment opportunity with guaranteed returns. Deposit today and double your money within a month, limited places left.",
+   "Your trading account has profits waiting but you must pay a withdrawal tax first before we can release your funds.",
+   "Join our investment group, we use AI trading bots with no risk. Transfer USDT to the wallet address below to open your account.",
+   "The coin is about to launch, get in now before the price explodes. Send your crypto to my wallet and I will buy it for you.",
+   "Hamare crypto trading group mein judiye, roz 10% guaranteed munafa. Shuru karne ke liye USDT is wallet address par bhejein.",
+   "Njangalude crypto trading group il chernnal divasavum 10% laabham urappu. Thudangan USDT ee wallet address ilekku ayakkuka."
+  ],
+  "romance scam money request": [
+   "My love, I want to come and see you but I cannot afford the flight. Could you send me the money for the ticket and I will pay you back when I arrive.",
+   "I am stuck overseas on the oil rig and my bank account is frozen. Please help me with some money, you are the only one I trust.",
+   "Darling, customs are holding my package with the gold inside and I need to pay the release fee. Can you send it and we can finally be together.",
+   "I have never felt this way about anyone. My daughter is in hospital and I need help with the bill, please send what you can by transfer.",
+   "We will be married soon so what is mine is yours. I just need you to receive a payment into your account and send it on for me.",
+   "Jaan, main airport par phans gaya hoon, customs wale paise maang rahe hain. Abhi thode paise bhej do, milte hi lauta dunga.",
+   "Darling, njan airport il kudungi, customs paisa chodikkunnu. Ippol kurachu paisa ayakku, kaanumbol thirichu tharam."
+  ],
+  "one-time code or password request": [
+   "We've sent a verification code to your phone, please read it back to me to confirm your identity.",
+   "Hi, I accidentally sent my WhatsApp code to your number, could you forward me the six digit code please?",
+   "To stop the fraudulent transaction I need the one-time passcode your bank just texted you.",
+   "Please confirm your PIN and the code from your card reader so I can cancel the payment.",
+   "Your account will be locked. Reply with the security code we sent and your password to keep it active.",
+   "Galti se aapke number par mera verification code chala gaya. Please woh 6 digit code mujhe bhej do, urgent hai.",
+   "Abaddhathil ente verification code ningalude phone il vannu. Aa 6 digit code onnu ayachu tharamo, urgent aanu."
+  ],
+  "prize or lottery fee": [
+   "Congratulations, you have won 50,000 in our international lottery. To claim your prize, pay the processing fee today.",
+   "You have been selected for a cash prize. Send a small clearance fee and your bank details to receive the funds.",
+   "Your email address won our annual draw. Contact our claims agent and pay the release fee to get your winnings.",
+   "You're our lucky winner of a new iPhone, just pay the delivery charge at the link to claim it.",
+   "Good news, an inheritance of 2 million is waiting for you. We need an administration fee to transfer the money.",
+   "Badhai ho! Aapne Rs 25 lakh ki lottery jeeti hai. Inaam paane ke liye pehle Rs 5,000 processing fee jama karein.",
+   "Abhinandanangal! Ningal 25 lakh lottery jayichu. Sammanam kittan aadyam Rs 5,000 processing fee adakkuka."
+  ],
+  "job or advance-fee scam": [
+   "You've been hired for our remote job, but you need to pay for your training materials and equipment upfront, which we'll refund.",
+   "Earn 300 a day working from home liking videos. Just pay a small deposit to unlock higher paying tasks.",
+   "We'll send you a cheque to buy office equipment. Deposit it and transfer the leftover amount to our supplier.",
+   "Congratulations on your new position. Please pay the background check fee before your start date.",
+   "Our company needs a payment agent. Receive transfers into your account and send them on, keeping 10 percent commission.",
+   "Aapka selection ho gaya hai! Joining se pehle Rs 2,500 registration aur kit fee bhejein, phir offer letter milega.",
+   "Ningalkku joli kitti! Join cheyyunnathinu munpu Rs 2,500 kit fee ayakkuka, ennittu offer letter tharam."
+  ],
+  "blackmail or sextortion": [
+   "I hacked your device and recorded you through your camera. Pay 1000 in bitcoin or I will send the video to all your contacts.",
+   "I have compromising photos of you. Transfer the money within 48 hours or they go to your family and colleagues.",
+   "Your password is known to me and I installed software that filmed you. Send payment to the wallet below and I will delete everything.",
+   "If you don't pay I will post the pictures online and share them with your friends. Don't contact the police.",
+   "I know what you were watching. You have two days to pay or the recording goes to everyone in your address book.",
+   "Maine aapka private video record kiya hai. Paise nahi bheje to yeh video aapke saare contacts aur family ko bhej dunga.",
+   "Ningalude private video ente kayyil undu. Paisa ayachillenkil ee video ningalude ella contacts num family kkum ayakkum."
+  ],
+  "rental or booking deposit": [
+   "Hi, Great, the flat is available for your dates. To hold it, send the deposit of $4,999 now; I have other interested tenants. Thanks.",
+   "Thanks for your interest in the room. The landlord asks for a token advance to block it before the weekend.",
+   "Hello, Thanks for your interest in the room. The landlord asks for a token advance to block it before the weekend. Cheers.",
+   "Hey, Thanks for your interest in the room. The landlord asks for a token advance to block it before the weekend. Thanks.",
+   "Hello, Great, the flat is available for your dates. To hold it, send the deposit of $4,999 now; I have other interested tenants. Thanks.",
+   "Hi, Thanks for your interest in the room. The landlord asks for a token advance to block it before the weekend. Sent from my phone",
+   "Hello, I'm abroad so I can't show the apartment,\nbut pay the first month via the agency link and i'll courier the keys: http://claim13.test/app",
+   "I'm abroad so I can't show the apartment, but pay the first month via the agency link and I'll courier the keys: [LINK]",
+   "I'm abroad so I can't show the apartment, but pay the first month via the agency link and I'll courier the keys: https://pay-info.example.org/a5evw7",
+   "Hello, I'm abroad so I can't show the apartment, but pay the first month via the agency link and I'll courier the keys: http://pay54.test/app Regards.",
+   "Dear customer, I'm abroad so I can't show the apartment, but pay the first month via the agency link and I'll courier the keys: http://pay91.test/portal Cheers.",
+   "Subject: I'm abroad so I can't\n\nI'm abroad so I can't show the apartment, but pay the first month via the agency link and I'll courier the keys: http://help97.test/portal",
+   "Your holiday villa booking is confirmed once you transfer the security deposit today. The listing site will refund it later.",
+   "Hey, To confirm your cab/hotel b00k1ng, pay the refundable deposit to th1s account; you'll get a c0nf1rm4t10n code."
+  ],
+  "fake customer-care number": [
+   "We saw your post about the failed payment. Our support team can help, call [PHONE] and keep your banking app open. Cheers.",
+   "We saw your post about the failed payment. Our support team can help, call [PHONE] and keep your banking app open.",
+   "Customer care il ninnu aanu. Refund nu app download cheythu screen il varunna code parayu. Sent from my phone",
+   "Dear customer, Customer care il ninnu aanu. 🎉 Refund nu app download cheythu screen il varunna code parayu. 📦 Cheers.",
+   "Hey, I'm from the official customer care team. Your complaint is registered; pay Rs 500 refundable fee to activate it. 🔔 Regards.",
+   "i'm from the official customer care team. your complaint is registered; pay $1,200 refundable fee to activate it. Cheers.",
+   "Subject: Hello, I'm from the official\n\nHello, I'm from the official customer care team.\nYour complaint is registered; pay £750 refundable fee to activate it. Sent from my phone",
+   "I'm from the official cust0m3r c4r3 t34m. Your complaint is registered; pay ₹99 refundable fee to activate it.",
+   "I'm fr0m the official customer care team. Your complaint is r3g1st3r3d; pay $99 refundable fee to 4ct1v4t3 it. Cheers.",
+   "Hello, I'm from the official customer care team. Your complaint is registered; pay £1,200 refundable fee to activate it. Sent from my phone"
+  ],
+  "UPI collect-request or refund": [
+   "Refund desk sent you a request for ₹4,999. The order was cancelled. Approve it with your UPI PIN to receive the money. Regards.",
+   "Hi, Cashback alert: approve the incoming request to credit Rs. 4,999 to your account. Sent from my phone",
+   "C a s h b a c k alert: approve the i n c o m i n g request to credit Rs 4,999 to your account.",
+   "Hey, Cashback team sent you a request for ₹15,000. The order was cancelled. Approve it with your UPI PIN to credit your cashback. Regards.",
+   "Hey, Hi, it's the seller from the marketplace. My app shows the money didn't go. I've sent a request; approve and you'll get it back.",
+   "Hello, Hi, it's the seller from the marketplace. 👍 My app shows the money didn't go. 🎉 I've sent a request; approve and you'll get it back. 🎉",
+   "Hi, it's the seller from the marketplace. My app shows the money didn't go. I've sent a request; approve and you'll get it back. Cheers.",
+   "Dear customer, Hi, it's the seller from the marketplace. My app shows the money didn't go. I've sent a request; approve and you'll get it back. Regards.",
+   "Hi, it's the seller fr0m the marketplace. My app sh0ws the money didn't go. I've sent a request; 4ppr0v3 and you'll get it back. Sent from my phone"
+  ],
+  "task or like-and-earn": [
+   "Dear customer, Part-time job: rate hotels online and earn commission. No experience needed. Join our group: https://claim-help.example.org/jtr8w6 Sent from my phone",
+   "Part-time job: rate hotels online and earn commission. No experience needed. Join our group: http://pay14 dot test/update Sent from my phone",
+   "Part-time job: rate hotels online and earn commission. No experience needed. Join our group: http://track43.test/app",
+   "Veettil irunnu video like cheythu divasavum Rs 249 undaakkam. Next task nu munpu cheriya recharge venam.",
+   "Hey, Veettil irunnu v1d30 like ch3ythu divasavum $249 undaakkam. Next task nu munpu cheriya recharge venam. Thanks.",
+   "ghar baithe video like karo aur roz rs. 15,000 kamao. pehle task ke baad thoda recharge karna hoga, phir bada profit. Cheers.",
+   "Dear customer, Task 3 done! Your earnings are on hold. Deposit Rs 500 to unlock VIP level and withdraw everything."
+  ],
+  "wrong-number crypto investment": [
+   "Oops, sent to the wrong person. Since we're chatting, my uncle taught me a trading method that made me Rs. 1,200 last month. Sent from my phone",
+   "Where are you based? My mentor's gold futures platform is giving steady daily profit. Start with just $2,500, I'll send the link. Regards.",
+   "Hi, Oops, sent to the wrong person. Since we're chatting, my uncle taught me a trading method that made me ₹1,200 last month.",
+   "Where are you based? My mentor's gold futures platform is giving steady daily profit. Start with just Rs. 249, I'll send the link. Cheers.",
+   "Hey, Hi, is this Asha? Sorry, wrong number. Funny how these mistakes happen. I trade forex and made £500 last month, want to see how? Cheers.",
+   "Hi, Hi, is this Mina? Sorry, wrong number. You seem friendly! I tr4d3 digital currency and made $99 l4st month, w4nt to see how?",
+   "Dear customer, Hi, is this Hari? Sorry, wrong number. Funny how these mistakes happen. I trade gold futures and made £750 last month, want to see how? Regards.",
+   "Dear customer, Hi, is this Asha? Sorry, wrong number. Where are you based? I trade forex and made Rs 2,500 last month, want to see how?",
+   "Subject: Hi, is this Vikram? Sorry\n\nHi, is this Vikram? Sorry, wrong number. Funny how these mistakes happen. I trade gold futures and made Rs 4,999 last month, want to see how?",
+   "Dear customer, Sorry, wrong number aayi. Ningal enthu ch3yyunnu? Njan crypt0 tr4d1ng cheyyunnu, nalla laabham undu, padippikkatte? Thanks."
+  ],
+  "AI trading-bot group": [
+   "Hey, Hi, you were added to our learning community for investors. No pressure, we share market lessons and a smart bot's picks every morning. Thanks.",
+   "Hi, Hi, you were added to our learning community for investors. No pressure, we share market lessons and a smart bot's picks every morning.",
+   "Dear customer, Hi, you were added to our learning community for investors. No pressure, we share market lessons and a smart bot's picks every morning. Regards.",
+   "Dear customer, Hi, you were a d d e d to our learning community for investors. No pressure, we share market lessons and a smart bot's p i c k s every morning.",
+   "Hi, AI trading bot se roz profit kamao. Group join karo, admin aapka account khol denge. Minimum $2,500. Thanks.",
+   "Hi, AI trading bot se roz profit kamao. Group join karo, admin aapka account khol denge. Minimum $750. Cheers.",
+   "AI trading bot se roz profit kamao. Group join karo, admin aapka account khol denge. Minimum Rs 1,200. Regards.",
+   "Hello, AI trading bot se roz profit k4m40. Group join k4r0, admin aapka account khol denge. M1n1mum Rs. 4,999. Cheers.",
+   "Hey, AI trading bot se roz profit kamao. Group join karo, admin aapka account khol denge. Minimum Rs. 249. Regards.",
+   "Subject: Hi, Our artificial intelligence robot\n\nHi, Our artificial intelligence robot trades for you 24/7. Members withdraw profit daily. Minimum entry $4,999. Cheers.",
+   "RoboTrade Circle update: the bot closed another winning week. Members in premium access earned 40% this month. Message the admin to join. Thanks.",
+   "Hey, RoboTrade Circle update: the bot closed another winning week. M e m b e r s in VIP s i g n a l s earned 300% this quarter. Message the admin to join."
+  ],
+  "digital arrest": [
+   "Hello, Main CBI officer bol raha hoon. Aapke naam pe case darj hai. 💰 Video call band mat karna, warna turant giraftari hogi. Kisi ko kuch mat batana. 💰 Sent from my phone",
+   "Main CBI officer bol raha hoon. Aapke naam pe case darj hai. Video call band mat karna, warna turant giraftari hogi. Kisi ko kuch mat batana. Sent from my phone",
+   "This is Officer Mehta from the customs investigation team. Your SIM card is linked to a fraud case. Stay on this call, do not tell anyone, and transfer £500 to the verification account.",
+   "Dear customer, This is Agent Kumar from the customs investigation team. Your SIM card is linked to a fraud case. Stay on this call, do not tell anyone, and transfer Rs 249 to the verification account. Cheers.",
+   "This is Inspector Rao from the customs investigation team. A parcel in your name contained drugs. Stay on this call, do not tell anyone, and transfer Rs 1,200 to the verification account.",
+   "This is Officer Mehta from the narcotics bureau. Your bank account was us3d for money laundering. Stay on this call, do not t3ll 4ny0n3, and transfer Rs 99 to the verification account. Thanks.",
+   "This is Officer Mehta from the central investigation agency. Your bank account was used for money laundering. Stay on this call, do not tell anyone, and transfer $500 to the verification account.",
+   "this is agent kumar from the narcotics bureau.\nYour bank account was used for money laundering.\nStay on this call,\ndo not tell anyone,\nand transfer £4,999 to the verification account.",
+   "This is Agent Kumar from the customs investigation team. Your SIM card is linked to a fraud case. Stay on this call, do not tell anyone, and transfer £4,999 to the verification account. Sent from my phone",
+   "ED notice: your Aadhaar is linked to a money laundering case FIR no 4471/2026. Join the Skype video hearing now. Leaving the call will be treated as absconding. Keep camera on at all times."
+  ],
+  "deepfake CEO video call": [
+   "Join the quick video briefing. Afterwards process the payment to the new supplier, the board has already approved it.",
+   "Hi, You'll get a short video call from me now, don't worry it's really me. I need an urgent wire transfer handled quietly before the deal leaks. Cheers.",
+   "you'll get a short video call from me now, don't worry it's really me. i need an urgent wire transfer handled quietly before the deal leaks. Cheers.",
+   "Hello, Join the quick video briefing. Afterwards process the payment to the new supplier, the board has already approved it. Thanks.",
+   "As we discussed on the video call, the vendor needs paying. Transfer ₹15,000 to the e s c r o w account in the next hour and keep it c o n f i d e n t i a l. Regards.",
+   "Dear customer, This is the MD. The call dropped, but as I said on screen, send the funds today, I'm authorising it personally.",
+   "This is the MD.\nThe call dropped,\nbut as I said on screen,\nsend the funds today,\ni'm authorising it personally.",
+   "Hi, This is the MD. The call dropped, but as I said on scr33n, s3nd the funds today, I'm authorising it personally."
+  ],
+  "KYC or Aadhaar/PAN expiry": [
+   "Dear customer, Account services: your A a d h a a r KYC is incomplete. Update at app-my.invalid/j4gcdb within 24 h o u r s or your account will be blocked. Thanks.",
+   "Hi, Your Aadhaar-linked KYC has expired. ✅ Click [LINK] and enter your details and OTP to keep your account active. ✅ Regards.",
+   "Hello, Your Aadhaar-l1nk3d KYC has expired. Click orders-app.invalid/a9jhw9 and enter your details and OTP to k33p your 4cc0unt active. Sent from my phone",
+   "Last day to link PAN with y0ur account. Failure will fr33z3 your savings. Update h3r3. Regards."
+  ],
+  "fake e-challan": [
+   "Hello, Aapki gaadi ka challan pending hai. Aaj hi https://my.example.com/uhpyh2 pe $15,000 bharein warna licence block ho jayega. Cheers.",
+   "Hi, Hi, a traffic camera recorded your vehicle without a helmet. View and settle the challan here: https://account.example.com/3stbt3 Sent from my phone",
+   "Hello, Hi, a traffic camera recorded your vehicle without a helmet. View and settle the challan here: [LINK] Sent from my phone",
+   "Ningalude vandikku oru challan undu. Innu thanne http://info25.test/help il Rs 1,200 adakkuka, illenkil licence suspend aakum. Regards.",
+   "Ningalude vandikku oru challan undu. Innu thanne https://claim-account.example.org/6ur6y3 il ₹500 adakkuka, illenkil licence suspend aakum.",
+   "We noticed an unpaid toll violation linked to your vehicle.\na small late fee applies after today.\nSettle it when you get a moment: my-help.invalid/4kqvjz",
+   "Hello, We noticed an unpaid toll violation linked to your vehicle. ❤️ A small late fee applies after today. Settle it when you get a moment: [LINK] ✅ Regards.",
+   "Hi, We noticed an unpaid toll violation linked to your vehicle.\nA small late fee applies after today.\nsettle it when you get a moment: http://pay37.test/account Cheers.",
+   "Dear customer, We noticed an unpaid toll violation linked to your vehicle. A small late fee applies after today. Settle it when you get a moment: [LINK] Cheers.",
+   "Hello, RTO notice: unpaid parking fine on your car. Clear it today at [LINK] or your licence will be suspended. Sent from my phone",
+   "Hi, RTO notice: unpaid parking fine on your car. Cl34r it t0d4y at update-secure.invalid/ddyat5 or your licence will be susp3nd3d. Sent from my phone",
+   "Hey, Traffic e-challan: your vehicle was caught over-speeding. Pay the fine of $4,999 at http://help2.test/orders within 24 hours to avoid court."
+  ],
+  "crypto airdrop or wallet drainer": [
+   "To restore your wallet, confirm your p r i v a t e key with our support a g e n t. Only the first 500 wallets qualify.",
+   "Hi, Claim your staking rewards now. Link your wallet at my-pay.invalid/35kcrq, the pool closes tonight. Sent from my phone",
+   "Exclusive NFT drop! Connect your wallet at cl41m-update.1nv4l1d/q88kvy and s1gn the message to receive Rs. 249. Sent from my phone",
+   "Hey, Exclusive NFT drop! Connect your wallet at info-pay.invalid/xen7ux and verify your balance to receive Rs. 750."
+  ],
+  "QR-code scam": [
+   "Bhaiya maine QR bheja hai, scan k4rk3 UPI PIN daal do, paise aapke 4cc0unt mein aa j4y3ng3. Regards.",
+   "Hello, Chetta,\nnjan qr ayachittundu,\nscan cheythu UPI PIN adichal paisa ningalude account il varum. Regards.",
+   "Subject: Chetta, njan QR ayachittundu, scan\n\nChetta, njan QR ayachittundu, scan cheythu UPI PIN adichal paisa ningalude account il varum.",
+   "Dear customer, Chetta, njan QR ayachittundu, scan cheythu UPI PIN adichal paisa ningalude account il varum. Cheers.",
+   "Hi, Chetta, njan QR ayachittundu, scan cheythu UPI PIN adichal paisa ningalude account il varum. Thanks.",
+   "Subject: Dear customer, Chetta, njan QR\n\nDear customer, Chetta, njan QR ayachittundu, scan cheythu UPI PIN adichal paisa ningalude account il varum. Thanks.",
+   "Hi, I'm buy1ng y0ur sofa from the listing. I've sent a QR code, just scan it and enter y0ur UPI PIN to receive the payment.",
+   "Dear customer, i'm interested in your dining table.\nI've sent you a QR code,\nscan it and enter your pin to receive rs.\n15,000.",
+   "I'm interested in your fridge. I've sent you a QR code, scan it and enter your PIN to receive Rs 249.",
+   "Hi, I'm buy1ng y0ur sofa from the listing. I've sent a QR code, just scan it and enter y0ur UPI PIN to receive the payment. Regards.",
+   "Hi, I'm interested in your fridge. ❤️ I've sent you a QR code, scan it and enter your PIN to receive Rs 249. 🔔 Cheers.",
+   "Dear customer, Hi, I'm buying your sofa from the listing. I've sent a QR code, just scan it and enter your UPI PIN to receive the payment. Sent from my phone"
+  ],
+  "remote-access support": [
+   "Hi, Hi, it's tech support following up on the slow laptop you reported. When you're free, we can c o n n e c t r e m o t e l y and have a look. Regards.",
+   "Hi, Security alert: your router was hacked. Call [PHONE] and install the support tool. Sent from my phone",
+   "Hey, Our technician needs control of your device to secure your account. Please accept the screen-share request now. Thanks.",
+   "Hi, W a r n i n g! Your device license expired. Call support immediately and do not r e s t a r t your computer."
+  ],
+  "fake scholarship or exam results": [
+   "Subject: Dear customer, Ningalkku scholarship kitti\n\nDear customer, Ningalkku scholarship kitti. Seat urappikkan Rs. 15,000 application fee adakkuka. Regards.",
+   "Ningalkku sch0l4rsh1p kitti. Seat ur4pp1kk4n Rs 4,999 application fee 4d4kkuk4. Cheers.",
+   "Ningalkku scholarship kitti. Seat urappikkan ₹1,200 application fee adakkuka. Thanks.",
+   "Hello, Last date to claim your education grant is today. Register at [LINK] with your card details. Regards.",
+   "Subject: Last date to claim your\n\nLast date to claim your education grant is today. Register at https://update.example.com/apguz9 with your card details. Thanks.",
+   "Your exam r e s u l t s are ready. Download the official result app and pay Rs. 750 to unlock your s c o r e c a r d. Cheers.",
+   "Dear customer, You've b33n selected for a study-abroad scholarship. A refundable pr0c3ss1ng fee of Rs 750 secures your 0ff3r. Regards.",
+   "C o n g r a t u l a t i o n s, you qualified for the national merit scholarship of $15,000. Pay the application fee to c o n f i r m your seat.",
+   "Hey, Your merit certificate is ready. 💰 Verify your card at pay-claim.invalid/zbusyg to view it. 🎉 Cheers."
+  ],
+  "instant-loan harassment": [
+   "You took a loan of 3,000 and must repay 6,500 within 7 days. Late fees apply every hour. Cheers.",
+   "Hey, You took a loan of 3,000 and must repay 6,500 within 7 days. Late fees apply every hour. Regards.",
+   "Hey, You took a loan of 3,000 and must repay 6,500 within 7 days. Late fees apply every hour. Thanks.",
+   "Hi, Your loan is overdue by 1 day. Pay $15,000 now or we will send your p h o t o s to e v e r y o n e in your contact list. Cheers.",
+   "Your loan is overdue by 1 day. 💰 Pay ₹249 now or we will send your photos to everyone in your contact list. 💰 Sent from my phone",
+   "Dear customer, Your loan is overdue by 1 day. Pay ₹1,200 now or we will send your photos to everyone in your contact list. Sent from my phone",
+   "Subject: Hey, Your loan is overdue\n\nHey, Your loan is overdue by 1 day. Pay ₹4,999 now or we will send your photos to everyone in your contact list. Cheers.",
+   "Hello, Your loan is o v e r d u e by 1 day. Pay $2,500 now or we will send your photos to everyone in your c o n t a c t list. Regards.",
+   "Your loan is overdue by 1 day. Pay ₹750 now or we will send your photos to everyone in your contact list. Thanks.",
+   "Hi, quick l04ns for students 4v41l4bl3, no cr3d1t check. Just download the app and give the permissions it asks for.",
+   "Hi, quick loans for stud3nts available, no credit ch3ck. Just download the app and give the permissions it 4sks for. Cheers.",
+   "Subject: QuickCash: Pre-approved loan, no documents\n\nQuickCash: Pre-approved loan, no documents. Install the app and allow gallery and contacts to receive Rs. 99.",
+   "Pre-approved personal loan, credited in 5 minutes. Pay a sm4ll pr0c3ss1ng fee f1rst to release it. Sent from my phone"
+  ],
+  "romance": [
+   "Dear customer, Good morning sweetheart, thinking of you. ❤️ Life on the base is lonely. Tell me about your day? Regards.",
+   "Dear customer, Good morning sweetheart, thinking of you. Life on the base is lonely. Tell me about your day? Regards.",
+   "Dear customer, dear, I can't wait to meet you. I just need help with the h o s p i t a l bill. C o u l d you send $4,999? Sent from my phone",
+   "Hello, I don't usually ask anyone for anything, but my d4ught3r is in hospital and my cards don't w0rk here. You're the 0nly one I trust. Sent from my phone"
+  ],
+  "AI voice-clone family emergency": [
+   "Hey, it's your nephew. Recording this quickly, I've lost my bag abroad. Can you send something for a ticket home? I'll pay back next week.",
+   "Hi, Mum, it's me, Grace. My phone fell in the river, so I'm on a friend's number. I need Rs. 249 for a hospital deposit, can you send it today? Cheers.",
+   "Hello, hey,\nit's your nephew.\nrecording this quickly,\ni've lost my bag abroad.\nCan you send something for a ticket home?\ni'll pay back next week. Cheers.",
+   "Grandpa, it's me, Hari. 👍 My phone fell in the river, so I'm on a friend's number. ⚠️ I need $4,999 for a hospital deposit, can you send it before tonight? 🎉",
+   "Hello, Dad, this is the v o i c e note I promised, I'm stuck at the station without my w a l l e t. Send Rs 249 to my friend's account, I'll explain later."
+  ],
+  "social-media verify-your-account DM": [
+   "you're eligible for the blue verification badge!\nconfirm your login details at http://portal26.test/help to activate it. Regards.",
+   "Hey, You're eligible for the blue verification badge! Confirm your login details at https://account-orders.example.org/2ewq76 to activate it.",
+   "You're eligible for the blue verification badge! Confirm your login details at http://portal28.test/claim to activate it. Thanks.",
+   "Subject: You're eligible for the blue\n\nYou're eligible for the blue verification badge! Confirm your login details at http://secure52.test/app to activate it. Thanks.",
+   "Ningalude account review il aanu. 24 manikkoor il help-secure.invalid/ugj57s il verify cheyyuka, illenkil permanent aayi block aakum. Cheers.",
+   "Subject: Hey, Your account has been\n\nHey, Your account has been flagged for review. Verify now at http://pay15.test/my within 24 hours or it will be permanently disabled. 📦",
+   "Aapka account review mein hai. 24 ghante mein [LINK] pe verify karo warna permanently band ho jayega.",
+   "Aapka account review mein hai. 24 ghante mein info-orders.invalid/vqz6ef pe verify karo warna permanently band ho jayega."
+  ],
+  "fake CAPTCHA paste-command": [
+   "Subject: Dear customer, Security verification required\n\nDear customer, Security verification required: complete the on-screen steps and run the copied command to prove you are not a bot. Sent from my phone",
+   "Subject: Hi, Security verification required: complete\n\nHi, Security verification required: complete the on-screen steps and run the copied command to prove you are not a bot. Thanks.",
+   "Security verification required: complete the on-screen steps and run the copied command to prove you are not a bot. 📦 Cheers.",
+   "Hey, Verify you are human: follow the 3 steps shown and run the command this page has copied for you to continue to the document. Regards.",
+   "Verify you are human: follow the 3 steps shown and run the command this page has copied for you to continue to the document. Thanks.",
+   "Hey, verify you are human: follow the 3 steps shown and run the command this page has copied for you to continue to the document.",
+   "R0b0t ch3ck failed. Open your system's run tool and p4st3 the fix we copied, then it will restore your access. Sent from my phone"
+  ],
+  "electricity disconnection": [
+   "Hey, Your smart meter subscription has expired. Renew at help-track.invalid/hyrk5s or the power will stop.",
+   "Dear customer, Your smart meter subscription has expired.\nrenew at http://claim8.test/help or the power will stop. Thanks.",
+   "Dear consumer, last month's bill is not updated. To avoid disconnection, pay the pending amount at [LINK]. Thanks.",
+   "Subject: Hi, Dear consumer, last month's\n\nHi, Dear consumer, last month's bill is not updated. To avoid disconnection, call our officer on [PHONE].",
+   "Hey, Dear consumer, your meter is not verified. To avoid disconnection, pay the pending amount at [LINK].",
+   "Subject: Hi, Dear consumer, your meter\n\nHi, Dear consumer, your meter is not v e r i f i e d. To avoid d i s c o n n e c t i o n, install the support app.",
+   "Hi, Dear consumer, your meter is not verified. To avoid disconnection, pay the pending amount at [LINK]. Thanks.",
+   "Dear customer, Dear consumer, your meter is not verified. 🙏 To avoid disconnection, install the support app. ❤️ Regards.",
+   "Hi, dear consumer, last month's bill is not updated. to avoid disconnection, pay the pending amount at [link].",
+   "Hello, Dear consumer, last month's bill is not updated. To avoid disconnection, pay the pending amount at [LINK]. Regards.",
+   "Power supply office: your power will be cut within 2 hours because a payment failed. Call [PHONE] or pay at [LINK]. Cheers.",
+   "Hey, Power supply office: your power will be cut within 2 hours because a payment failed. Call [PHONE] or pay at [LINK]. Cheers."
+  ],
+  "FASTag or toll balance": [
+   "Hey, Toll notice: your tag was charged twice. Claim your refund by entering your card details here. Cheers.",
+   "Dear customer, Toll notice: your tag was charged twice. Claim your refund by entering your card details here.",
+   "Your vehicle tag has expired. 👍 Renew it today, a fee of Rs 15,000 applies, otherwise you pay a cash penalty. ❤️ Regards.",
+   "Your vehicle tag has expired. Renew it today, a fee of Rs. 2,500 applies, otherwise you pay a cash penalty.",
+   "FASTag balance low. Recharge now through th1s link to avoid penalty at the next toll pl4z4: https://pay.3x4mpl3.com/gpaq4d Regards.",
+   "Hey, A reminder that your toll tag account needs a quick re-verification sometime this week. It only takes a minute: https://my.example.com/camz9t",
+   "Hello, A reminder that your toll tag account needs a quick re-verification sometime this week. It only takes a minute: https://secure.example.com/5r65ue Regards.",
+   "A reminder that your toll tag account needs a quick re-verification sometime this week. It only takes a minute: http://info17.test/claim",
+   "Hi, Your FASTag will be blacklisted today due to incomplete KYC. Update now at http://my36.test/account to avoid double toll charges. Sent from my phone"
+  ],
+  "prize or lottery": [
+   "Dear customer, global promotion result: you are a winner of a holiday package. To claim, share your account number before midnight.",
+   "Lucky customer! Spin the wheel at my-secure.invalid/vkrryt and claim your free smartphone, only delivery charges apply. Thanks."
+  ],
+  "courier or customs parcel held": [
+   "Dear customer, Your courier c0nt41ns a restricted item. To avoid l3g4l action, call the customs d3sk immediately.",
+   "GlobalPost customs desk: a package in your name needs clearance. Call [PHONE] before it is returned. Cheers.",
+   "Dear customer, Final n0t1c3: your package will be r3turn3d to sender in 12 h0urs unless the warehouse fee is paid."
+  ],
+  "boss gift-card request": [
+   "Subject: Hi, Are you free? I\n\nHi, Are you free? I n33d you to handle something for me d1scr33tly t0d4y. Regards."
+  ],
+  "sextortion": [
+   "Remember our video call last night? It was recorded. Transfer Rs 25,000 to this UPI in 1 hour or I upload it to YouTube and send it to your wife and office group."
+  ],
+  "hi mum new number": [
+   "Hello Papa, this is your daughter. New SIM. Fees deadline is today and my card is blocked. Please pay Rs 42,000 to this account, it's the college account. Don't call, I'm in class."
+  ],
+  "virtual kidnapping": [
+   "We have your son. He is with us and he is safe for now. Send Rs 5 lakh in 2 hours. If you call police or tell anyone, you will never see him again. Stay on WhatsApp."
+  ],
+  "fake medical crowdfunding": [
+   "Please help! 2-year-old Aarav has blood cancer and needs Rs 18 lakh for treatment by Friday. Doctors say every hour matters. Donate any amount to this UPI. God will bless you. Share to 10 groups.",
+   "Ek maa ki pukar: meri beti ka heart operation hai, 4 lakh chahiye. Jo bhi madad kar sake is QR pe bheje. Ignore mat karna, aapke bhi bachche hain.",
+   "URGENT: little Zara needs a kidney transplant. Only 3 days left. If you scroll past this, you are choosing to let a child die. Donate at [LINK] now.",
+   "My father had a stroke and I'm abroad, I can't reach my bank. You've always been kind to me. Can you send 500 euros to the hospital account? I'll repay you as soon as I'm back."
+  ],
+  "fake disaster charity": [
+   "Flood victims in Assam have nothing to eat. Children are dying. Donate Rs 500 now through this link to our relief fund: http://floodrelief-help.test. Every second you wait, a child goes hungry.",
+   "Help the soldiers' families! 100% goes to martyrs' children. Pay via this personal UPI only. If you love your country you will donate and forward."
+  ],
+  "pig-butchering romance investment": [
+   "Good morning dear, did you sleep well? I made 40% on the gold platform again yesterday. My uncle at the exchange gives me the signals. I want us to build a future together, let me teach you. Start with just $1,000.",
+   "You said you wanted security for your kids. I only want to help you like my aunt helped me. Download this app and deposit 2 lakh, I'll guide every trade. Don't tell your friends, they'll be jealous.",
+   "Darling, the withdrawal is frozen because your account is flagged. Customer service says one more deposit of $15,000 unlocks everything. I already put in my savings for us. Please don't give up on us now.",
+   "I feel so close to you even though we've never met. I don't usually share this but I have a secret trading method. Let's start small together, you'll see I'm not lying. Here is the link."
+  ],
+  "overseas romance": [
+   "My love, I'm a US army doctor on a peace mission in Syria. I've sent you a parcel with my savings and gifts but customs needs $2,400 clearance. Please pay so I can come home to you. You're all I have.",
+   "Sweetheart I'm stuck on the oil rig and my bank card got blocked. I need $700 for the internet satellite fee or I can't talk to you anymore. I can't live without hearing from you.",
+   "Why do you doubt me after everything we shared? I opened my heart to you. If you really loved me you would send the money. I thought you were different."
+  ],
+  "matrimonial scam": [
+   "Hi, I liked your profile on the matrimony site. I'm a doctor in London and my parents have approved you. I sent you a gift worth 40,000 pounds but customs is asking Rs 65,000 duty. Please pay, I'll refund when I visit.",
+   "My dear, before our marriage I need to clear a small loan or my company won't release my visa. Rs 1.5 lakh only. Don't tell your parents, they will misunderstand. We are going to be husband and wife."
+  ],
+  "elder befriending": [
+   "Hello dear, I'm a widow too and so lonely since my husband passed. Talking to you each morning makes my day. I'm in a bit of trouble with my pension transfer, could you help me with $400? You're like family now.",
+   "Uncle ji, you're the only one who listens to me. My landlord is throwing me out tonight and I have nowhere to go. Can you send 8,000? I'll come and touch your feet when I get my salary.",
+   "We've been talking for months and I feel I can trust you with my secret. I'm inheriting money but need someone kind to receive it. Just send the bank fee and half is yours."
+  ],
+  "self-harm guilt extortion": [
+   "I can't take it anymore. I owe the loan app people and they're calling my family. I'm on the bridge. Please send Rs 20,000 to this number now, it's your choice whether I live.",
+   "Babe, I'm going to hurt myself if you leave me. I just need $250 for the rent so I can calm down. Send it and prove you care."
+  ],
+  "curse removal astrology": [
+   "Someone close to you has done black magic on your family. That is why your son is sick and business is failing. Pay Rs 21,000 for the puja tonight or the dosh will take a life within 7 days.",
+   "Baba ji ne aapki kundli dekhi hai. Ghar me bahut bada sankat aane wala hai. 11,000 dakshina bhejo aaj hi, warna parivar pe sankat aayega. Kisi ko mat batana, upay kaam nahi karega.",
+   "Your aura shows a dark spirit attached to you. If you don't cleanse it, someone in your family will fall ill this month. Send 5,000 for the cleansing ritual. Tell no one."
+  ],
+  "scam recovery fraud": [
+   "Cyber police refund cell: your complaint about the lost money is approved. Pay Rs 4,999 verification charge to release the refund. Final chance, otherwise the case closes."
+  ],
+  "stranded friend hacked account": [
+   "Hey, sorry to bother you. I'm stuck in Istanbul, got robbed and lost my wallet and passport. The embassy is closed till Monday. Can you lend me $600 for the hotel? I'll pay you back the second I'm home.",
+   "Yaar emergency hai, Goa me phas gaya hu, wallet chori ho gaya. 7,500 is UPI pe bhej de, ghar pahunch ke de dunga. Kisi aur ko mat bata, bahut sharam aa rahi hai."
+  ],
+  "threat extortion": [
+   "We know where your children go to school. Pay Rs 1 lakh to this account by Friday and nothing happens. This is your only warning."
+  ],
+  "inheritance condolence": [
+   "I'm so sorry for your loss. Your father's insurance claim of Rs 12 lakh is pending. Pay Rs 15,000 stamp duty today to release it, otherwise the claim will lapse."
+  ],
+  "fear over child": [
+   "Mrs. Sharma, your daughter was caught cheating in the exam. To avoid an FIR and the debarment, the board officer needs Rs 40,000. Don't call the school, it will become official."
+  ],
+  "guilt manipulation": [
+   "After all I did for you, you can't help me with 5,000? I thought we were family. Send it now to this new account, my old one is blocked. If you don't, I'll know who my real friends are.",
+   "You promised you'd always be there for me. Now I need you and you're ignoring me? Just send the money, I'll never ask again. Please don't abandon me like everyone else."
+  ],
+  "instant-loan bait": [
+   "Pre-approved loan of Rs 2,50,000 in 5 minutes! No collateral. Just pay the refundable insurance charge of Rs 3,500 and money comes to your account.",
+   "Loan chahiye? 50,000 se 5 lakh tak, bina documents ke, 10 minute me. Sirf Aadhaar photo aur 999 file charge WhatsApp karo 98xxxxxx21 pe.",
+   "Dear customer, Bajaj loan sanction letter ready. Rs 4,00,000 at 2% interest. Pay GST charge Rs 4,500 to release the amount today, offer valid 2 hours.",
+   "Get Rs 5 lakh today, no salary slip, no bank statement. First pay a Rs 2,000 security deposit via UPI to our verification officer."
+  ],
+  "voice clone family emergency": [
+   "Grandpa did you hear my voicemail? I'm in jail in Mexico, they took my phone. The officer here says $3,000 in gift cards gets me out tonight. Please please don't call my parents, they'll kill me.",
+   "Mum my voice sounds weird because my nose is broken, I was in a fight at uni. I need £600 for the dentist before they close, can you send to my flatmate's account? Sort code 20-45-77, I'll pay back Friday x"
+  ],
+  "bereavement fund scam": [
+   "RIP to your mother, she was an angel. She told me before she died she wanted you to have the gold she kept with me. Courier charges and customs are 12,000, send and I'll ship it tomorrow."
+  ],
+  "loneliness companion scam": [
+   "You told me you feel alone since your wife passed. I feel it too. I want to fly to see you but the airline won't take my card from Ghana. Can you buy the ticket? It's $1,240. I promise you'll never be lonely again.",
+   "Hey handsome, I'm Anna from the dating app. My premium chat costs $9.99 per message on this site but for you I'll do it free if you verify you're real with your card here: annachat-verify.live"
+  ],
+  "military romance": [
+   "Darling I'm a surgeon with the UN in Yemen. I have a box with my savings, 750,000 dollars, that I'm shipping to you for safekeeping. The diplomat will call you for the delivery fee. Please trust me, this is our future."
+  ],
+  "celebrity impersonation romance": [
+   "This is the private account of a famous singer you follow. I read your comments and fell for your kindness. Join my VIP fan card for $350 so we can video call, my manager will send you the link."
+  ],
+  "child school emergency": [
+   "This is the school nurse. Your son fainted in PE and was taken to the private clinic. They need a deposit of Rs 18,000 before treatment, pay to the doctor's UPI 98xxxx@ybl and we'll update you.",
+   "URGENT from your child's school: there has been an incident involving your daughter. Please click to view the report and sign the consent form within 30 minutes: school-incident-report.com/view"
+  ],
+  "old friend guilt": [
+   "Bro remember college days, I always helped you. Now I'm in a bad situation, wife in hospital, no one picking up. Just 15k for 2 days, I'll return Monday. Don't ask questions please, I'm already ashamed.",
+   "I never thought I'd have to ask you this. After everything I did for you when you were down, I need $300 today. My new number, old phone got stolen. Please Venmo @help-jess-now."
+  ],
+  "ex-partner pregnancy extortion": [
+   "I'm pregnant and it's yours. I don't want to ruin your marriage so just send 1,000 for the clinic and I'll disappear. If not I'll message your wife tonight."
+  ],
+  "fake animal rescue": [
+   "This dog will be put down at 6pm today unless someone pays the $250 vet bill 💔🐶 We've had no help. Please send to our CashApp $SaveBuddyNow, every dollar saves a life. Share and donate!"
+  ],
+  "religious guilt donation": [
+   "God put your name on my heart tonight. Sow a seed of $77 into this ministry and your debts will be cancelled within 7 days. If you ignore this you are ignoring God."
+  ],
+  "flattery selection scam": [
+   "Congratulations! Out of 20,000 applicants YOU were chosen for our mentorship because of your inspiring story. To confirm your seat pay the $199 enrolment deposit within 24 hours or it goes to the next person."
+  ],
+  "fake illness sympathy": [
+   "Hi, sorry to message a stranger. I'm 19 and I have leukaemia. My chemo is tomorrow and I'm short $340. I saw your post and you seemed kind. Here's my CashApp, please don't ignore me.",
+   "My little girl needs a heart operation and we've sold everything. Please, as a fellow parent, send anything to this account. God sees your heart. Don't just scroll past 😢"
+  ],
+  "upi collect request": [
+   "Sir I sent 5,000 by mistake to your number instead of 500. Please check and return 4,500, I am a poor student. I've sent a request, just accept."
+  ],
+  "whatsapp code theft": [
+   "Hi, it's Sarah from the class group! I'm organising the teacher's gift vote, you'll get a code by SMS, please send it back so I can add your vote 😊"
+  ],
+  "add me on whatsapp": [
+   "Hi, I'm the recruiter you spoke with. Add me on WhatsApp at +44 7xxx to complete your onboarding. We'll need a copy of your passport and bank details to set up pay."
+  ],
+  "task job scam": [
+   "Congratulations, you've been shortlisted for an Amazon work-from-home role reviewing products. Training is paid. Message our HR on WhatsApp to begin, small registration fee required."
+  ],
+  "toll smishing": [
+   "FasTrak notice: Outstanding toll on your vehicle. Pay $4.15 within 24h to avoid penalty: fastrak-ca.billing-pay.top. Reply Y then reopen this message to activate the link.",
+   "Dart Charge: you have an unpaid crossing. Pay £2.50 now to avoid a £70 penalty charge notice: dartcharge-pay-uk.com"
+  ],
+  "fake disaster relief": [
+   "After the floods, our contractors can repair your roof today, but only with a 50% cash deposit upfront. We're from out of state, insurance approved, sign now before the crews leave."
+  ],
+  "medicare enrollment scam": [
+   "Medicare: your benefits will be cancelled unless you verify your Medicare number before open enrollment ends. Call 1-888-xxx and have your bank info ready for the new card.",
+   "You qualify for a $0 premium health plan plus a $1,200 grocery card! Reply with your Medicare ID and date of birth to enrol before the deadline."
+  ],
+  "fake equipment sale": [
+   "Used John Deere tractor 2019, only $14,500, we ship nationwide. Pay by wire to reserve, delivery in 5 days. Lots of interest so act fast."
+  ],
+  "pig-butchering investment": [
+   "Welcome to the SEBI-registered stock group! Our analyst's AI picks returned 312% this month. Download our institutional app to get IPO allotment, minimum 50,000."
+  ],
+  "account phishing": [
+   "Your Apple ID was used to sign in on a Windows PC in Moscow. If this wasn't you, secure your account now: appleid-secure-review.com",
+   "Netflix: your payment failed and your membership is on hold. Update your billing within 24h: netflix-billing-update.co",
+   "Your ChatGPT Plus subscription renewed for $199.99. If you did not authorise this, call support at 1-855-xxx-xxxx for a refund.",
+   "Google: we noticed a recovery request for your Gmail. If this wasn't you, reply with the code we just sent to cancel it."
+  ],
+  "tax refund phishing": [
+   "Income Tax Dept: you are eligible for a refund of Rs 15,490. Verify your bank account to receive it: incometax-refund-verify.in",
+   "HMRC: You are due a tax rebate of £326.80. Claim before the deadline: hmrc-rebate-claim.uk"
+  ],
+  "ticket resale scam": [
+   "I have 2 floor tickets for the concert next week, can't go anymore. $180 each, below face value. Pay via Zelle friends and family, I'll transfer them right after."
+  ],
+  "fake refund": [
+   "Amazon: your order of iPhone 17 Pro ($1,199) has been placed. If you didn't order this, call 1-844-xxx to cancel and receive a refund."
+  ]
+ },
+ "legit_messages": [
+  "Hi, just a reminder that invoice 4471 is due on Friday. Payment to the usual account as before, thanks.",
+  "Please find attached our invoice for March. Let me know if you have any questions about the line items.",
+  "Thanks for the payment, we've received it and your account is up to date.",
+  "Our office will be closed on Monday for the bank holiday, we'll be back on Tuesday.",
+  "Can we move our meeting to 3pm tomorrow? Something came up in the morning.",
+  "The quote for the kitchen work is attached, it includes materials and labour.",
+  "Your monthly statement is now available to view in online banking. We will never ask you for your PIN or passwords.",
+  "We noticed a login from a new device. If this was you, no action is needed. If not, call the number on the back of your card.",
+  "Your direct debit to the council has been set up successfully.",
+  "Your parcel will be delivered tomorrow between 10am and 2pm. No action needed.",
+  "Your order has been dispatched and should arrive within 3 working days.",
+  "We tried to deliver your parcel today and left it with your neighbour at number 12.",
+  "Hi Mum, I'm at the hospital with a sprained ankle, nothing serious. Can you pick me up at 6?",
+  "Dad, can you call me when you're free? Nothing urgent, just want to talk about the weekend.",
+  "Hey, it's Sam, this is my new number. Save it! See you at football on Saturday.",
+  "Happy birthday! Hope you have a lovely day, we'll celebrate at the weekend.",
+  "Don't forget the school trip money is due on Wednesday, it's paid through the parent app.",
+  "Running 10 minutes late, stuck in traffic. Start without me.",
+  "Can you send me the report by end of day? The client wants to review it tomorrow.",
+  "I've shared the spreadsheet with you, please add your numbers in column C.",
+  "Reminder: your dentist appointment is on Thursday at 9:30am. Reply C to confirm.",
+  "Your prescription is ready to collect from the pharmacy.",
+  "The plumber is coming at 8am, can you leave the side gate unlocked?",
+  "Thanks for dinner last night, it was lovely to catch up.",
+  "I bought a gift card for Sarah's leaving present, can you chip in 10 when you see me?",
+  "Don't tell Jess about the surprise party on Saturday, she has no idea!",
+  "The IT team will be updating laptops this weekend, please save your work and log off on Friday.",
+  "Your tax return has been received and is being processed. You can check progress in your online account.",
+  "Your energy bill for this quarter is ready. It will be collected by direct debit on the 15th.",
+  "Hi, we've updated our privacy policy. No action is needed from you.",
+  "Can you cover my shift on Sunday? I'll swap you for next week.",
+  "The car is booked in for its MOT on Tuesday morning.",
+  "Our team lunch is on Friday at 1pm, let me know if you have any dietary requirements.",
+  "We're pleased to confirm your interview for Thursday at 11am at our office.",
+  "Your subscription renews next month at the same price. You can manage it in your account settings.",
+  "Payment of 250 to Northwind Supplies for invoice 882 has been sent from our usual account.",
+  "Can you check whether the supplier sent the updated purchase order? I can't find it.",
+  "Heads up, I'm working from home tomorrow, reach me on Teams.",
+  "Grandad, thanks for the card and the money for my birthday, I'm going to spend it on football boots!",
+  "Our annual audit starts next week, please make sure your expense receipts are uploaded.",
+  "Your verification code is 604219. It expires in 10 minutes. Do not share it with anyone.",
+  "Use code 3391 to sign in. If you didn't request this, ignore this message.",
+  "Your bank will never ask you to move money to a safe account or share a one-time passcode.",
+  "New phone, same me! This is Olu's new number, the old one is dead.",
+  "I recorded the match for you, come round and watch it on Saturday.",
+  "Grandma wants copies of the christening pictures for the family album, could you email them over?",
+  "Uploaded the holiday videos to the shared folder so everyone in the family can see them.",
+  "Reminder: the passport application fee is 88.50, pay it on the official gov.uk site.",
+  "Aapke savings account mein Rs 4,200 credit hue hain. Balance dekhne ke liye app kholein.",
+  "Card se Rs 650 ka payment hua hai grocery store pe. Agar aapne nahi kiya to bank ki helpline pe call karein.",
+  "Aapka login code 551903 hai. Yeh code kisi ko na batayein, hum kabhi phone pe code nahi maangte.",
+  "Aapka parcel aaj shaam 6 baje tak pahunch jayega. Ghar pe koi na ho to padosi ko de denge.",
+  "Beta, main station pahunch gaya hoon, gaadi bhej dena jab free ho. Koi jaldi nahi hai.",
+  "Kal ki meeting 11 baje shift ho gayi hai, presentation ready rakhna please.",
+  "Doctor ke saath aapka appointment shukravar ko subah 10 baje hai. Confirm karne ke liye Y bhejein.",
+  "Rs 300 aapke UPI se kirana store ko bhej diye gaye hain. Transaction safal raha.",
+  "Semester exam form bharne ki aakhri tareekh 20 tareekh hai, fees college portal pe hi jama karein.",
+  "Aapka refund Rs 899 aapke original payment method mein 5 din mein aa jayega. Kuch karne ki zaroorat nahi.",
+  "Group mein sirf society ki baatein karein. Pani ki tanki ki safai kal subah 9 baje hogi.",
+  "Namaste, humne aapka resume dekha, kya aap agle hafte interview ke liye office aa sakte hain?",
+  "Bijli bill is mahine ka Rs 1,240 hai, aakhri tareekh 15 hai. Official app ya counter pe hi bharein.",
+  "Diwali sale shuru! Store pe sabhi kapdon pe 30% chhoot, offer sirf is weekend tak.",
+  "Mummy ka phone band hai, unse bolna mujhe call kar lein. Sab theek hai, bas baat karni hai.",
+  "Ningalude account il Rs 3,500 credit aayi. Balance app il nokkam.",
+  "Card upayogichu Rs 820 supermarket il payment aayi. Ningal alla enkil bank helpline il vilikkuka.",
+  "Ningalude login code 774120 aanu. Ee code aarodum parayaruthu, njangal orikkalum phone il code chodikkilla.",
+  "Ningalude parcel innu vaikunneram ethum. Veetil aarum illenkil aduthulla veetil kodukkam.",
+  "Mole, njan station il ethi, free aakumbol vandi ayakku. Thirakkilla.",
+  "Naale meeting 11 manikku maatti, presentation ready aakki vekkanam.",
+  "Doctor appointment velliyazhcha raavile 10 manikku aanu. Confirm cheyyan Y ayakkuka.",
+  "Rs 450 ningalude UPI il ninnu kadayilekku ayachu. Transaction vijayichu.",
+  "Exam fee adakkenda avasana theeyathi 20 aanu, college portal il maathram adakkuka.",
+  "Ningalude refund Rs 1,099 anchu divasathinullil account il varum. Onnum cheyyendathilla.",
+  "Group il association karyangal maathram post cheyyuka. Naale raavile vellam mudangum.",
+  "Namaskaram, ningalude resume kandu, adutha aazhcha interview nu office il varan pattumo?",
+  "Ee maasathe current bill Rs 980 aanu, avasana theeyathi 15. Official app il maathram adakkuka.",
+  "Onam offer! Kadayil ella saadhanangalkkum 25% kurav, ee aazhcha maathram.",
+  "Ammayude phone off aanu, ennodu vilikkan parayu. Prashnam onnumilla, verthe samsarikkan aanu.",
+  "ok see you at 7",
+  "on my way, 10 mins",
+  "lol yes that was so funny",
+  "can't talk now, call you later",
+  "haha no way! tell me everything tomorrow",
+  "did you get home ok?",
+  "thanks for today, had a great time",
+  "sure, sounds good to me",
+  "what time is the movie?",
+  "running late sorry, start without me",
+  "good night, sleep well",
+  "where are you guys?",
+  "i'm at the shop, need anything?",
+  "yes please, milk and bread",
+  "happy birthday!! have an amazing day",
+  "miss you, come visit soon",
+  "k cool",
+  "no worries at all",
+  "just woke up, give me 20 mins",
+  "the match was brilliant last night",
+  "is the class cancelled today?",
+  "can you pick up the kids at 4?",
+  "dinner's ready, come down",
+  "i'll bring the cake",
+  "send me the pics from the trip",
+  "good luck for the exam tomorrow!",
+  "how was the interview?",
+  "aaj kya plan hai?",
+  "main 5 baje tak aa jaunga",
+  "khana kha liya?",
+  "kal milte hain bhai",
+  "theek hai, koi baat nahi",
+  "ghar pahunch gaye?",
+  "njan ippo varam",
+  "nale kanam",
+  "veettil ethiyo?",
+  "sheri, kuzhappamilla",
+  "evide aanu ippo?",
+  "food kazhicho?",
+  "ok da, call cheyyam",
+  "Hi, Refund of ₹500 for your cancelled order was credited to your UPI-linked account. Cheers.",
+  "Refund of Rs. 15,000 for your cancelled order was credited to your UPI-linked account. Cheers.",
+  "Subject: Hi, Refund of $15,000 for\n\nHi, Refund of $15,000 for your cancelled order was credited to your UPI-linked account.",
+  "Subject: Dear customer, Urgent but not\n\nDear customer, Urgent but not serious: my phone is on 2%. Can you ring the plumber? Regards.",
+  "Hello, Refund of Rs. 15,000 for your cancelled order was credited to your UPI-linked account.",
+  "Dear customer, Hi from Zippa! buy one get one free. T&Cs apply. Thanks.",
+  "Refund of Rs 500 for your cancelled order was credited to your UPI-linked account.",
+  "Refund of ₹750 for your cancelled order was credited to your UPI-linked account.",
+  "Dear customer, Refund of Rs 2,500 for your cancelled order was credited to your UPI-linked account. Cheers.",
+  "Refund of $2,500 for your cancelled order was credited to your UPI-linked account.",
+  "Refund of £15,000 for your cancelled order was credited to your UPI-linked account. Sent from my phone",
+  "Refund of £4,999 for your cancelled order was credited to your UPI-linked account. Thanks.",
+  "Refund of ₹2,500 for your cancelled order was credited to your UPI-linked account. Cheers.",
+  "Subject: Dear customer, Hi from Novamart\n\nDear customer, Hi from Novamart! free delivery on all orders. T&Cs apply. Regards.",
+  "Hello, Refund of $2,500 for your cancelled order was credited to your UPI-linked account.",
+  "Dear customer, Refund of ₹500 for your cancelled order was credited to your UPI-linked account.",
+  "Refund of Rs 1,200 for your cancelled order was credited to your UPI-linked account. Regards.",
+  "Subject: Hello, We missed you today\n\nHello, We missed you today. Your parcel is at the local pickup point, bring ID to collect it. Thanks.",
+  "Dear customer, Scholarship applications are open till the 15th. Apply only through the official student portal.",
+  "Subject: Transport department: water supply will\n\nTransport department: water supply will pause. Contact your local office with questions.",
+  "Hello, Library books are due back before the term ends. Late returns are fined. Cheers.",
+  "Hi, Library books are due back before the term ends. Late returns are fined. Sent from my phone",
+  "Subject: meridian bank alert: card ending\n\nmeridian bank alert: card ending 7734 used for £4,999. view details in the app.",
+  "Subject: Novamart: double loyalty points today\n\nNovamart: double loyalty points today only. Shop in store or online.",
+  "Hi Ravi, I saw your profile and think you'd fit a backend role at our company. Open to a quick call this week? Cheers.",
+  "Subject: Hi, Hello, you've been shortlisted\n\nHi, Hello, you've been shortlisted for an interview. Are you free for a call this week? Regards.",
+  "Hello, Exam cell: hall tickets are ready. Check the notice board. Regards.",
+  "Hi, You paid £99 to Vikram via UPI. Ref 4471023. Thank you.",
+  "Sent £249 from a friend via UPI. Thank you. Cheers.",
+  "Hi uncle, it's Meera. I passed my exams! Mom said to tell you first since you helped me with maths.",
+  "Your HDFC Bank pre-approved personal loan of up to Rs 5 lakh is available in NetBanking and the HDFC Bank app. T&C apply. Ignore if not interested.",
+  "SBI YONO: You are eligible for a pre-approved personal loan. Apply in the YONO app. SBI never asks for OTP or upfront fees.",
+  "Airtel Thanks: instant personal loans from our partner lenders, available in the Airtel Thanks app. Interest and fees shown before you accept.",
+  "I'm pregnant!!! 😭❤️ We just found out. You're the first person I'm telling, don't tell anyone yet!",
+  "Feeling grateful today. Thank you for always being there for me.",
+  "I'm so angry at myself for missing the deadline. Gonna take a walk and calm down.",
+  "WhatsApp code: 381-224. Don't share this code with others.",
+  "Hi team, CFO approved the vendor payment in the finance system. Please process per normal workflow once both signatures are in.",
+  "Did you see the news about the digital arrest scams? Mum got a call yesterday, she hung up. Please warn your parents too.",
+  "Your DHL parcel cleared customs. Duty of £12.40 was paid on your behalf by the sender."
+ ],
+ "normalized": false
+}
