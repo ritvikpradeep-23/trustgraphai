@@ -85,7 +85,10 @@ trend, and `GET /api/accuracy` includes it under `new_scam_learning`. Logs go to
 | `AUTO_PROMOTE` | false | Put accepted versions live by themselves |
 | `DEV_RECALL_TOLERANCE` | 0 | 0 = dev recall may not drop at all (the improvement rounds' rule). 0.01 allows a drop of one point. |
 
-**Install it:** `python install_schedule.py`. That installs both routines, each every 2 hours. `python install_schedule.py --show` checks them.
+**Supervise it from Claude Code:** `docs/LEARNING_SUPERVISOR_TASK.md` has the instructions for a Claude Desktop
+scheduled task that runs the routine every 2 hours and reports each dataset's result (and asks before promoting).
+
+**Or install it without Claude:** `python install_schedule.py`. That installs both routines, each every 2 hours. `python install_schedule.py --show` checks them.
 
 **First, copy the real SMS file** from your ai-model folder, or no version can pass the gate:
 
