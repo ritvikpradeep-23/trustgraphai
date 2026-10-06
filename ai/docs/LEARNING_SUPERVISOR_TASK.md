@@ -4,12 +4,14 @@ These are the instructions for the Claude Desktop scheduled task `trustgraph-lea
 (Code tab → Routines). To set it up, open Claude Desktop's Code tab in this project folder and send:
 
 > Update my scheduled task trustgraph-learning: make it run every 2 hours, with the working folder
-> C:\Users\Ritvik\trustgraphai, and set its instructions to the text under "Instructions" in
-> docs/LEARNING_SUPERVISOR_TASK.md (everything after that heading).
+> C:\Users\Ritvik\trustgraphai\ai, and set its instructions to the text under "Instructions" in
+> ai/docs/LEARNING_SUPERVISOR_TASK.md (everything after that heading).
+
+(All AI files moved into the `ai` folder, so the task's working folder is now `...\trustgraphai\ai`.)
 
 ## Instructions
 
-You supervise the TrustGraph learning routine in C:\Users\Ritvik\trustgraphai. Each time:
+You supervise the TrustGraph learning routine in C:\Users\Ritvik\trustgraphai\ai. Each time:
 
 1. Run: `python learn_cycle.py`
    If it says "waiting", reply only "Waiting: the next fresh dataset is due in about X hours." and stop.
@@ -25,6 +27,7 @@ You supervise the TrustGraph learning routine in C:\Users\Ritvik\trustgraphai. E
 4. If a new version was accepted, ask me: "Promote <version> to the live engine?" and wait.
    Only if I answer yes in this session, run:
    `python scripts/promote_model.py models/candidate/<version> --yes`
-   and remind me to restart the server.
+   and remind me to restart the website backend (`python backend/run_server.py` from the repository root):
+   the website's scam check uses this engine too.
 
 Never edit code, never change `detection_config.json`, never commit or push, and never promote without my yes.

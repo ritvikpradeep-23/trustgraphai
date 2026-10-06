@@ -2,7 +2,7 @@
 
 All FastAPI source is in `backend/app/`. The old root `app/` is removed; launchers, scripts, and tests resolve the backend package from `backend/`.
 
-This backend belongs to one combined repository with `front end/`, `trustgraph_extension/`, and shared root `data/`, `scripts/`, `tests/`, `models/`. Do not upload only this subfolder: the runnable project is the whole repository / combined ZIP.
+This backend belongs to one combined repository with `front end/`, `trustgraph_extension/`, and shared root `data/`, `scripts/`, `tests/` and the `ai/` folder (models and scam engine). Do not upload only this subfolder: the runnable project is the whole repository / combined ZIP.
 
 From the root, install `backend/requirements.txt`, configure the ignored root `.env`, build `front end/`, and run `python backend/run_server.py` or `python run_server.py`.
 
