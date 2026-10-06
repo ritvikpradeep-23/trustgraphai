@@ -13,6 +13,8 @@ training/.cache/
 
 # Backend: user-submitted reports are private data, never committed
 data/scam_reports.json
+# Known-fakes fingerprint database (built by scripts/seed_fingerprints.py)
+data/fingerprints.sqlite3*
 .env
 
 # Detectors + accuracy routine: datasets, caches, trained weights and logs stay on your laptop

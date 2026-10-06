@@ -45,6 +45,15 @@ class Settings(BaseSettings):
     ai_text_model_dir: str = "models/text_detector"  # empty or missing = not configured (503, no made-up score)
     ai_text_threshold: float = 0.5       # ai_score at or above this -> "likely_ai"
 
+    # --- Known-fakes database (fingerprint match, returned next to the model) --
+    fingerprint_db_url: str = "sqlite:///data/fingerprints.sqlite3"  # only sqlite:/// is implemented
+    fingerprint_image_threshold: int = 10  # max differing bits of 64 (pHash AND dHash) for an image match
+    fingerprint_text_threshold: int = 6    # max differing bits of 64 (SimHash) for a text match
+    fingerprint_full_scan_max: int = 20000  # up to this many rows per kind, also compare beyond the band index
+    media_max_body: int = 8 * 1024 * 1024  # /api/score with type image/video: whole request
+    media_max_image_bytes: int = 3 * 1024 * 1024  # one decoded image or frame
+    media_max_frames: int = 16             # video frames per request
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

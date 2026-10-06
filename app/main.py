@@ -22,11 +22,12 @@ for _p in (ROOT, ROOT / "src"):
         sys.path.insert(0, str(_p))
 
 from app.ai_text_engine import load_text_detector  # noqa: E402
-from app.api import accuracy, ai_text, feedback, health, scam_score, text, video  # noqa: E402
+from app.api import accuracy, ai_text, feedback, fingerprint_health, health, scam_score, text, video  # noqa: E402
 from app.config import Settings, get_settings  # noqa: E402
 from app.deepfake_engine.face_detector import FaceDetector  # noqa: E402
 from app.deepfake_engine.model import load_deepfake_model  # noqa: E402
 from app.errors import ApiError  # noqa: E402
+from app.fingerprint.store import FingerprintStore, StoreUnavailable  # noqa: E402
 from app.scam_engine.embedder import Embedder  # noqa: E402
 from app.scam_engine.repository import InMemoryReportRepository  # noqa: E402
 from app.scam_engine.service import ScamService  # noqa: E402
@@ -47,6 +48,14 @@ def create_app(settings: Settings | None = None, embedder=None) -> FastAPI:
     app.state.deepfake_model, app.state.deepfake_status = load_deepfake_model(settings)
     app.state.face_detector = FaceDetector(settings.face_margin)
     app.state.ai_text_detector, app.state.ai_text_status = load_text_detector(settings)
+    # Known-fakes database (fingerprint match). If it can't be opened, checks
+    # still work and say the database is unavailable.
+    try:
+        app.state.fingerprint_store = FingerprintStore(settings.fingerprint_db_url, settings.fingerprint_full_scan_max)
+        app.state.fingerprint_status = "ok"
+    except (StoreUnavailable, OSError) as exc:
+        logger.warning("fingerprint database unavailable: %s", exc)
+        app.state.fingerprint_store, app.state.fingerprint_status = None, str(exc)[:200]
 
     # Browsers block cross-site calls unless the server allows the caller's
     # origin, so the website and the extension must be listed in CORS_ORIGINS.
@@ -78,6 +87,7 @@ def create_app(settings: Settings | None = None, embedder=None) -> FastAPI:
     app.include_router(video.router)
     app.include_router(accuracy.router)
     app.include_router(feedback.router)
+    app.include_router(fingerprint_health.router)
     return app
 
 

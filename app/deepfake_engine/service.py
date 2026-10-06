@@ -20,3 +20,14 @@ def analyze_video(path: str, model: DeepfakeModel, detector: FaceDetector, setti
     if model.is_mock:
         result["mock"] = True
     return result
+
+
+def analyze_frames(frames_bgr: list, model: DeepfakeModel, detector: FaceDetector, settings: Settings) -> dict:
+    """Same as analyze_video, for frames the browser already captured (an
+    image is one frame): largest face per frame -> model -> aggregate."""
+    faces = [face for face in (detector.largest_face(f) for f in frames_bgr) if face is not None]
+    scores = [model.predict_fake_score(face) for face in faces]
+    result = aggregate(scores, len(frames_bgr), settings)
+    if model.is_mock:
+        result["mock"] = True
+    return result
