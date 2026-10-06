@@ -1,0 +1,15 @@
+# Not needed to build the site or run the API on Vercel (keeps uploads small).
+backup/
+models/
+reports/
+eval/
+training/
+routine/
+runs/
+scratch/
+logs/
+dist/
+data/
+trustgraph_extension/
+**/__pycache__/
+*.pyc

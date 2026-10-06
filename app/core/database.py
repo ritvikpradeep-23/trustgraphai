@@ -23,11 +23,24 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship,
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+def _database_url() -> str | None:
+    """DATABASE_URL (or POSTGRES_URL, which hosted PostgreSQL integrations such
+    as Vercel's set). Their plain postgres:// / postgresql:// URLs are pointed
+    at the psycopg driver this project installs."""
+    url = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL")
+    if url and url.startswith("postgres://"):
+        url = "postgresql://" + url[len("postgres://"):]
+    if url and url.startswith("postgresql://"):
+        url = "postgresql+psycopg://" + url[len("postgresql://"):]
+    return url
+
+
+DATABASE_URL = _database_url()
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL environment variable is required")
 
-engine = create_engine(DATABASE_URL)
+# pre_ping: serverless instances can hold a connection the database closed.
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
