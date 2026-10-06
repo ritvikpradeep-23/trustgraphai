@@ -35,7 +35,7 @@ computer.
  Stand-alone Python (no server):
    ├─ train_video.py / train_text.py      training
    ├─ run_cycle.py   ← Task Scheduler every 2 hours (accuracy routine)
-   └─ learn_cycle.py ← Task Scheduler every hour (new-scam learning routine)
+   └─ learn_cycle.py ← every 2 hours: one fresh dataset per run (new-scam learning routine)
 ```
 
 **How the pieces talk:** the extension calls the **local service** through an **HTTP API** (JSON in, JSON out). The
@@ -129,11 +129,12 @@ Every `INTERVAL_HOURS` (default 2, set in `detection_config.json`):
 
 ---
 
-## 5b. Learning new scams (hourly)
+## 5b. Learning new scams (a fresh dataset every 2 hours)
 
-`learn_cycle.py` runs every hour:
-1. It takes new examples: scams reported through `POST /api/feedback`, `POST /api/text/report` or `add_examples.py`,
-   plus honest messages that were wrongly flagged.
+`learn_cycle.py`, every 2 hours after the last run finished:
+1. It takes one fresh dataset it has never used (your files in `data/learning/datasets/`, else a new synthetic one),
+   plus scams reported through `POST /api/feedback`, `POST /api/text/report` or `add_examples.py`, and honest
+   messages that were wrongly flagged.
 2. It first records how many of the new scams the engine **already** caught. That's the live new-scam catch rate.
 3. It learns the misses, then runs the same safety gate as the improvement rounds.
 4. An accepted version waits in `models/candidate/learn_<time>/` until you promote it (or `AUTO_PROMOTE`).

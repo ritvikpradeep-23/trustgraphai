@@ -29,7 +29,8 @@ def learn(tmp_path, monkeypatch):
     d = tmp_path / "learning"
     for name, path in {"LEARN_DIR": d, "INBOX": d / "inbox.jsonl", "USED": d / "used.json",
                        "REJECTED": d / "rejected.jsonl", "SCAM_REPORTS": tmp_path / "scam_reports.json",
-                       "BEST": tmp_path / "learning_best.json", "OUT": tmp_path / "reports"}.items():
+                       "BEST": tmp_path / "learning_best.json", "OUT": tmp_path / "reports",
+                       "DATASETS": d / "datasets", "GENERATED": d / "generated", "STATE": d / "state.json"}.items():
         monkeypatch.setattr(learn_cycle, name, path)
     monkeypatch.setattr(add_examples, "INBOX", d / "inbox.jsonl")
     monkeypatch.setattr(add_examples, "REJECTED", d / "rejected.jsonl")
@@ -37,7 +38,8 @@ def learn(tmp_path, monkeypatch):
     monkeypatch.setattr(core, "CANDIDATES", tmp_path / "candidates")
     monkeypatch.setattr(core, "run_tests", lambda model_dir: (True, "stubbed in tests"))
     monkeypatch.setattr(core, "sms_false_alarms", lambda index, bands: 0.03)
-    cfg = {**learn_cycle.DEFAULTS, "MIN_NEW_EXAMPLES": 5, "DEV_RECALL_TOLERANCE": 0.05}
+    cfg = {**learn_cycle.DEFAULTS, "MIN_NEW_EXAMPLES": 5, "DEV_RECALL_TOLERANCE": 0.05,
+           "FRESH_SYNTHETIC_WHEN_EMPTY": False}  # turned on only in the synthetic-dataset test
     monkeypatch.setattr(learn_cycle, "learning_config", lambda: dict(cfg))
     return {"tmp": tmp_path, "cfg": cfg}
 
@@ -130,7 +132,39 @@ def test_feedback_endpoint_queues_an_example(learn, tmp_path):
     assert json.loads(add_examples.INBOX.read_text().splitlines()[1])["label"] == "legit"
 
 
-def test_learning_schedule_is_hourly_by_default():
-    assert install_schedule.intervals()["learning"] == 1
-    line = install_schedule.cron_line(1, "/usr/bin/python3", install_schedule.ROUTINES["learning"])
-    assert line.startswith("0 */1 * * * ") and "learn_cycle.py" in line and "trustgraph-learning-routine" in line
+def test_learning_schedule_is_every_2_hours_by_default():
+    assert install_schedule.intervals()["learning"] == 2
+    line = install_schedule.cron_line(2, "/usr/bin/python3", install_schedule.ROUTINES["learning"])
+    assert line.startswith("0 */2 * * * ") and "learn_cycle.py" in line and "trustgraph-learning-routine" in line
+
+
+def test_each_run_takes_the_next_fresh_chunk_of_your_dataset(learn, monkeypatch):
+    learn["cfg"]["DATASET_CHUNK_ROWS"] = 3
+    learn_cycle.DATASETS.mkdir(parents=True)
+    with open(learn_cycle.DATASETS / "my_scams.csv", "w", encoding="utf-8") as f:
+        f.write("text,label,scam_type\n" + "".join(f'"{t}",{"scam" if lab == "scam" else "honest"},{k or ""}\n'
+                                                     for lab, t, k in NEW))
+    state = learn_cycle.load_state()
+    first = learn_cycle.next_dataset(learn["cfg"], state, core)
+    assert first["name"] == "my_scams.csv rows 1-3 of 6" and len(first["rows"]) == 3
+    first["commit"](state)
+    second = learn_cycle.next_dataset(learn["cfg"], state, core)
+    assert second["name"] == "my_scams.csv rows 4-6 of 6" and second["rows"][0]["text"] == NEW[3][1]
+    second["commit"](state)
+    assert learn_cycle.next_dataset(learn["cfg"], state, core) is None  # used up, synthetic off: nothing
+
+
+def test_a_new_synthetic_dataset_when_yours_are_used_up(learn):
+    learn["cfg"].update(FRESH_SYNTHETIC_WHEN_EMPTY=True, SYNTHETIC_SCAMS=8, SYNTHETIC_HONEST=8)
+    r = learn_cycle.run()
+    assert r["dataset"] == "synthetic_1000" and r["new_scams"] == 8 and r["new_honest"] == 8
+    assert (learn_cycle.GENERATED / "synthetic_1000.jsonl").exists()
+    assert learn_cycle.load_state()["synthetic_seeds"] == [1000]
+
+
+def test_waits_the_interval_after_a_finished_run(learn):
+    state = learn_cycle.load_state()
+    state["last_finished"] = learn_cycle.time.strftime("%Y-%m-%dT%H:%M:%S")
+    learn_cycle.save_state(state)
+    assert learn_cycle.main([])["status"] == "skipped"            # just finished: wait 2 hours
+    assert "waiting" not in str(learn_cycle.main(["--dry-run"]))  # a dry run never waits

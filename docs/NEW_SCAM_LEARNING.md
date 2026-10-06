@@ -1,14 +1,34 @@
-# Learning new scams: the hourly learning routine
+# Learning new scams: the learning routine (a fresh dataset every 2 hours)
 
-Scammers keep inventing new scripts. `learn_cycle.py` runs **every hour** and does two things:
+Scammers keep inventing new scripts. `learn_cycle.py` takes **one fresh dataset it has never used**, trains on it,
+and then **waits 2 hours after finishing** before taking the next one. Each run:
 
-- It **learns** from scams people report, and from honest messages that were wrongly flagged.
-- It **measures**, before learning anything, how many of the new scams the engine already catches. That number is
-  the live answer to "how likely is it to catch a scam it has never seen?".
+- It **measures**, before learning anything, how many of the dataset's scams the engine already catches. That's the
+  running answer to "how likely is it to catch a scam it hasn't seen?".
+- It **learns** the scams it missed and the honest messages it wrongly flagged, then keeps the new version only if
+  it passes the safety gate.
 
 It is a plain Python script. It never calls Claude, and everything stays on your computer.
 
-## How new scams get in
+## Where each run's fresh dataset comes from
+
+1. **Your datasets first:**
+   - Drop files into `data/learning/datasets/`: CSV with columns `text,label[,scam_type]` (label `scam` or `honest`),
+     or JSONL with the same fields.
+   - They're used in file-name order.
+   - A big file is used `DATASET_CHUNK_ROWS` (300) rows per run, so one file gives several fresh datasets.
+   - A file you edit afterwards starts again from the top, but rows already learned are skipped.
+2. **When your datasets are used up, a new synthetic dataset:**
+   - 60 scams and 120 honest messages, made with a never-used seed (`routine/fresh.py`).
+   - It uses only the improvement-round templates. It never copies the development rounds (which the gate relies
+     on) or the final-test rounds.
+   - Near-copies of anything used before are dropped.
+   - It's saved in `data/learning/generated/`. `FRESH_SYNTHETIC_WHEN_EMPTY: false` turns this off.
+   - **Honest limit:** these reuse scam *types* the engine has already studied. They test new wordings and evasion
+     tricks, not new kinds of scam. Real new scams come from your datasets and reports.
+3. **Plus anything reported since the last run**, from the list below.
+
+## How single new scams get in
 
 | Way | Command / call |
 |---|---|
@@ -24,8 +44,9 @@ synthetic data.
 
 ## What one run does
 
-1. **Collect:** gathers the examples it hasn't used before. With fewer than `MIN_NEW_EXAMPLES` (5) it stops
-   straight away, so an hourly run with nothing new costs nothing. Each example is used once.
+1. **Collect:** takes the next fresh dataset plus new reports. Each example is used once, ever.
+   - It runs only if `LEARN_INTERVAL_HOURS` (2) have passed since the last run *finished*. A scheduled start that
+     comes too early just logs "waiting". `--now` skips the wait.
 2. **Test before learning:** scores the new examples with the current best version. "Caught X of Y new scams" is
    recorded **before** the engine learns them.
 3. **Learn:**
@@ -56,13 +77,15 @@ trend, and `GET /api/accuracy` includes it under `new_scam_learning`. Logs go to
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `LEARN_INTERVAL_HOURS` | 1 | How often it runs (whole hours, at least 1) |
+| `LEARN_INTERVAL_HOURS` | 2 | Hours to wait after a run finishes before the next dataset (whole hours, at least 1) |
+| `DATASET_CHUNK_ROWS` | 300 | Rows of your dataset files used per run |
+| `FRESH_SYNTHETIC_WHEN_EMPTY` | true | Make a new synthetic dataset when yours are used up |
+| `SYNTHETIC_SCAMS` / `SYNTHETIC_HONEST` | 60 / 120 | Size of each synthetic dataset |
 | `MIN_NEW_EXAMPLES` | 5 | Fewer new examples than this: wait for more |
 | `AUTO_PROMOTE` | false | Put accepted versions live by themselves |
 | `DEV_RECALL_TOLERANCE` | 0 | 0 = dev recall may not drop at all (the improvement rounds' rule). 0.01 allows a drop of one point. |
 
-**Install it:** `python install_schedule.py`. That installs both routines: accuracy every 2 hours and learning
-every hour. `python install_schedule.py --show` checks them.
+**Install it:** `python install_schedule.py`. That installs both routines, each every 2 hours. `python install_schedule.py --show` checks them.
 
 **First, copy the real SMS file** from your ai-model folder, or no version can pass the gate:
 
@@ -82,6 +105,7 @@ The evidence, all **synthetic data** except where marked:
 |---|---|
 | Leave-one-type-out: a scam type removed from the examples, then tested on it (mean of 29 types, best example set) | **75%** (57% with the original examples) |
 | Locked final test, rounds 13-14 (120 scams, 25 types, many new): best version vs starting engine | **65%** vs 52%, with 0% honest messages flagged |
+| Learning routine on two fresh synthetic datasets (scam types it had studied, new wordings), before learning | 88% and 83% (53/60, 50/60) |
 | Learning routine, this session: 14 brand-new scams (LPG e-KYC, 5G SIM, tax refund, OLX army buyer, subscription renewal…), before learning | **64%** (9 of 14) |
 | After learning 3 reported tax-refund scams: 3 reworded tax-refund scams it hadn't seen | 1 of 3 before → **3 of 3** after, honest tax messages still 0 of 2 flagged |
 | Report-once experiment: fresh batch after reports + honest examples were learned | 81% → **91%** |
@@ -95,7 +119,7 @@ What decides whether a new scam gets caught:
     sender history has to.
   - very new formats, like a fake e-challan or KYC renewal worded calmly. These were caught 0 of 4 and 3 of 6 on the
     final test.
-- **After the first reports**, rewordings of the same scam are caught far better: that's what the hourly learning is
+- **After the first reports**, rewordings of the same scam are caught far better: that's what the learning routine is
   for. The first few victims of a brand-new scam are the hardest to protect.
 
 Honest limits:

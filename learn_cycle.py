@@ -1,16 +1,24 @@
 """The new-scam learning routine. A plain Python script; it never calls Claude.
 
-    python learn_cycle.py              # one run (the schedule runs it every LEARN_INTERVAL_HOURS)
+    python learn_cycle.py              # one run, if LEARN_INTERVAL_HOURS (2) have passed since the last one finished
+    python learn_cycle.py --now        # one run now, whatever the time
     python learn_cycle.py --dry-run    # measure only: nothing is learned or marked as used
 
-Where new examples come from (all stay on this computer):
-  - data/learning/inbox.jsonl   added with add_examples.py or POST /api/feedback
-                                (scams, and honest messages that were wrongly flagged)
-  - data/scam_reports.json      scams reported through POST /api/text/report
+Every run trains on ONE FRESH DATASET it has never used, then waits
+LEARN_INTERVAL_HOURS after finishing before the next one. Where data comes from
+(all stays on this computer):
+  - data/learning/datasets/     YOUR datasets, used first, in file-name order: CSV (text,label[,scam_type])
+                                or JSONL. label = scam or honest. A big file is used DATASET_CHUNK_ROWS
+                                rows per run, so it gives several fresh datasets.
+  - a new SYNTHETIC dataset     when that folder has nothing left (FRESH_SYNTHETIC_WHEN_EMPTY): a never-used
+                                seed, improvement-round templates only, near-copies of anything used before
+                                dropped (routine/fresh.py). Saved in data/learning/generated/.
+  - data/learning/inbox.jsonl   added with add_examples.py or POST /api/feedback, joins the next run
+  - data/scam_reports.json      scams reported through POST /api/text/report, join the next run
 Each example is used once.
 
 Each run:
- 1. Collects examples not used before. Fewer than MIN_NEW_EXAMPLES: nothing to do.
+ 1. Takes the next fresh dataset plus any new reports. Fewer than MIN_NEW_EXAMPLES: nothing to do.
  2. TEST BEFORE LEARNING: scores them with the current best version at its own
     cut-offs. The share of new scams it already catches is the live answer to
     "how often does it catch a scam it hasn't seen?".
@@ -52,14 +60,21 @@ LEARN_DIR = Path("data/learning")
 INBOX = LEARN_DIR / "inbox.jsonl"
 USED = LEARN_DIR / "used.json"
 REJECTED = LEARN_DIR / "rejected.jsonl"  # examples whose version failed the gate, kept for you to review
+DATASETS = LEARN_DIR / "datasets"          # drop your own dataset files here
+GENERATED = LEARN_DIR / "generated"        # the synthetic datasets it made, kept for reference
+STATE = LEARN_DIR / "state.json"           # which datasets were used, when the last run finished
 SCAM_REPORTS = Path("data/scam_reports.json")   # the API's report store (app/config.py reports_path)
 BEST = Path("runs/learning_best.json")
 OUT = Path("reports/learning")
-HISTORY_FIELDS = ["run_at", "base_version", "new_scams", "caught_before", "new_honest", "flagged_before", "retried",
+HISTORY_FIELDS = ["run_at", "dataset", "base_version", "new_scams", "caught_before", "new_honest", "flagged_before", "retried",
                   "added_scams", "added_honest", "dev_recall_before", "dev_recall_after", "real_sms_false_alarms",
                   "gate", "failed_checks", "new_version", "promoted"]
-DEFAULTS = {"LEARN_INTERVAL_HOURS": 1, "MIN_NEW_EXAMPLES": 5, "AUTO_PROMOTE": False,
-            "DEV_RECALL_TOLERANCE": 0.0}  # 0 = dev recall may not drop at all (the improvement rounds' rule)
+DEFAULTS = {"LEARN_INTERVAL_HOURS": 2, "MIN_NEW_EXAMPLES": 5, "AUTO_PROMOTE": False,
+            "DEV_RECALL_TOLERANCE": 0.0,  # 0 = dev recall may not drop at all (the improvement rounds' rule)
+            "DATASET_CHUNK_ROWS": 300, "FRESH_SYNTHETIC_WHEN_EMPTY": True,
+            "SYNTHETIC_SCAMS": 60, "SYNTHETIC_HONEST": 120}
+LABELS = {"scam": "scam", "1": "scam", "true": "scam",
+          "honest": "legit", "legit": "legit", "not_scam": "legit", "ham": "legit", "0": "legit", "false": "legit"}
 
 
 def learning_config() -> dict:
@@ -101,6 +116,81 @@ def collect() -> list[dict]:
     return list(out.values())
 
 
+# ---------------------------------------------------------------- fresh datasets
+def load_state() -> dict:
+    state = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
+    return {"files": {}, "synthetic_seeds": [], "last_finished": None, **state}
+
+
+def save_state(state: dict):
+    LEARN_DIR.mkdir(parents=True, exist_ok=True)
+    tmp = STATE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(state, indent=1), encoding="utf-8")
+    os.replace(tmp, STATE)
+
+
+def read_dataset_file(path: Path) -> list[dict]:
+    """Rows of one of your dataset files. Rows with an unknown label are skipped."""
+    if path.suffix.lower() == ".jsonl":
+        raw = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    else:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            raw = list(csv.DictReader(f))
+    rows = []
+    for r in raw:
+        label = LABELS.get(str(r.get("label", "")).strip().lower())
+        if label and str(r.get("text") or "").strip():
+            rows.append({"text": " ".join(str(r["text"]).split()), "label": label,
+                         "scam_type": (r.get("scam_type") or "").strip() or None})
+    return rows
+
+
+def next_dataset(cfg: dict, state: dict, core) -> dict | None:
+    """The next fresh dataset: the next unused chunk of your files, else a new synthetic one.
+    Returns {name, source, rows, commit}; commit(state) records it as used after the run."""
+    from eval.leakage import sha256
+    DATASETS.mkdir(parents=True, exist_ok=True)
+    for path in sorted(p for p in DATASETS.iterdir() if p.suffix.lower() in (".csv", ".jsonl")):
+        digest = sha256(path)
+        done = state["files"].get(path.name, {})
+        offset = done.get("offset", 0) if done.get("sha256") == digest else 0  # an edited file starts again
+        rows = read_dataset_file(path)
+        if offset >= len(rows):
+            continue
+        chunk = rows[offset:offset + cfg["DATASET_CHUNK_ROWS"]]
+
+        def commit(st, name=path.name, digest=digest, end=offset + len(chunk)):
+            st["files"][name] = {"sha256": digest, "offset": end}
+        part = f" rows {offset + 1}-{offset + len(chunk)} of {len(rows)}" if len(rows) > len(chunk) else ""
+        return {"name": f"{path.name}{part}", "source": "your dataset", "rows": chunk, "commit": commit}
+    if not cfg["FRESH_SYNTHETIC_WHEN_EMPTY"]:
+        return None
+    from routine.fresh import fresh_dataset
+    from routine.generate import reference_texts
+    seed = 1000 + len(state["synthetic_seeds"])
+    reference = reference_texts() + [r["text"] for n in range(1, 15) for r in core.load_round(n, allow_final=True)]
+    best = current_best(core)
+    reference += [t for v in best["scams"].values() for t in v] + list(best["legit"])
+    for old in GENERATED.glob("*.jsonl"):  # never repeat an earlier synthetic dataset
+        reference += [json.loads(line)["text"] for line in old.read_text(encoding="utf-8").splitlines()]
+    rows = fresh_dataset(seed, reference, cfg["SYNTHETIC_SCAMS"], cfg["SYNTHETIC_HONEST"])
+
+    def commit(st, seed=seed, rows=rows):  # saved only once used (a dry run doesn't spend the seed)
+        GENERATED.mkdir(parents=True, exist_ok=True)
+        with open(GENERATED / f"synthetic_{seed}.jsonl", "w", encoding="utf-8") as f:
+            for r in rows:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
+        st["synthetic_seeds"].append(seed)
+    return {"name": f"synthetic_{seed}", "source": "synthetic (generated, never used before)", "rows": rows,
+            "commit": commit}
+
+
+def hours_since_last(state: dict) -> float | None:
+    if not state.get("last_finished"):
+        return None
+    return (time.time() - time.mktime(time.strptime(state["last_finished"], "%Y-%m-%dT%H:%M:%S"))) / 3600
+
+
 def mark_used(items: list[dict]):
     used = json.loads(USED.read_text(encoding="utf-8")) if USED.exists() else []
     LEARN_DIR.mkdir(parents=True, exist_ok=True)
@@ -129,11 +219,26 @@ def run(dry_run: bool = False) -> dict:
     from routine import core   # imported here: loading the engine takes a few seconds
     from eval import metrics
     cfg = learning_config()
-    items = collect()
+    state = load_state()
+    dataset = next_dataset(cfg, state, core)
+    reports = collect()
+    used = set(json.loads(USED.read_text(encoding="utf-8"))) if USED.exists() else set()
+    merged = {it["key"]: it for it in reports}
+    for r in (dataset["rows"] if dataset else []):
+        k = key(r["text"], r["label"])
+        if k not in used and k not in merged:
+            merged[k] = {"text": r["text"], "label": r["label"], "scam_type": r["scam_type"] or "dataset scam",
+                         "source": dataset["name"], "retry": False, "key": k, "id": f"learn_{k[:12]}"}
+    items = list(merged.values())
     if len(items) < cfg["MIN_NEW_EXAMPLES"]:
         log.info("%d new example(s), fewer than MIN_NEW_EXAMPLES=%d: nothing to learn yet.", len(items),
                  cfg["MIN_NEW_EXAMPLES"])
+        if dataset and not dry_run:  # an all-duplicate chunk is still spent, so the next run moves on
+            dataset["commit"](state)
+            save_state(state)
         return {"status": "skipped", "reason": f"only {len(items)} new example(s)"}
+    log.info("Dataset: %s (%s), %d examples; plus %d new report(s).", dataset["name"] if dataset else "none",
+             dataset["source"] if dataset else "-", len(dataset["rows"]) if dataset else 0, len(reports))
 
     stamp = time.strftime("%Y%m%d_%H%M%S")
     best = current_best(core)
@@ -157,7 +262,8 @@ def run(dry_run: bool = False) -> dict:
     log.info("Before learning: caught %s of %d new scams, flagged %s of %d new honest messages (at Caution); "
              "%d retried example(s) not counted.", pct(caught), n_scam, pct(flagged), int((~scam & fresh).sum()),
              int((~fresh).sum()))
-    result = {"status": "measured", "new_scams": n_scam, "caught_before": caught,
+    result = {"status": "measured", "dataset": dataset["name"] if dataset else "reports only",
+              "new_scams": n_scam, "caught_before": caught,
               "new_honest": int((~scam & fresh).sum()), "retried": int((~fresh).sum()),
               "flagged_before": flagged, "base_version": best["name"]}
     if dry_run:
@@ -209,6 +315,10 @@ def run(dry_run: bool = False) -> dict:
                     f.write(json.dumps({k: it[k] for k in ("text", "label", "scam_type", "source")} |
                                        {"rejected_run": stamp}, ensure_ascii=False) + "\n")
     mark_used(items)  # each example is used once, whatever the gate decided
+    if dataset:
+        dataset["commit"](state)
+    state["last_finished"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+    save_state(state)
 
     result.update({"added_scams": len(misses), "added_honest": len(alarms), "gate": verdict,
                    "failed_checks": [k for k, v in (g or {"checks": {}})["checks"].items() if not v],
@@ -232,7 +342,7 @@ def write_reports(r: dict, misses, alarms, g, stamp: str):
                        for k in ("caught_before", "flagged_before", "dev_recall_before", "dev_recall_after",
                                  "real_sms_false_alarms")}})
     L = [f"# New-scam learning run {stamp}", "",
-         f"Version before: **{r['base_version']}**.", "",
+         f"Dataset: **{r['dataset']}**. Version before: **{r['base_version']}**.", "",
          "## Test before learning (the live new-scam catch rate)", "",
          f"- New scams already caught at Caution or above: **{pct(r['caught_before'])}** of {r['new_scams']}.",
          f"- New honest messages flagged at Caution: {pct(r['flagged_before'])} of {r['new_honest']}.", "",
@@ -276,8 +386,14 @@ def setup_logging():
 def main(argv=None) -> dict:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true", help="measure the new examples only; learn nothing")
+    ap.add_argument("--now", action="store_true", help="don't wait for LEARN_INTERVAL_HOURS since the last run")
     args = ap.parse_args(argv)
     setup_logging()
+    hours, wait = hours_since_last(load_state()), learning_config()["LEARN_INTERVAL_HOURS"]
+    # A few minutes' slack, so a run scheduled exactly every 2 hours isn't skipped for finishing late.
+    if hours is not None and hours < wait - 0.25 and not (args.now or args.dry_run):
+        log.info("Last run finished %.1f h ago; waiting until %d h have passed. (--now runs anyway.)", hours, wait)
+        return {"status": "skipped", "reason": f"waiting: last run finished {hours:.1f} h ago"}
     with RunLock(LOGS_DIR / "learn_cycle.lock", load_config().get("LOCK_STALE_HOURS", 6)) as lock:
         if not lock.held:
             log.warning("Another learning run is still going. Skipping this run.")

@@ -11,10 +11,14 @@
   },
   "learning": {
     "_help": "New-scam learning routine (learn_cycle.py). AUTO_PROMOTE true puts an accepted version live by itself.",
-    "LEARN_INTERVAL_HOURS": 1,
+    "LEARN_INTERVAL_HOURS": 2,
     "MIN_NEW_EXAMPLES": 5,
     "AUTO_PROMOTE": false,
-    "DEV_RECALL_TOLERANCE": 0
+    "DEV_RECALL_TOLERANCE": 0,
+    "DATASET_CHUNK_ROWS": 300,
+    "FRESH_SYNTHETIC_WHEN_EMPTY": true,
+    "SYNTHETIC_SCAMS": 60,
+    "SYNTHETIC_HONEST": 120
   },
   "text": {
     "test_batch_size": 200,
