@@ -1,0 +1,4 @@
+[
+  {"kind": "image", "path": "images/known_fake_1.jpg", "label": "deepfake", "source": "fact-check article, 2026-09"},
+  {"kind": "text", "text": "Dear customer, your KYC is pending. Your account will be blocked today. Update now: http://example-kyc.xyz", "label": "scam", "source": "user report"}
+]
