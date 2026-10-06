@@ -3,6 +3,7 @@ import { AuthContext } from "./authState";
 export { useAuth } from "./authState";
 import { authService } from "@/services/authService";
 import { queryClient } from "@/lib/queryClient";
+import { clearLocalPreferences } from "@/lib/localPreferences";
 import type { User } from "@/types/trustgraph";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -18,7 +19,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     login: async (email: string, password: string, remember = false) => { const next = await authService.login(email, password, remember); queryClient.clear(); setUser(next); return next; },
     register: async (name: string, email: string, password: string) => { const next = await authService.register(name, email, password); queryClient.clear(); setUser(next); return next; },
     logout: async () => { await authService.logout(); queryClient.clear(); setUser(null); },
-    deleteAccount: async () => { await authService.deleteAccount(); queryClient.clear(); setUser(null); },
+    deleteAccount: async (password: string) => { await authService.deleteAccount(password); clearLocalPreferences(); queryClient.clear(); setUser(null); },
     refreshUser: async () => { setUser(await authService.me()); },
   }), [user, loading]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

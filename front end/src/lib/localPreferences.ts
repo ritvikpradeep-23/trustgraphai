@@ -20,3 +20,8 @@ export function localWorkspaceIdentity(): User {
   const settings = getLocalPreferences();
   return { id: "local-workspace", name: settings.name, email: settings.email, joinedAt: new Date(2026, 9, 6).toISOString() };
 }
+
+export function clearLocalPreferences() {
+  memory = defaults;
+  try { localStorage.removeItem(key); } catch { /* Clear the in-memory copy even without storage access. */ }
+}

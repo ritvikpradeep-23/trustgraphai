@@ -36,6 +36,14 @@ class AIDetectorEndpointTests(unittest.TestCase):
     def tearDown(self):
         app.dependency_overrides.clear()
 
+    def test_missing_blank_and_oversized_message_parameters_are_rejected(self):
+        for payload in [{"channel": "other", "text": " "}, {"text": "Message"},
+                        {"channel": " ", "text": "Message"}, {"channel": "other", "text": "x" * 20001},
+                        {"channel": "other", "text": "Message", "sender": "x" * 255}]:
+            with self.subTest(payload_keys=list(payload)):
+                self.assertEqual(self.client.post("/api/detect", json=payload).status_code, 422)
+        self.assertEqual(self.client.post("/api/text/ai-check", json={"text": " "}).status_code, 422)
+
     def test_ai_written_endpoint_reports_unavailable_without_a_score(self):
         response = self.client.post("/api/text/ai-check", json={"text": "ordinary text"})
 

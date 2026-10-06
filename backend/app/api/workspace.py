@@ -1,8 +1,10 @@
 """Account-scoped verdict history; no raw messages are exposed or stored."""
 from datetime import datetime, timedelta, timezone
 import math
+from typing import Literal
+from pydantic import BaseModel, ConfigDict
 from fastapi import APIRouter, Depends, HTTPException, Response
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 from app.core.accounts import Account, AccountCheck, AccountExtension, aware, current_user, require_csrf
 from app.core.database import ExtensionResultRecord, get_db
@@ -55,10 +57,20 @@ def owned_extensions(user, db):
     return select(AccountExtension.token_id).where(AccountExtension.user_id == user.user_id)
 
 
+def account_view(row):
+    return {**row.view, "editable": True}
+
+
+class ReviewIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    status: Literal["new", "reviewed"] | None = None
+    feedback: Literal["none", "right", "false_alarm"] | None = None
+
+
 @router.get("/detections")
 def detections(response: Response, user: Account = Depends(current_user), db: Session = Depends(get_db)):
     response.headers["Cache-Control"] = "no-store"
-    items = [row.view for row in db.scalars(select(AccountCheck).where(AccountCheck.user_id == user.user_id)).all()]
+    items = [account_view(row) for row in db.scalars(select(AccountCheck).where(AccountCheck.user_id == user.user_id)).all()]
     items += [extension_view(row) for row in db.scalars(
         select(ExtensionResultRecord).where(ExtensionResultRecord.token_id.in_(owned_extensions(user, db)))).all()]
     return sorted(items, key=lambda i: i["createdAt"], reverse=True)
@@ -69,13 +81,38 @@ def detection(detection_id: str, response: Response, user: Account = Depends(cur
     response.headers["Cache-Control"] = "no-store"
     row = db.scalar(select(AccountCheck).where(AccountCheck.detection_id == detection_id, AccountCheck.user_id == user.user_id))
     if row:
-        return row.view
+        return account_view(row)
     row = db.scalar(select(ExtensionResultRecord).where(
         ExtensionResultRecord.result_id == detection_id,
         ExtensionResultRecord.token_id.in_(owned_extensions(user, db))))
     if row:
         return extension_view(row)
     raise HTTPException(404, "Detection not found")
+
+
+@router.patch("/detections/{detection_id}", dependencies=[Depends(require_csrf)])
+def review(detection_id: str, body: ReviewIn, user: Account = Depends(current_user), db: Session = Depends(get_db)):
+    changes = body.model_dump(exclude_none=True)
+    if not changes:
+        raise HTTPException(400, "Supply a review status or feedback.")
+    row = db.scalar(select(AccountCheck).where(AccountCheck.detection_id == detection_id,
+        AccountCheck.user_id == user.user_id).with_for_update())
+    if not row:
+        # Extension snapshots remain read-only in this workspace; do not edit
+        # another account's results or turn feedback into a new engine verdict.
+        raise HTTPException(404, "Editable account check not found")
+    row.view = {**row.view, **changes}
+    db.commit()
+    return account_view(row)
+
+
+@router.delete("/detections", dependencies=[Depends(require_csrf)])
+def clear_history(user: Account = Depends(current_user), db: Session = Depends(get_db)):
+    website = db.execute(delete(AccountCheck).where(AccountCheck.user_id == user.user_id)).rowcount
+    extension = db.execute(delete(ExtensionResultRecord).where(
+        ExtensionResultRecord.token_id.in_(owned_extensions(user, db)))).rowcount
+    db.commit()
+    return {"ok": True, "deleted": website + extension}
 
 
 @router.post("/checks", dependencies=[Depends(require_csrf)])

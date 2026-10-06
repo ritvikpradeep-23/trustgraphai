@@ -5,7 +5,7 @@ import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from app.core.accounts import hash_password, verify_password, require_csrf, session_record, now
-from app.api.auth import LoginIn, RegisterIn
+from app.api.auth import LoginIn, RegisterIn, ProfileIn, PasswordChangeIn, DeleteAccountIn
 from app.core.database import get_db
 from app.main import app
 
@@ -29,6 +29,38 @@ def test_account_validation():
         RegisterIn(name=" ", email="user@example.invalid", password="a secure long passphrase")
     with pytest.raises(ValueError):
         RegisterIn(name="User", email="user@example.invalid", password=" " * 20)
+
+
+def test_account_controls_validate_required_parameters():
+    assert ProfileIn(name="  Updated  ").name == "Updated"
+    with pytest.raises(ValueError):
+        ProfileIn(name=" ")
+    with pytest.raises(ValueError):
+        ProfileIn(name="Updated", user_id="another-account")
+    for password in ["short", " " * 20, "x" * 129]:
+        with pytest.raises(ValueError):
+            PasswordChangeIn(current_password="current", new_password=password)
+    with pytest.raises(ValueError):
+        DeleteAccountIn(password="valid", confirmation="no")
+
+
+def test_account_controls_require_signin_csrf_and_never_echo_passwords():
+    db = Mock()
+    db.get.return_value = None
+    app.dependency_overrides[get_db] = lambda: db
+    try:
+        client = TestClient(app)
+        assert client.patch("/api/auth/profile", json={"name": "Changed"}).status_code == 403
+        assert client.post("/api/auth/password", json={"current_password": "old", "new_password": "secure long passphrase"}).status_code == 403
+        assert client.delete("/api/workspace/detections").status_code == 403
+        assert client.patch("/api/workspace/detections/example", json={"status": "reviewed"}).status_code == 403
+        assert client.request("DELETE", "/api/auth/account", json={"password": "old", "confirmation": "DELETE"}).status_code == 403
+        app.dependency_overrides[require_csrf] = lambda: None
+        for path in ["/api/auth/profile", "/api/auth/password", "/api/auth/account"]:
+            method = {"/api/auth/profile": "PATCH", "/api/auth/password": "POST", "/api/auth/account": "DELETE"}[path]
+            assert client.request(method, path, json={}).status_code == 401
+    finally:
+        app.dependency_overrides.clear()
 
 
 def test_expired_sessions_and_csrf_cannot_authenticate():

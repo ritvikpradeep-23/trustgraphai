@@ -12,7 +12,10 @@ export const authService = {
     (await apiClient.post<AccountResponse>("/auth/register", { name: name.trim(), email: email.trim(), password, remember: false })).user,
   me: async () => (await apiClient.get<SessionResponse>("/auth/session")).user,
   logout: async () => { await apiClient.post("/auth/logout"); },
-  deleteAccount: () => Promise.reject(new ServiceError("Account deletion is not configured. Contact your administrator.", 501)),
+  updateProfile: (name: string) => apiClient.patch<User>("/auth/profile", { name: name.trim() }),
+  changePassword: async (currentPassword: string, newPassword: string) =>
+    (await apiClient.post<AccountResponse>("/auth/password", { current_password: currentPassword, new_password: newPassword })).user,
+  deleteAccount: async (password: string) => { await apiClient.delete("/auth/account", { password, confirmation: "DELETE" }); },
   forgotPassword: (_email: string) => recoveryUnavailable(),
   resetPassword: (_password: string) => recoveryUnavailable(),
 };

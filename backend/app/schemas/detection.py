@@ -1,15 +1,22 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class DetectionRequest(BaseModel):
-    channel: str
-    sender: Optional[str] = None
+    channel: str = Field(min_length=1, max_length=100)
+    sender: Optional[str] = Field(default=None, max_length=254)
     text: str = Field(min_length=1, max_length=20000)
-    url: Optional[str] = None
-    submission_id: Optional[str] = None
+    url: Optional[str] = Field(default=None, max_length=2048)
+    submission_id: Optional[str] = Field(default=None, max_length=64)
+
+    @field_validator("text", "channel")
+    @classmethod
+    def non_blank(cls, value):
+        if not value.strip():
+            raise ValueError("Enter non-blank text and a channel.")
+        return value
 
 
 class DetectionSignals(BaseModel):
@@ -20,7 +27,14 @@ class DetectionSignals(BaseModel):
 
 
 class AIWrittenCheckRequest(BaseModel):
-    text: str
+    text: str = Field(min_length=1, max_length=20000)
+
+    @field_validator("text")
+    @classmethod
+    def non_blank(cls, value):
+        if not value.strip():
+            raise ValueError("Enter non-blank text.")
+        return value
 
 
 class ModalityCheckResponse(BaseModel):

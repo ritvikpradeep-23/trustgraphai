@@ -7,7 +7,7 @@ export interface AuthContextValue {
   login: (email: string, password: string, remember?: boolean) => Promise<User>;
   register: (name: string, email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
-  deleteAccount: () => Promise<void>;
+  deleteAccount: (password: string) => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 

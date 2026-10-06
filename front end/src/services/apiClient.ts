@@ -26,7 +26,7 @@ const request = async <T>(method: string, path: string, body?: unknown): Promise
   if (!response.headers.get("content-type")?.includes("application/json")) throw new ServiceError("Expected JSON from the backend. Check the /api proxy configuration.", 502);
   const data: unknown = await response.json();
   if (data && typeof data === "object" && "csrfToken" in data && typeof data.csrfToken === "string") csrfToken = data.csrfToken;
-  if (path === "/auth/logout") csrfToken = null;
+  if (path === "/auth/logout" || path === "/auth/account") csrfToken = null;
   return data as T;
 };
 export const apiClient = {
@@ -34,5 +34,5 @@ export const apiClient = {
   post: <T>(path: string, body?: unknown) => request<T>("POST", path, body),
   put: <T>(path: string, body?: unknown) => request<T>("PUT", path, body),
   patch: <T>(path: string, body?: unknown) => request<T>("PATCH", path, body),
-  delete: <T>(path: string) => request<T>("DELETE", path),
+  delete: <T>(path: string, body?: unknown) => request<T>("DELETE", path, body),
 };

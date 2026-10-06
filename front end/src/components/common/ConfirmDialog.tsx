@@ -1,8 +1,8 @@
 import { useEffect, useId, useRef } from "react";
 import { AlertTriangle, X } from "lucide-react";
 
-export function ConfirmDialog({ title, description, confirmLabel, busy = false, onClose, onConfirm }: {
-  title: string; description: string; confirmLabel: string; busy?: boolean; onClose: () => void; onConfirm: () => void;
+export function ConfirmDialog({ title, description, confirmLabel, busy = false, confirmDisabled = false, children, onClose, onConfirm }: {
+  title: string; description: string; confirmLabel: string; busy?: boolean; confirmDisabled?: boolean; children?: React.ReactNode; onClose: () => void; onConfirm: () => void;
 }) {
   const id = useId();
   const card = useRef<HTMLDivElement>(null);
@@ -16,7 +16,7 @@ export function ConfirmDialog({ title, description, confirmLabel, busy = false, 
     const keydown = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !pending.current) { event.preventDefault(); close.current(); }
       if (event.key === "Tab") {
-        const buttons = card.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)");
+        const buttons = card.current?.querySelectorAll<HTMLElement>("button:not(:disabled), input:not(:disabled)");
         if (!buttons?.length) { event.preventDefault(); return; }
         const first = buttons[0], last = buttons[buttons.length - 1];
         if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
@@ -31,7 +31,8 @@ export function ConfirmDialog({ title, description, confirmLabel, busy = false, 
       <button type="button" className="confirm-close" aria-label="Close confirmation" disabled={busy} onClick={onClose} data-testid="settings-confirm-close"><X size={16} /></button>
       <span className="warning-icon"><AlertTriangle size={20} /></span>
       <h2 id={`${id}-title`}>{title}</h2><p id={`${id}-description`}>{description}</p>
-      <div className="confirm-actions"><button type="button" className="button-secondary" data-autofocus disabled={busy} onClick={onClose} data-testid="settings-confirm-cancel">Cancel</button><button type="button" className="button-danger" disabled={busy} onClick={onConfirm} data-testid="settings-confirm-delete">{busy ? "Working…" : confirmLabel}</button></div>
+      {children}
+      <div className="confirm-actions"><button type="button" className="button-secondary" data-autofocus disabled={busy} onClick={onClose} data-testid="settings-confirm-cancel">Cancel</button><button type="button" className="button-danger" disabled={busy || confirmDisabled} onClick={onConfirm} data-testid="settings-confirm-delete">{busy ? "Working…" : confirmLabel}</button></div>
     </div>
   </div>;
 }

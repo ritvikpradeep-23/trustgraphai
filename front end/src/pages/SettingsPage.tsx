@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, Check, Download, Mail, RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmDialog } from "@/components/common/ConfirmDialog";
+import { ChangePasswordForm } from "@/components/auth/ChangePasswordForm";
 import { useAuth } from "@/context/AuthContext";
 import { appConfig } from "@/config/appConfig";
 import { detectionService } from "@/services/detectionService";
@@ -24,6 +25,7 @@ export function SettingsPage() {
   const [minutesError, setMinutesError] = useState("");
   const [saved, setSaved] = useState(false);
   const [confirm, setConfirm] = useState<"history" | "account" | null>(null);
+  const [deletePassword, setDeletePassword] = useState("");
   useEffect(() => { if (query.data?.name !== undefined) setName(query.data.name); }, [query.data?.name]);
   useEffect(() => { if (query.data?.minutesSavedPerCheck !== undefined) setMinutes(String(query.data.minutesSavedPerCheck)); }, [query.data?.minutesSavedPerCheck]);
   useEffect(() => { if (!saved) return; const timer = window.setTimeout(() => setSaved(false), 2000); return () => window.clearTimeout(timer); }, [saved]);
@@ -40,8 +42,8 @@ export function SettingsPage() {
   });
   const keyMutation = useMutation({ mutationFn: settingsService.regenerateKey, onSuccess: next => { queryClient.setQueryData(["settings"], next); toast.success(appConfig.USE_MOCK ? "Demo extension key regenerated." : "Pairing code ready. Enter it in the extension within 10 minutes."); }, onError: failure => toast.error(message(failure)) });
   const deletion = useMutation({
-    mutationFn: async (kind: "history" | "account") => { if (kind === "history") await detectionService.clear(); else await deleteAccount(); },
-    onSuccess: async (_, kind) => { setConfirm(null); if (kind === "history") { await queryClient.invalidateQueries(); toast.success("Detection history deleted."); } else navigate("/", { replace: true }); },
+    mutationFn: async (kind: "history" | "account") => { if (kind === "history") await detectionService.clear(); else await deleteAccount(deletePassword); },
+    onSuccess: async (_, kind) => { setConfirm(null); setDeletePassword(""); if (kind === "history") { await queryClient.invalidateQueries(); toast.success("Detection history deleted."); } else navigate("/", { replace: true }); },
     onError: failure => toast.error(message(failure)),
   });
   const exportData = async () => {
@@ -63,10 +65,11 @@ export function SettingsPage() {
       <div className="settings-sections">
         <section className="panel settings-section" id="account"><SectionTitle eyebrow="Identity" title="Account" />
           <form noValidate onSubmit={event => { event.preventDefault(); setNameError(""); if (!name.trim()) { setNameError("Profile name cannot be empty."); return; } update.mutate({ name: name.trim() }); }}>
-            <div className="settings-fields"><label>Profile name<input value={name} maxLength={100} onChange={event => setName(event.target.value)} autoComplete="name" data-testid="settings-name-input" /></label><label>Email address<div className="input-with-icon"><Mail size={15} /><input value={user?.email ?? settings.email} readOnly data-testid="settings-email-input" /></div></label><label>Change password<input type="password" disabled placeholder="Unavailable in this backend" aria-describedby="password-demo-note" data-testid="settings-password-input" /><small id="password-demo-note">{appConfig.USE_MOCK ? "Demo sign-in accepts any password of at least 8 characters." : "You are signed in with a server-side cookie session."} Password changes require an account backend.</small></label></div>
+            <div className="settings-fields"><label>Profile name<input value={name} maxLength={100} onChange={event => setName(event.target.value)} autoComplete="name" data-testid="settings-name-input" /></label><label>Email address<div className="input-with-icon"><Mail size={15} /><input value={user?.email ?? settings.email} readOnly data-testid="settings-email-input" /></div></label></div>
             {nameError && <div className="form-error" role="alert" data-testid="settings-name-error">{nameError}</div>}
             <button type="submit" className="button-secondary settings-save-button" disabled={update.isPending} data-testid="settings-save-profile">{update.isPending ? "Saving…" : "Save profile"}</button>
           </form>
+          {!appConfig.USE_MOCK && <ChangePasswordForm />}
           <div className="session-row"><div><strong>{appConfig.USE_MOCK ? "Active sessions" : "Local preferences"}</strong><p>This browser only</p></div><span className="security-ok">{appConfig.USE_MOCK ? "Active now" : "Cookie session"}</span></div>
         </section>
         <section className="panel settings-section" id="notifications"><SectionTitle eyebrow="Stay informed" title="Notifications" />{!appConfig.USE_MOCK && <p className="empty-period-note">Notifications are unavailable until a notification service is connected.</p>}
@@ -81,10 +84,12 @@ export function SettingsPage() {
           <div className="extension-key-row"><div><span className="eyebrow">{appConfig.USE_MOCK ? "Browser extension key" : "Browser extension pairing code"}</span><strong className="mono-text" data-testid="settings-extension-key">{settings.extensionKey}</strong><p>{appConfig.USE_MOCK ? "Illustrative key for this demo workspace." : "In the extension popup, enter this code under “Have a pairing code?”. It works once, for 10 minutes. Paired, the extension adds its verdicts (never message text) to this workspace."}</p></div><button className="button-secondary" type="button" onClick={() => keyMutation.mutate()} disabled={keyMutation.isPending || update.isPending} data-testid="settings-regenerate-key-button"><RefreshCw size={15} />{keyMutation.isPending ? (appConfig.USE_MOCK ? "Regenerating…" : "Creating…") : appConfig.USE_MOCK ? "Regenerate" : "New code"}</button></div>
         </section>
         <section className="panel settings-section" id="privacy"><SectionTitle eyebrow="Your data" title="Privacy controls" />
-          <div className="privacy-actions"><button type="button" disabled={!appConfig.USE_MOCK} title={!appConfig.USE_MOCK ? "The backend has no history deletion API" : undefined} onClick={() => setConfirm("history")} data-testid="settings-delete-history-button"><Trash2 size={17} /><span><strong>Delete my history</strong><small>Remove all detection results from this workspace.</small></span><ArrowRight size={15} /></button><button type="button" onClick={() => void exportData()} data-testid="settings-export-button"><Download size={17} /><span><strong>Export my data</strong><small>Download detections and settings as a JSON file.</small></span><ArrowRight size={15} /></button><button type="button" className="danger-action" disabled={!appConfig.USE_MOCK} title={!appConfig.USE_MOCK ? "Account deletion is not implemented" : undefined} onClick={() => setConfirm("account")} data-testid="settings-delete-account-button"><Trash2 size={17} /><span><strong>Delete my account</strong><small>{appConfig.USE_MOCK ? "Remove this demo workspace’s data, preferences, and local session." : "Unavailable: account deletion is not yet implemented."}</small></span><ArrowRight size={15} /></button></div>
+          <div className="privacy-actions"><button type="button" disabled={deletion.isPending} onClick={() => setConfirm("history")} data-testid="settings-delete-history-button"><Trash2 size={17} /><span><strong>Delete my history</strong><small>Remove your website and synced extension results.</small></span><ArrowRight size={15} /></button><button type="button" onClick={() => void exportData()} data-testid="settings-export-button"><Download size={17} /><span><strong>Export my data</strong><small>Download detections and settings as a JSON file.</small></span><ArrowRight size={15} /></button><button type="button" className="danger-action" disabled={deletion.isPending} onClick={() => { setDeletePassword(""); setConfirm("account"); }} data-testid="settings-delete-account-button"><Trash2 size={17} /><span><strong>Delete my account</strong><small>Remove your account and verdicts, revoke paired extensions and sign out.</small></span><ArrowRight size={15} /></button></div>
         </section>
       </div>
     </div>
-    {confirm && <ConfirmDialog title={confirm === "history" ? "Delete your history?" : "Delete this account?"} description={confirm === "history" ? "This clears every detection from the current browser." : "This removes this demo workspace’s local data and preferences and signs you out."} confirmLabel={confirm === "history" ? "Delete history" : "Delete account"} busy={deletion.isPending} onClose={() => setConfirm(null)} onConfirm={() => deletion.mutate(confirm)} />}
+    {confirm && <ConfirmDialog title={confirm === "history" ? "Delete your history?" : "Permanently delete this account?"} description={confirm === "history" ? "This permanently removes your website and synced extension results, not other accounts. It does not clear the extension’s local storage; future synced checks can appear." : "This permanently deletes your account and verdicts, revokes sessions and extension tokens, and signs you out. Enter your current password to confirm."} confirmLabel={confirm === "history" ? "Delete history" : "Delete account permanently"} busy={deletion.isPending} confirmDisabled={confirm === "account" && !deletePassword} onClose={() => { setConfirm(null); setDeletePassword(""); }} onConfirm={() => deletion.mutate(confirm)}>
+      {confirm === "account" && <label className="minutes-field">Current password<input type="password" autoComplete="current-password" maxLength={128} value={deletePassword} disabled={deletion.isPending} onChange={event => setDeletePassword(event.target.value)} data-testid="settings-delete-password-input" /></label>}
+    </ConfirmDialog>}
   </div>;
 }
