@@ -1,30 +1,35 @@
-"""Load known, labelled fakes into the fingerprint database.
+"""Load known, labelled scams and fakes into the PostgreSQL database
+(DATABASE_URL, from .env or the environment).
 
+    python scripts/seed_fingerprints.py --demo             # built-in demo items
     python scripts/seed_fingerprints.py                    # data/known_fakes/manifest.json
     python scripts/seed_fingerprints.py --manifest my.json
-    python scripts/seed_fingerprints.py --demo             # also add the built-in demo items
 
-Manifest: a JSON list, one entry per known fake:
-    {"kind": "image", "path": "images/fake1.jpg", "label": "deepfake", "source": "where it came from"}
-    {"kind": "text",  "text": "Dear customer, your KYC ...", "label": "scam", "source": "..."}
-Image paths are relative to the manifest. Only fingerprints are stored (plus
-label and source), never the image or text itself. The database comes from
-FINGERPRINT_DB_URL (default sqlite:///data/fingerprints.sqlite3).
+Two kinds of entry:
+  image -> a fingerprint in `fingerprints` (only the hashes, label and source
+           are stored, never the image). The extension's image/video checks
+           (POST /api/media/check) are matched against these.
+  text  -> a submission plus a report in `submissions`/`reports`, exactly as a
+           reported scam. The extension's message checks (POST /api/detect,
+           previous-report matching) are matched against these.
+
+Manifest: a JSON list, e.g.
+    {"kind": "image", "path": "images/fake1.jpg", "label": "deepfake", "source": "fact-check, 2026-09"}
+    {"kind": "text",  "text": "Dear customer, your KYC ...", "label": "scam", "source": "user report"}
+Image paths are relative to the manifest. Running it twice adds the items twice.
 """
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
+from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
-
-from app.config import get_settings  # noqa: E402
-from app.fingerprint import service as fp  # noqa: E402
-from app.fingerprint.store import FingerprintStore  # noqa: E402
 
 DEMO_TEXTS = [
     "Dear customer, your SBI KYC is pending and your account will be blocked today. Share the OTP to verify immediately.",
@@ -46,33 +51,51 @@ def demo_image(seed: int = 7, size: int = 320) -> Image.Image:
     return Image.fromarray(img)
 
 
+def add_reported_text(db, text: str, report_type: str = "scam", status: str = "confirmed") -> str:
+    """A reported scam, stored the same way POST /api/submit + /api/reports would."""
+    from app.core.database import ReportRecord, SubmissionRecord
+
+    now = datetime.now(timezone.utc)
+    submission_id = f"sub_{uuid4().hex[:12]}"
+    db.add(SubmissionRecord(submission_id=submission_id, source="web_app", content_type="text", text=text,
+                            user_consent=True, created_at=now))
+    db.flush()
+    report_id = f"rep_{uuid4().hex[:12]}"
+    db.add(ReportRecord(report_id=report_id, submission_id=submission_id, report_type=report_type,
+                        status=status, created_at=now))
+    db.commit()
+    return report_id
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--manifest", default=str(ROOT / "data/known_fakes/manifest.json"))
-    parser.add_argument("--demo", action="store_true", help="add the built-in demo image and texts")
+    parser.add_argument("--demo", action="store_true", help="add the built-in demo image and scam texts")
     args = parser.parse_args()
 
-    settings = get_settings()
-    store = FingerprintStore(settings.fingerprint_db_url, settings.fingerprint_full_scan_max)
+    from app.core.database import SessionLocal, create_tables
+    from app.fingerprint import service as fp
+
+    create_tables()
     added = []
-    if args.demo:
-        added.append(("image", "demo (synthetic)", fp.add_image(store, demo_image(), "demo-known-fake", "seed --demo")))
-        for t in DEMO_TEXTS:
-            added.append(("text", t[:40] + "…", fp.add_text(store, t, "demo-known-scam", "seed --demo")))
-    manifest = Path(args.manifest)
-    if manifest.exists():
-        for entry in json.loads(manifest.read_text(encoding="utf-8")):
-            label, source = entry.get("label", "known-fake"), entry.get("source", "")
-            if entry.get("kind") == "image":
-                img = Image.open(manifest.parent / entry["path"]).convert("RGB")
-                added.append(("image", entry["path"], fp.add_image(store, img, label, source)))
-            elif entry.get("kind") == "text":
-                added.append(("text", entry["text"][:40] + "…", fp.add_text(store, entry["text"], label, source)))
-    elif not args.demo:
-        print(f"No manifest at {manifest}. Add one, or run with --demo.")
+    with SessionLocal() as db:
+        if args.demo:
+            added.append(("image", "demo (synthetic)", fp.add_image(db, demo_image(), "demo-known-fake", "seed --demo")))
+            for t in DEMO_TEXTS:
+                added.append(("text", t[:40] + "…", add_reported_text(db, t)))
+        manifest = Path(args.manifest)
+        if manifest.exists():
+            for entry in json.loads(manifest.read_text(encoding="utf-8")):
+                if entry.get("kind") == "image":
+                    img = Image.open(manifest.parent / entry["path"]).convert("RGB")
+                    added.append(("image", entry["path"], fp.add_image(db, img, entry.get("label", "known-fake"), entry.get("source", ""))))
+                elif entry.get("kind") == "text":
+                    added.append(("text", entry["text"][:40] + "…", add_reported_text(db, entry["text"], entry.get("label", "scam"))))
+        elif not args.demo:
+            print(f"No manifest at {manifest}. Add one, or run with --demo.")
     for kind, name, record_id in added:
         print(f"  {kind:5s} {record_id}  {name}")
-    print(f"Added {len(added)}. Database now holds {store.count('image')} images and {store.count('text')} texts.")
+    print(f"Added {len(added)}.")
 
 
 if __name__ == "__main__":

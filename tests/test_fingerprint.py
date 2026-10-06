@@ -1,39 +1,37 @@
-"""Known-fakes database: a seeded item and a re-compressed copy of it match;
-an unrelated item doesn't. Checked at the hash level, in the store, and end
-to end through POST /api/score and GET /health/fingerprint."""
+"""Known-fakes fingerprints and the extension's database connection.
+
+Hashing tests need nothing. Database tests need a real PostgreSQL in
+TEST_DATABASE_URL (they are skipped otherwise); each runs inside a
+transaction that is rolled back, so the database is left untouched:
+
+    TEST_DATABASE_URL=postgresql+psycopg://postgres:<password>@127.0.0.1:5432/trustgraph_test \
+        python -m unittest tests.test_fingerprint -v
+"""
 import base64
 import importlib.util
 import io
-import sqlite3
+import os
+import unittest
 from pathlib import Path
 
-import numpy as np
-import pytest
 from fastapi.testclient import TestClient
 from PIL import Image
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import Session
 
-from app.config import Settings
-from app.fingerprint import hashing
+from app.core.database import Base, get_db
+from app.fingerprint import hashing, store
 from app.fingerprint import service as fp
-from app.fingerprint.store import BAND_QUERY, FingerprintStore
-from app.main import create_app
+from app.main import app
 
 ROOT = Path(__file__).resolve().parents[1]
 _spec = importlib.util.spec_from_file_location("seed_fingerprints", ROOT / "scripts/seed_fingerprints.py")
 seed = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(seed)
 
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 KNOWN_TEXT = seed.DEMO_TEXTS[0]
-# Same scam, re-typed: case, punctuation and spacing changed.
-KNOWN_TEXT_COPY = "DEAR CUSTOMER!!  Your SBI KYC is pending, and your account will be blocked today... share the OTP to verify immediately"
 UNRELATED_TEXT = "Lunch at the canteen at one? I will bring the notes for the exam tomorrow."
-
-
-class FakeEmbedder:
-    is_loaded = True
-
-    def embed(self, texts):
-        return np.ones((len(texts), 8), dtype=np.float32)
 
 
 def recompressed(img: Image.Image) -> Image.Image:
@@ -50,130 +48,127 @@ def data_url(img: Image.Image) -> str:
     return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
 
 
-@pytest.fixture
-def known():
-    return seed.demo_image(seed=7)
+class HashingTests(unittest.TestCase):
+    def test_hashes_survive_recompression(self):
+        known, unrelated = seed.demo_image(seed=7), seed.demo_image(seed=99)
+        copy = recompressed(known)
+        self.assertLessEqual(hashing.hamming(hashing.phash(known), hashing.phash(copy)), 10)
+        self.assertLessEqual(hashing.hamming(hashing.dhash(known), hashing.dhash(copy)), 10)
+        self.assertGreater(hashing.hamming(hashing.phash(known), hashing.phash(unrelated)), 10)
+
+    def test_bad_payloads_are_rejected(self):
+        with self.assertRaises(hashing.BadImage):
+            hashing.decode_image("not an image", 1000)
+        with self.assertRaises(hashing.BadImage):
+            hashing.decode_image(data_url(seed.demo_image()), 100)  # over the size limit
+
+    def test_signed_round_trip_for_postgres_bigint(self):
+        for value in (0, 1, (1 << 63) - 1, 1 << 63, (1 << 64) - 1):
+            self.assertEqual(hashing.to_unsigned(hashing.to_signed(value)), value)
+            self.assertTrue(-(1 << 63) <= hashing.to_signed(value) < (1 << 63))
 
 
-@pytest.fixture
-def unrelated():
-    return seed.demo_image(seed=99)
+@unittest.skipUnless(TEST_DATABASE_URL, "set TEST_DATABASE_URL to a PostgreSQL database to run")
+class DatabaseTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.engine = create_engine(TEST_DATABASE_URL)
+        Base.metadata.create_all(cls.engine)
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.engine.dispose()
 
-@pytest.fixture
-def store(tmp_path, known):
-    s = FingerprintStore(f"sqlite:///{tmp_path / 'fp.sqlite3'}")
-    fp.add_image(s, known, "known-fake", "test")
-    fp.add_text(s, KNOWN_TEXT, "known-scam", "test")
-    return s
+    def setUp(self):
+        self.conn = self.engine.connect()
+        self.trans = self.conn.begin()
+        self.db = Session(bind=self.conn, join_transaction_mode="create_savepoint")
+        self.known, self.unrelated = seed.demo_image(seed=7), seed.demo_image(seed=99)
+        self.record_id = fp.add_image(self.db, self.known, "known-fake", "test")
+        seed.add_reported_text(self.db, KNOWN_TEXT)
 
+        def override_db():
+            yield self.db
 
-def test_hashes_survive_recompression(known, unrelated):
-    copy = recompressed(known)
-    assert hashing.hamming(hashing.phash(known), hashing.phash(copy)) <= 10
-    assert hashing.hamming(hashing.dhash(known), hashing.dhash(copy)) <= 10
-    assert hashing.hamming(hashing.phash(known), hashing.phash(unrelated)) > 10
+        app.dependency_overrides[get_db] = override_db
+        self.client = TestClient(app)
 
+    def tearDown(self):
+        app.dependency_overrides.clear()
+        self.db.close()
+        self.trans.rollback()
+        self.conn.close()
 
-def test_text_normalisation_and_simhash():
-    assert hashing.normalize_text("  Share the O.T.P!!  ") == "share the otp"
-    assert hashing.hamming(hashing.simhash(KNOWN_TEXT), hashing.simhash(KNOWN_TEXT_COPY)) <= 6
-    assert hashing.hamming(hashing.simhash(KNOWN_TEXT), hashing.simhash(UNRELATED_TEXT)) > 6
-    assert hashing.simhash("!!! ...") is None
+    # --- store -------------------------------------------------------------
+    def test_lookup_matches_copies_not_unrelated(self):
+        exact = fp.check_image(self.db, self.known)
+        copy = fp.check_image(self.db, recompressed(self.known))
+        other = fp.check_image(self.db, self.unrelated)
+        self.assertTrue(exact["db_match"])
+        self.assertEqual(exact["similarity"], 1.0)
+        self.assertTrue(copy["db_match"])
+        self.assertEqual(copy["matched_record_id"], self.record_id)
+        self.assertFalse(other["db_match"])
 
+    def test_band_index_finds_close_records_without_full_scan(self):
+        h = hashing.phash(self.known)
+        found = store.lookup(self.db, "image", h ^ 0b101, threshold=10, full_scan_max=0)  # index only
+        self.assertEqual(found["matched_record_id"], self.record_id)
+        self.db.execute(text("SET LOCAL enable_seqscan = off"))
+        b = hashing.bands(h)
+        plan = " ".join(r[0] for r in self.db.execute(text(
+            "EXPLAIN SELECT * FROM fingerprints WHERE kind = 'image' AND (b0 = :a OR b1 = :b OR b2 = :c OR b3 = :d)"),
+            {"a": b[0], "b": b[1], "c": b[2], "d": b[3]}))
+        self.assertIn("ix_fingerprints_b", plan)
 
-def test_store_lookup(store, known, unrelated):
-    settings = Settings()
-    exact = fp.check_image(store, known, settings)
-    copy = fp.check_image(store, recompressed(known), settings)
-    other = fp.check_image(store, unrelated, settings)
-    assert exact["db_match"] and exact["similarity"] == 1.0
-    assert copy["db_match"] and copy["matched_record_id"] == exact["matched_record_id"]
-    assert not other["db_match"] and other["matched_record_id"] is None
-    assert fp.check_text(store, KNOWN_TEXT_COPY, settings)["db_match"]
-    assert not fp.check_text(store, UNRELATED_TEXT, settings)["db_match"]
-
-
-def test_banded_index_finds_close_records_without_a_full_scan(tmp_path, known):
-    s = FingerprintStore(f"sqlite:///{tmp_path / 'big.sqlite3'}", full_scan_max=0)  # index only
-    record = fp.add_image(s, known, "known-fake")
-    h = hashing.phash(known)
-    assert s.lookup("image", h ^ 0b101, threshold=10)["matched_record_id"] == record  # 2 bits off
-    with sqlite3.connect(s.path) as db:
-        plan = " ".join(str(r) for r in db.execute("EXPLAIN QUERY PLAN " + BAND_QUERY, ["image", 1] * 4))
-    assert all(f"ix_fp_b{i}" in plan for i in range(4)) and "SCAN fingerprints" not in plan
-
-
-@pytest.fixture
-def client(tmp_path, known):
-    db = tmp_path / "api.sqlite3"
-    settings = Settings(reports_path=str(tmp_path / "reports.json"), fingerprint_db_url=f"sqlite:///{db}",
-                        deepfake_mode="mine", deepfake_model_path="")
-    app = create_app(settings, embedder=FakeEmbedder())
-    fp.add_image(app.state.fingerprint_store, known, "known-fake", "test")
-    fp.add_text(app.state.fingerprint_store, KNOWN_TEXT, "known-scam", "test")
-    return TestClient(app)
-
-
-def test_api_image_match(client, known, unrelated):
-    def check(img):
-        r = client.post("/api/score", json={"type": "image", "payload": data_url(img), "hostname": "example.com",
-                                            "timestamp": 1760000000000, "capture": "direct"})
-        assert r.status_code == 200, r.text
+    # --- POST /api/media/check ------------------------------------------------
+    def check(self, img):
+        r = self.client.post("/api/media/check", json={"type": "image", "payload": data_url(img), "hostname": "example.com",
+                                                       "timestamp": 1760000000000, "capture": "direct"})
+        self.assertEqual(r.status_code, 200, r.text)
         return r.json()
 
-    seeded, copy, other = check(known), check(recompressed(known)), check(unrelated)
-    assert seeded["fingerprint"]["db_match"] is True
-    assert copy["fingerprint"]["db_match"] is True
-    assert copy["fingerprint"]["matched_record_id"] == seeded["fingerprint"]["matched_record_id"]
-    assert other["fingerprint"]["db_match"] is False
-    # The model's answer is a separate field; with no model configured it says so.
-    assert seeded["deepfake"]["result"] == "not_checked"
+    def test_media_check_image(self):
+        seeded, copy, other = self.check(self.known), self.check(recompressed(self.known)), self.check(self.unrelated)
+        self.assertTrue(seeded["fingerprint"]["db_match"])
+        self.assertTrue(copy["fingerprint"]["db_match"])
+        self.assertEqual(copy["fingerprint"]["matched_record_id"], self.record_id)
+        self.assertFalse(other["fingerprint"]["db_match"])
+        # No model is connected: the answer says so instead of making up a score.
+        self.assertEqual(seeded["deepfake"]["result"], "not_checked")
+        self.assertFalse(seeded["deepfake"]["available"])
+
+    def test_media_check_video_frames(self):
+        frames = [{"t": 0.0, "data": data_url(self.unrelated)}, {"t": 0.5, "data": data_url(recompressed(self.known))}]
+        body = self.client.post("/api/media/check", json={"type": "video", "payload": frames}).json()
+        self.assertEqual(body["frames"], 2)
+        self.assertEqual(body["frame_times"], [0.0, 0.5])
+        self.assertTrue(body["fingerprint"]["db_match"])
+        self.assertEqual(body["fingerprint"]["frames_matched"], 1)
+
+    def test_media_check_rejects_bad_input(self):
+        self.assertEqual(self.client.post("/api/media/check", json={"type": "image", "payload": "nope"}).status_code, 422)
+        self.assertEqual(self.client.post("/api/media/check", json={"type": "video", "payload": []}).status_code, 422)
+        self.assertEqual(self.client.post("/api/media/check", json={"type": "audio", "payload": "x"}).status_code, 422)
+
+    # --- the extension's text check: POST /api/detect pattern matching ---------
+    def test_detect_matches_reported_scams(self):
+        retyped = "DEAR CUSTOMER!! Your SBI KYC is pending, and your account will be blocked today... share the OTP to verify immediately"
+        hit = self.client.post("/api/detect", json={"channel": "whatsapp", "text": retyped}).json()
+        miss = self.client.post("/api/detect", json={"channel": "whatsapp", "text": UNRELATED_TEXT}).json()
+        self.assertTrue(hit["previous_report_matches"])
+        self.assertGreaterEqual(hit["previous_report_matches"][0]["similarity_score"], 0.72)
+        self.assertEqual(miss["previous_report_matches"], [])
+
+    # --- GET /health/database -------------------------------------------------
+    def test_health_round_trip_leaves_nothing_behind(self):
+        before = store.count(self.db)
+        body = self.client.get("/health/database").json()
+        self.assertTrue(body["ok"])
+        self.assertTrue(body["probe_found"])
+        self.assertGreaterEqual(body["reports"], 1)
+        self.assertEqual(store.count(self.db), before)
 
 
-def test_api_video_frames(client, known, unrelated):
-    frames = [{"t": 0.0, "data": data_url(unrelated)}, {"t": 0.5, "data": data_url(recompressed(known))}]
-    r = client.post("/api/score", json={"type": "video", "payload": frames, "hostname": "example.com", "timestamp": 1})
-    body = r.json()
-    assert r.status_code == 200 and body["frames"] == 2 and body["frame_times"] == [0.0, 0.5]
-    assert body["fingerprint"]["db_match"] is True and body["fingerprint"]["frames_matched"] == 1
-
-
-def test_api_text_keeps_score_and_adds_fingerprint(client):
-    plain = client.post("/api/score", json={"message_text": UNRELATED_TEXT, "channel": "other"}).json()
-    assert {"band", "score", "signals"} <= plain.keys()  # the existing answer is unchanged
-    assert plain["fingerprint"]["db_match"] is False
-    copy = client.post("/api/score", json={"type": "text", "payload": KNOWN_TEXT_COPY, "message_text": KNOWN_TEXT_COPY,
-                                           "channel": "other", "hostname": "example.com", "timestamp": 1}).json()
-    assert copy["fingerprint"]["db_match"] is True and "band" in copy
-
-
-def test_api_rejects_bad_media(client):
-    assert client.post("/api/score", json={"type": "image", "payload": "not an image"}).status_code == 422
-    assert client.post("/api/score", json={"type": "video", "payload": []}).status_code == 422
-
-
-def test_health_round_trip_leaves_nothing_behind(client):
-    before = client.app.state.fingerprint_store.count()
-    body = client.get("/health/fingerprint").json()
-    assert body["ok"] is True and body["probe_found"] is True and body["records"] == before
-    assert client.app.state.fingerprint_store.count() == before
-
-
-def test_api_media_uses_existing_model_when_configured(tmp_path, known):
-    settings = Settings(reports_path=str(tmp_path / "r.json"), fingerprint_db_url=f"sqlite:///{tmp_path / 'm.sqlite3'}",
-                        deepfake_mock=True)
-    client = TestClient(create_app(settings, embedder=FakeEmbedder()))
-    body = client.post("/api/score", json={"type": "image", "payload": data_url(known)}).json()
-    assert body["deepfake"]["frames_examined"] == 1 and body["deepfake"]["mock"] is True
-    assert body["fingerprint"]["db_match"] is False  # empty database: separate answer, not blended
-
-
-def test_unusable_database_never_breaks_checks(tmp_path, known):
-    settings = Settings(reports_path=str(tmp_path / "r.json"), fingerprint_db_url="postgres://example/db")
-    client = TestClient(create_app(settings, embedder=FakeEmbedder()))
-    media = client.post("/api/score", json={"type": "image", "payload": data_url(known)})
-    text = client.post("/api/score", json={"message_text": UNRELATED_TEXT, "channel": "other"})
-    assert media.status_code == 200 and media.json()["fingerprint"]["available"] is False
-    assert text.status_code == 200 and "band" in text.json() and text.json()["fingerprint"]["available"] is False
-    assert client.get("/health/fingerprint").json()["ok"] is False
+if __name__ == "__main__":
+    unittest.main()
