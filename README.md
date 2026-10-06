@@ -4,6 +4,10 @@
 
 <h1 align="center">TrustGraph</h1>
 
+## Combined project: backend, frontend, extension
+
+See [one-upload setup](COMBINED_SETUP.md). The canonical API is now in `backend/app/`, alongside `front end/` and the complete `trustgraph_extension/`. Root commands remain compatible. Existing model assets are retained but are not automatically connected to the current API.
+
 ## Connected React workspace (current FastAPI backend)
 
 The frontend is in **`front end/`**. See [setup instructions](front%20end/README.md) and [integration details](docs/WORKSPACE_INTEGRATION.md). Configure PostgreSQL in the ignored root `.env`, build the frontend, then run `python run_server.py` to serve both at http://127.0.0.1:8000.

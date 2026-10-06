@@ -55,14 +55,37 @@ class PatternTests(unittest.TestCase):
 
     def test_seed_is_idempotent_and_preserves_existing_records(self):
         db = FakeDB()
-        self.assertEqual(seed(db, PATTERNS), 12)
+        self.assertEqual(seed(db, PATTERNS), len(PATTERNS))
         self.assertEqual(seed(db, PATTERNS), 0)
-        self.assertEqual(len(db.records), 24)
+        self.assertEqual(len(db.records), 2 * len(PATTERNS))
         original = db.get(SubmissionRecord, PATTERNS[0]["id"])
         original.text = "Existing user record"
         with self.assertRaises(ValueError):
             seed(db, PATTERNS)
         self.assertEqual(original.text, "Existing user record")
+
+    def test_paraphrases_have_natural_nonidentical_scores(self):
+        queries = json.loads((Path(__file__).resolve().parents[1] / "data/demo_judge_queries.json").read_text())
+        scores = []
+        for query in queries:
+            matches = find_previous_report_matches(FakeDB(), text=query["text"], url=None, submission_id=None)
+            score, level, _ = verdict(matches)
+            self.assertEqual(level, "HIGH", query["title"])
+            self.assertLess(score, 1, query["title"])
+            scores.append(round(score * 100))
+        self.assertGreater(len(set(scores)), 3)
+
+    def test_extension_adapter_and_unknown_fallback(self):
+        app.dependency_overrides[get_db] = lambda: FakeDB()
+        try:
+            client = TestClient(app)
+            response = client.post("/api/score", json={"message_text": PATTERNS[0]["text"]})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json()["band"], "High")
+            self.assertIsInstance(response.json()["signals"], list)
+            self.assertEqual(client.post("/api/score", json={"message_text": "hello"}).status_code, 503)
+        finally:
+            app.dependency_overrides.clear()
 
     def test_endpoint_returns_pattern_evidence_without_calling_ai(self):
         db = FakeDB()

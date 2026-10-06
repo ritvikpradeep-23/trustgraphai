@@ -15,6 +15,7 @@ from app.api.submission import router as submission_router
 from app.api.url_analysis import router as url_analysis_router
 from app.core.database import create_tables
 from app.api.workspace import router as workspace_router
+from app.api.extension_score import router as extension_score_router
 
 
 app = FastAPI(
@@ -32,6 +33,7 @@ app.include_router(provenance_router, prefix="/api")
 app.include_router(url_analysis_router, prefix="/api")
 app.include_router(relationships_router, prefix="/api")
 app.include_router(workspace_router, prefix="/api")
+app.include_router(extension_score_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
@@ -53,7 +55,7 @@ def health():
 
 # Built frontend and API can share one origin. API/docs routes keep their own
 # 404 behavior rather than being swallowed by the SPA fallback.
-FRONTEND_DIST = Path(__file__).resolve().parents[1] / "front end" / "dist"
+FRONTEND_DIST = Path(__file__).resolve().parents[2] / "front end" / "dist"
 
 
 @app.get("/{path:path}", include_in_schema=False)

@@ -58,5 +58,125 @@
     "id": "demo_pattern_v1_12",
     "title": "Digital arrest / police impersonation",
     "text": "This is the cyber police. A parcel in your name contains illegal items and you are under digital arrest. Transfer Rs 50000 to our verification account now and do not contact anyone."
+  },
+  {
+    "id": "demo_pattern_v1_13",
+    "title": "Rental deposit fraud",
+    "text": "The apartment is available but many people want it. Transfer the security deposit before viewing the property and I will send you the keys by courier."
+  },
+  {
+    "id": "demo_pattern_v1_14",
+    "title": "Loan processing fee",
+    "text": "Your instant loan of Rs 200000 is approved without any credit check. Pay Rs 2500 as an advance processing fee today before we release the loan."
+  },
+  {
+    "id": "demo_pattern_v1_15",
+    "title": "Government grant impersonation",
+    "text": "You have been selected for a government relief grant of Rs 50000. Send your Aadhaar details and pay the application fee to claim the benefit."
+  },
+  {
+    "id": "demo_pattern_v1_16",
+    "title": "Crypto wallet recovery",
+    "text": "We can recover your lost crypto wallet funds. Send the twelve word seed phrase and pay a recovery deposit so our expert can restore your coins."
+  },
+  {
+    "id": "demo_pattern_v1_17",
+    "title": "QR code to receive money",
+    "text": "I want to pay you for the item. Scan this QR code and enter your UPI PIN to receive my payment immediately."
+  },
+  {
+    "id": "demo_pattern_v1_18",
+    "title": "Romance emergency",
+    "text": "I love you and want to visit you soon. I am stranded at the airport and need an urgent transfer for customs fees. Please send money and keep this between us."
+  },
+  {
+    "id": "demo_pattern_v1_19",
+    "title": "Task job deposit",
+    "text": "Earn Rs 5000 daily by liking videos. You completed the first task successfully. Deposit Rs 3000 to unlock premium tasks and withdraw your commission."
+  },
+  {
+    "id": "demo_pattern_v1_20",
+    "title": "Delivery address phishing",
+    "text": "We could not deliver your package because the address is incomplete. Update your card details and pay the redelivery fee at https://delivery-demo.invalid now."
+  },
+  {
+    "id": "demo_pattern_v1_21",
+    "title": "Tax refund phishing",
+    "text": "Your income tax refund is approved. Confirm your bank login password and OTP at https://refund-demo.invalid to receive your money today."
+  },
+  {
+    "id": "demo_pattern_v1_22",
+    "title": "Subscription renewal phishing",
+    "text": "Your streaming subscription will stop today. Enter your card number security code and bank OTP at https://renew-demo.invalid to avoid losing access."
+  },
+  {
+    "id": "demo_pattern_v1_23",
+    "title": "Fake charity collection",
+    "text": "We urgently need donations for a child emergency operation. Transfer money to my personal account now. There is no time to verify the hospital or charity registration."
+  },
+  {
+    "id": "demo_pattern_v1_24",
+    "title": "Social account verification",
+    "text": "Your social media account will be deleted for copyright violations. Send your login code and password at https://social-demo.invalid to appeal the ban."
+  },
+  {
+    "id": "demo_pattern_v1_25",
+    "title": "Marketplace overpayment",
+    "text": "I accidentally sent you more money than the item costs. The payment confirmation is attached. Refund the difference to another account before checking your bank balance."
+  },
+  {
+    "id": "demo_pattern_v1_26",
+    "title": "Ticket advance payment",
+    "text": "I have two sold out concert tickets at half price. Transfer the full amount immediately and I will send screenshots of the tickets. No buyer protection is available."
+  },
+  {
+    "id": "demo_pattern_v1_27",
+    "title": "Fake escrow service",
+    "text": "Your buyer has deposited funds into our escrow service. Pay the account activation fee at https://escrow-demo.invalid before the payment can be released."
+  },
+  {
+    "id": "demo_pattern_v1_28",
+    "title": "Account recovery phishing",
+    "text": "We detected a suspicious login to your email. Reply with your recovery codes and current password so our security team can prevent permanent account closure."
+  },
+  {
+    "id": "demo_pattern_v1_29",
+    "title": "Recruitment training fee",
+    "text": "You passed the interview for our international company. Pay a mandatory training deposit and equipment insurance fee today to secure your job offer."
+  },
+  {
+    "id": "demo_pattern_v1_30",
+    "title": "Visa advance fee",
+    "text": "Your overseas visa is guaranteed without an embassy interview. Pay the priority clearance fee to this personal account today so we can release your passport."
+  },
+  {
+    "id": "demo_pattern_v1_31",
+    "title": "Miracle cure sales",
+    "text": "Our secret herbal treatment permanently cures diabetes in three days. Doctors do not want you to know. Pay in advance now for this guaranteed cure."
+  },
+  {
+    "id": "demo_pattern_v1_32",
+    "title": "Fake cheque refund",
+    "text": "Deposit the cheque I sent for your work. Keep your wages and transfer the extra amount to my supplier today before the cheque has fully cleared."
+  },
+  {
+    "id": "demo_pattern_v1_33",
+    "title": "Invoice bank account change",
+    "text": "Our company bank account has changed. Ignore the payment details on the original invoice and urgently send the outstanding amount to this new account without calling us."
+  },
+  {
+    "id": "demo_pattern_v1_34",
+    "title": "CEO gift card impersonation",
+    "text": "This is your CEO. I am in a confidential meeting and need you to buy gift cards immediately. Send me the card codes and do not discuss this with anyone."
+  },
+  {
+    "id": "demo_pattern_v1_35",
+    "title": "Insurance payout fee",
+    "text": "Your insurance claim of Rs 100000 is approved. Transfer an advance release fee to our officer personal account before we can send your payout."
+  },
+  {
+    "id": "demo_pattern_v1_36",
+    "title": "School fee impersonation",
+    "text": "This is your school administration. The fee payment account changed this morning. Transfer your child tuition to this personal UPI ID immediately to avoid cancellation."
   }
 ]

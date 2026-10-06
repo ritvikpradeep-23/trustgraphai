@@ -1,10 +1,10 @@
 @echo off
-rem Double-click to start the TrustGraph local service (scam check, AI-text check,
-rem deepfake video check, accuracy results) at http://127.0.0.1:8000
+rem First follow COMBINED_SETUP.md. Starts the built frontend + pattern backend.
 cd /d "%~dp0"
 
 set PY=python
 %PY% --version >nul 2>&1 || set PY=py
+if exist ".venv\Scripts\python.exe" set PY=.venv\Scripts\python.exe
 %PY% --version >nul 2>&1 || (
   echo Python is not installed.
   echo Install Python 3.12 from https://www.python.org/downloads/
