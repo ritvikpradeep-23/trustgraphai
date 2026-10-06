@@ -126,6 +126,18 @@ The Chrome extension in `trustgraph_extension/` (the full one: shields on WhatsA
 - Tests: `tests/test_fingerprint.py` (database tests need `TEST_DATABASE_URL` to a throwaway PostgreSQL database; skipped otherwise) and `trustgraph_extension/test/universal-e2e.js` (Playwright + `DATABASE_URL`).
 - Extra optional env vars (defaults in `app/fingerprint/config.py`): `FINGERPRINT_IMAGE_THRESHOLD`, `FINGERPRINT_FULL_SCAN_MAX`, `MEDIA_MAX_BODY`, `MEDIA_MAX_IMAGE_BYTES`, `MEDIA_MAX_FRAMES`. Extra requirements: `numpy`, `Pillow`.
 
+## Deploying the site and the API together (Vercel, one project)
+
+`vercel.json` at the repository root makes the repo ONE Vercel project: the React site in `front end/` is built to static files, and the FastAPI app is one Python function (`api/index.py`, which imports `app.main:app`). Requests for `/api/*`, `/health`, `/health/*`, `/docs` and `/openapi.json` go to FastAPI with their original path; every other route serves the site's `index.html` (so `/app/analytics` etc. work on reload). The site already calls `/api` on its own origin (`front end/src/config/appConfig.ts`), so no CORS setup is needed.
+
+1. In Vercel, import the repository with the **root directory** (`./`), not `front end` or `app` separately. Framework preset: Other (vercel.json sets the install/build/output commands).
+2. Add a PostgreSQL database (e.g. Vercel → Storage → Neon) and make sure `DATABASE_URL` is set for the project (or `POSTGRES_URL`; plain `postgres://` URLs are converted to the psycopg driver automatically).
+3. Deploy, then seed demo data once from your PC with the same database URL: `DATABASE_URL=<that url> python scripts/seed_fingerprints.py --demo`.
+4. Check `https://<your-app>.vercel.app/health/database` answers `{"ok": true, ...}`.
+5. Point the browser extension at it: Settings → TrustGraph server URL → `https://<your-app>.vercel.app`.
+
+`.vercelignore` leaves out folders the deployment doesn't need (models, reports, backups, the extension). Locally nothing changes: `uvicorn app.main:app` for the API and `npm run dev` in `front end/` for the site.
+
 ## START HERE — Codex on another PC
 
 ```text
