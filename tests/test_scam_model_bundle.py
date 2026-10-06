@@ -10,13 +10,14 @@ import sys
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUIRED = ["backend/app/ai/scam_engine.py", "src/trustgraph/pipeline.py",
-            "models/anomaly_isolation_forest.joblib", "models/risk_bands.json",
-            "data/precedent/reports.json"]
-PRIVATE = [".env", "backend/.env", "backup/secrets.sql", "data/scam_reports.json",
-           "data/demo_scam_patterns.json", "data/learning/private.json",
-           "models/candidate/classifier_v1/classifier.joblib", "models/text_detector/config.json",
-           "models/efficientnet_head.pt", ".venv/pyvenv.cfg"]
+REQUIRED = ["backend/app/ai/scam_engine.py", "ai/src/trustgraph/pipeline.py",
+            "ai/models/anomaly_isolation_forest.joblib", "ai/models/risk_bands.json",
+            "ai/data/precedent/reports.json"]
+PRIVATE = [".env", "backend/.env", "backup/secrets.sql", "ai/backup/secrets.sql", "data/scam_reports.json",
+           "ai/data/scam_reports.json", "data/demo_scam_patterns.json", "ai/data/learning/private.json",
+           "ai/data/rounds/round_01.jsonl", "ai/models/candidate/classifier_v1/classifier.joblib",
+           "ai/models/text_detector/config.json", "ai/models/efficientnet_head.pt",
+           "ai/training/track_a.py", "ai/tests/conftest.py", ".venv/pyvenv.cfg"]
 
 
 @pytest.fixture
@@ -93,7 +94,7 @@ print('8 real model API checks passed in isolated upload bundle')
     assert "8 real model API checks passed" in run_probe(upload_bundle, command)
 
 
-@pytest.mark.parametrize("missing", ["models/anomaly_isolation_forest.joblib", "data/precedent/reports.json", "models/risk_bands.json"])
+@pytest.mark.parametrize("missing", ["ai/models/anomaly_isolation_forest.joblib", "ai/data/precedent/reports.json", "ai/models/risk_bands.json"])
 def test_missing_runtime_artifact_fails_health_without_fabricated_score(upload_bundle, missing):
     (upload_bundle / missing).unlink()
     assert "unavailable verified" in run_probe(upload_bundle, """

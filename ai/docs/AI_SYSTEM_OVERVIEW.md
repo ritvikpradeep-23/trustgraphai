@@ -11,7 +11,7 @@ TrustGraph checks what people receive in chats for three things:
 The full model runtime can run **on your own laptop**, without an external model-provider key. The workspace now has real accounts; remote extension checks transmit text transiently to the backend address you configure. The default Vercel runtime uses catalog fallback rather than the trained scam model. See [current integration and limits](ACCOUNT_EXTENSION_INTEGRATION.md).
 
 > Status: the website backend (`python backend/run_server.py`, http://127.0.0.1:8000) now has the AI-text and
-> deepfake engines built in (`backend/app/ai/`). They answer once you install `requirements-ai.txt` and train them on
+> deepfake engines built in (`backend/app/ai/`). They answer once you install `ai/requirements-ai.txt` and train them on
 > your computer; until then they say "pending" and never make up a score. Both detectors are **not trained on real
 > data yet**. The original 4-signal scam engine is also connected to `/api/detect` and account Analyze checks when `requirements-scam.txt` is installed. Training routines remain separate.
 
@@ -163,19 +163,27 @@ Rewordings are caught far better once a few reports of that scam have been learn
 
 ## 7. Run it
 
+Everything AI is in the `ai` folder. Run the AI commands from inside it:
+
 ```
-python -m pip install -r requirements-ai.txt  # website + AI packages (PostgreSQL: see TRUSTGRAPH_HANDOFF.md)
-python backend/run_server.py                  # the website backend, port 8000 (needs DATABASE_URL)
+cd ai
+python -m pip install -r requirements-ai.txt  # website + AI packages
 python check_gpu.py                           # is the GPU usable?
 python prepare_data.py text --hc3             # then: video --folder <Celeb-DF folder>
 python train_video.py ; python train_text.py
 python run_cycle.py ; python show_report.py
 python install_schedule.py                    # every 2 hours
-python -m pytest tests/engine -q              # AI + routine tests (no database needed)
-python -m pytest tests -q                     # everything (needs DATABASE_URL)
+python -m pytest tests -q                     # AI + routine tests (no database needed)
 ```
 
-Details: `docs/DETECTION_ROUTINE.md`. Model setup: `models/README.md`.
+From the repository root (website; PostgreSQL setup is in `TRUSTGRAPH_HANDOFF.md` there):
+
+```
+python backend/run_server.py                  # the website backend, port 8000 (needs DATABASE_URL)
+python -m pytest -q                           # website + AI tests (needs DATABASE_URL)
+```
+
+Details: `docs/DETECTION_ROUTINE.md`. Model setup: `models/README.md` (both inside `ai/`).
 
 ---
 

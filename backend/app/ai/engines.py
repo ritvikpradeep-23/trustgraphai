@@ -1,13 +1,13 @@
 """Load the trained AI engines once, and only if they can really run.
 
 An engine is used only when BOTH are true:
-  - the AI packages are installed (pip install -r requirements-ai.txt), and
-  - its trained model exists (made on your computer by train_text.py / train_video.py).
+  - the AI packages are installed (pip install -r ai/requirements-ai.txt), and
+  - its trained model exists (made on your computer by ai/train_text.py / ai/train_video.py).
 Otherwise its check stays unavailable and no score is invented.
 
-Model locations (repository root by default; override with environment variables):
-  AI_TEXT_MODEL_DIR       models/text_detector          (train_text.py)
-  EFFICIENTNET_HEAD_PATH  models/efficientnet_head.pt   (train_video.py)
+Model locations (relative to the repository root; override with environment variables):
+  AI_TEXT_MODEL_DIR       ai/models/text_detector          (ai/train_text.py)
+  EFFICIENTNET_HEAD_PATH  ai/models/efficientnet_head.pt   (ai/train_video.py)
   AI_THRESHOLD            0.5: a score at or above this counts as AI-written / fake
 """
 import logging
@@ -18,7 +18,7 @@ from pathlib import Path
 
 logger = logging.getLogger("trustgraph.ai")
 REPO = Path(__file__).resolve().parents[3]          # backend/app/ai/engines.py -> repository root
-FRAMES_PER_VIDEO = 16                                # same as the accuracy routine (detection_config.json)
+FRAMES_PER_VIDEO = 16                                # same as the accuracy routine (ai/detection_config.json)
 FACE_MARGIN = 0.2
 
 _lock = threading.Lock()
@@ -52,7 +52,7 @@ def _load(name: str, make):
 def text_engine():
     """The fine-tuned AI-written text model, or None."""
     def make():
-        folder = _path("AI_TEXT_MODEL_DIR", "models/text_detector")
+        folder = _path("AI_TEXT_MODEL_DIR", "ai/models/text_detector")
         if not (folder / "config.json").exists():
             return None
         from app.ai.text_detector import TextDetector
@@ -63,7 +63,7 @@ def text_engine():
 def video_engine():
     """EfficientNet-B0 + your trained head (and the face detector), or None."""
     def make():
-        head = _path("EFFICIENTNET_HEAD_PATH", "models/efficientnet_head.pt")
+        head = _path("EFFICIENTNET_HEAD_PATH", "ai/models/efficientnet_head.pt")
         if not head.exists():
             return None
         from app.ai.combined_model import EfficientNetDeepfakeModel

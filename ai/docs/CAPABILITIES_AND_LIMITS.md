@@ -8,7 +8,7 @@ This covers everything built so far, so you can judge it and decide what to impr
 | Function | Status today | Where |
 |---|---|---|
 | Browser extension (shield on messages, chat scan, verdicts) | ✅ Working | `trustgraph_extension/` |
-| Scam-message check (4-signal engine) | ✅ Working, stand-alone (the website's `/api/score` now uses PostgreSQL report matching instead) | `src/trustgraph/`, `run_website.py` |
+| Scam-message check (4-signal engine) | ✅ Working, and used by the website when no stored report matches | `src/trustgraph/`, `backend/app/ai/scam_engine.py` |
 | Similar-report search ("others reported this") | ✅ Working, now the website's own word-similarity matching in PostgreSQL | `POST /api/detect`, `/api/reports` |
 | New-scam learning routine | ✅ Working, fresh dataset every 2 hours | `learn_cycle.py` |
 | Accuracy routine | ✅ Working, every 2 hours (needs trained models to score) | `run_cycle.py` |
@@ -22,13 +22,14 @@ This covers everything built so far, so you can judge it and decide what to impr
 > until you promote one. So the extension currently gets the weaker engine (see the numbers below). See
 > "Quickest wins" at the end.
 
-> **Since the website reorganisation** (`backend/`, PostgreSQL): the AI-text and deepfake engines live in
-> `backend/app/ai/` and answer through `TrustGraphAI.analyze` (`backend/app/services/ai_model.py`) once
-> `requirements-ai.txt` is installed and the models are trained; otherwise "pending", never a made-up score. The
-> extension's `/api/score` is now answered by the website's PostgreSQL report matching, not by the 4-signal engine
-> below, and `/api/feedback` and `/api/accuracy` were removed (the website keeps its data in PostgreSQL only). The
-> 4-signal engine and both routines still run as stand-alone scripts. Section 3 describes the older
-> sentence-model search; the website now uses `docs/DEMO_SCAM_PATTERNS.md`'s word similarity.
+> **How the website uses this** (`backend/`, PostgreSQL; all AI files are in this `ai` folder):
+> - **Scam check** (`/api/detect`, `/api/score`, Analyze): records first. If a stored report matches, that is the
+>   answer. Otherwise the 4-signal engine below scores it (`backend/app/ai/scam_engine.py`, loading `ai/models`).
+> - **AI-text and deepfake** answer through `TrustGraphAI.analyze` (`backend/app/services/ai_model.py`) once
+>   `requirements-ai.txt` is installed and the models are trained; otherwise "pending", never a made-up score.
+> - `/api/feedback` and `/api/accuracy` were removed (the website keeps its data in PostgreSQL only). Both routines
+>   run as scripts in this folder. Section 3 describes the older sentence-model search; the website now uses the
+>   word similarity in the repository's `docs/DEMO_SCAM_PATTERNS.md`.
 
 ---
 
@@ -214,8 +215,8 @@ the learning routine does pick up its reports.
 - `run_cycle.py` scores **one unused test batch** per detector every 2 hours, never reuses a batch, and never trains.
   It reports accuracy, precision, recall, F1, ROC-AUC and the confusion matrix (`show_report.py`).
   It needs the trained models.
-- The website backend, `python backend/run_server.py`, at `127.0.0.1:8000` (needs PostgreSQL, see
-  `TRUSTGRAPH_HANDOFF.md`). `/docs` lists every endpoint.
+- The website backend, `python backend/run_server.py` from the repository root, at `127.0.0.1:8000` (needs
+  PostgreSQL, see the repository's `TRUSTGRAPH_HANDOFF.md`). `/docs` lists every endpoint.
 - Privacy:
   - Message text is never written to the server log.
   - Reports are never returned to anyone.
@@ -240,7 +241,8 @@ the learning routine does pick up its reports.
 
 1. **Promote the improved scam engine:**
    `python scripts/promote_model.py models/candidate/fast_r12 --yes`, or the latest accepted `learn_*` version from
-   `runs/learning_best.json`. (This is the stand-alone engine; the website doesn't use it.) This moved scams caught on the final test from 51.7% to 65.0%
+   `runs/learning_best.json`. **The website's scam check uses this engine too**, so this changes its answers.
+   Your teammate keeps the website on the original engine on purpose, so agree with them first. This moved scams caught on the final test from 51.7% to 65.0%
    (synthetic data). `--rollback` undoes it.
 2. **Feed it real data.** Real scam messages and real honest messages, as CSVs in `data/learning/datasets/`. This
    matters more than any setting.

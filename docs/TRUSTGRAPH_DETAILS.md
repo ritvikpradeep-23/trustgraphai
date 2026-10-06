@@ -19,7 +19,7 @@ The signals combine into one risk level: **Low**, **Caution** or **High**.
 
 ```bash
 pip install -r requirements.txt
-python run_website.py
+python ai/run_website.py
 ```
 
 A page opens at http://127.0.0.1:8000. Pick an example from the menu or type your own, then press **Check risk**. It runs only on your computer.
@@ -50,7 +50,7 @@ uvicorn app.main:app --port 8001     # then open http://127.0.0.1:8001/docs
 ```
 
 The first text request downloads the `all-MiniLM-L6-v2` embedding model (~90 MB, once), so it needs internet.
-The deepfake endpoint needs a model file; see `models/README.md`. Without one it answers 503.
+The deepfake endpoint needs a model file; see `ai/models/README.md`. Without one it answers 503.
 `DEEPFAKE_MOCK=1` enables a fake model for demos, and its answers say `"mock": true`.
 
 ## Endpoints

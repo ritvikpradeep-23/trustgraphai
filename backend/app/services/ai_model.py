@@ -74,7 +74,7 @@ class TrustGraphAI:
         return DetectionResult(
             anomaly=None, continuity=None, similarity=None, precedent=None,
             risk_score=round(score, 4), risk_level=level, available=True,
-            model="distilroberta-base fine-tuned on human vs AI text (models/text_detector)",
+            model="distilroberta-base fine-tuned on human vs AI text (ai/models/text_detector)",
             reasons=[f"AI-written score {score:.0%} from the fine-tuned text model. "
                      "AI-written is not the same as a scam, and short messages carry little evidence."],
         )
@@ -95,7 +95,7 @@ class TrustGraphAI:
             return DetectionResult(anomaly=None, continuity=None, similarity=None, precedent=None,
                                    risk_score=None, risk_level="ERROR", available=False,
                                    reasons=[f"The media could not be analysed: {exc}"])
-        model = "EfficientNet-B0 (Hugging Face) + trained real/fake layer (models/efficientnet_head.pt)"
+        model = "EfficientNet-B0 (Hugging Face) + trained real/fake layer (ai/models/efficientnet_head.pt)"
         if out["score"] is None:
             return DetectionResult(anomaly=None, continuity=None, similarity=None, precedent=None,
                                    risk_score=None, risk_level="INCONCLUSIVE", available=True, model=model,

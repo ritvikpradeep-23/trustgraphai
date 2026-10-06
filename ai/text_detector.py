@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 # The detector itself lives in backend/app/ai (the server uses the same code).
-sys.path.insert(0, str(Path(__file__).resolve().parent / "backend"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))  # the website backend holds the engine code
 from app.ai.text_detector import TextDetector as _Engine  # noqa: E402
 from detection_common import load_config, resolve  # noqa: E402
 

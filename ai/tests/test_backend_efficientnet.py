@@ -19,7 +19,7 @@ from app.api.ai_detectors import router as ai_detectors_router
 from app.services.ai_model import TrustGraphAI
 from test_detection_routine import tiny_text_model
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import train_efficientnet_head  # noqa: E402
 import try_efficientnet_modes  # noqa: E402
 

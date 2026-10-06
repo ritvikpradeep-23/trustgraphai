@@ -37,7 +37,7 @@ LEARNING_HISTORY = HISTORY.parent / "learning" / "history.csv"
 def learning_trend(last: int) -> list[str]:
     """The new-scam learning runs: how many new scams were caught BEFORE learning them."""
     if not LEARNING_HISTORY.exists():
-        return ["\n# New-scam learning", "No learning runs yet (python learn_cycle.py, or the hourly schedule)."]
+        return ["\n# New-scam learning", "No learning runs yet (python learn_cycle.py, or the 2-hour schedule)."]
     with open(LEARNING_HISTORY, newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))[-last:]
     out = ["\n# New-scam learning (new scams caught before learning them)",

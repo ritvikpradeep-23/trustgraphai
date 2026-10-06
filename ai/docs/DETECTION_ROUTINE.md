@@ -8,7 +8,7 @@ Two detectors and a routine that measures them on fresh, labelled data every few
 - **Routine:** `run_cycle.py` takes the next unused labelled test batch, scores it and reports. It never trains
   or tunes anything. It is a plain Python script and never calls Claude.
 
-All commands run from the project folder (`C:\Users\Ritvik\trustgraphai`).
+All commands run from the `ai` folder (`C:\Users\Ritvik\trustgraphai\ai`), where all the AI files live.
 
 ## Quick start
 
@@ -40,7 +40,7 @@ python install_schedule.py                            # step 8: every INTERVAL_H
 | `show_report.py` | Prints `reports/latest.md` and the trend from `reports/history.csv`. |
 | `install_schedule.py` | Installs, shows or removes the schedule (Task Scheduler on Windows, cron on macOS/Linux). |
 | `.claude/settings.json` | Lets Claude Code run only these project scripts and `pip install -r requirements.txt`, and read and write only inside this folder. |
-| `tests/engine/test_detection_routine.py` | Offline tests of the plumbing: splits, batches used once, lock, reports, schedule. |
+| `tests/test_detection_routine.py` | Offline tests of the plumbing: splits, batches used once, lock, reports, schedule. |
 
 Where things are written (all on your laptop, never committed):
 
