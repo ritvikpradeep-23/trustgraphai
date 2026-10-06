@@ -100,9 +100,11 @@ For the **records-first** branch, copy any stored message from the catalog: its 
 
 ## Verification and deployment limits
 
-- 75 backend tests and 2,096 subtests passed; 14 disposable-database fixtures skipped. Real PostgreSQL checks were performed separately below.
+- 81 backend tests and 2,096 subtests passed; 14 disposable-database fixtures skipped. Another 79 tests passed for the original scam signals/fusion without optional media packages. Real PostgreSQL checks were performed separately below.
 - `python scripts/verify_scam_pipeline.py` checks all 1,038 seeded records, idempotence, a records match with a model-call trap, eight genuine model fallbacks, all four bands' persistence, metadata privacy and cross-account isolation in a temporary schema. Every verification row/schema is rolled back; public data is untouched.
 - Frontend production build and regression tests passed. Extension verdict, rules, result privacy, background syncing and token/style suites passed. These are functional fixtures, not proof of real-world accuracy or an installed-browser reader end-to-end test.
 - The current preview is `http://127.0.0.1:8002`. Sign in and open `/app/analyze`; each result links to its saved detail page.
-- The default Vercel bundle still excludes trained engine assets/dependencies. It can match the seeded database catalog but returns UNKNOWN on unmatched text when the model is unavailable. Full model fallback is verified in the local backend, not on a cloud deployment.
-- Git publication is separate from cloud deployment; pushing this change does not deploy the app or enable model fallback on Vercel. Secrets, local dependencies and user-submitted records must not be committed.
+- Normal backend setup now installs the original CPU scam runtime and runs `scripts/verify_scam_model.py`. `/health/scam-model` proves real inference, returning 503 if model, bands or precedent assets are missing. Original weights and thresholds are unchanged; no remote model receives messages.
+- Vercel upload rules now retain the engine, baseline model/bands and synthetic precedent file. Eight genuine API inference cases passed in an isolated upload file set, and missing-artifact failures were checked. No cloud build/deployment, Linux install, bundle-size or cold-start claim is made.
+- Additional model-only challenges exposed two false negatives (short lottery fee, unfamiliar investment pitch) and one false positive (IT warning mentioning remote access). Run `python scripts/verify_scam_model.py --json` to inspect all scores/signals. These functional examples are not an independent accuracy benchmark, and the model is not yet validated for production fraud decisions.
+- Git publication is separate from deployment. Secrets, local dependencies and user-submitted records must not be committed.

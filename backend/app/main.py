@@ -21,6 +21,7 @@ from app.api.extension_sync import router as extension_sync_router
 from app.api.database_health import router as database_health_router
 from app.api.media_check import router as media_check_router
 from app.api.auth import router as auth_router
+from app.api.model_health import router as model_health_router
 
 
 app = FastAPI(
@@ -43,6 +44,7 @@ app.include_router(extension_score_router, prefix="/api")
 app.include_router(extension_sync_router, prefix="/api")
 app.include_router(media_check_router, prefix="/api")
 app.include_router(database_health_router)
+app.include_router(model_health_router)
 
 
 @app.exception_handler(RequestValidationError)

@@ -16,9 +16,16 @@
 /.claude/
 /outputs/
 /logs/
-/data/
-/models/
-/src/
+# Only public baseline scam runtime files; no training data or rejected models.
+/data/*
+!/data/precedent/
+/data/precedent/*
+!/data/precedent/reports.json
+/models/*
+!/models/anomaly_isolation_forest.joblib
+!/models/risk_bands.json
+/src/*
+!/src/trustgraph/
 /training/
 /routine/
 /eval/

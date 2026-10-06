@@ -6,13 +6,13 @@
 
 ## Combined project: backend, frontend, extension
 
-See [one-upload setup](COMBINED_SETUP.md). The canonical API is in `backend/app/`, alongside `front end/` and the complete `trustgraph_extension/`. Root commands remain compatible. The original trained anomaly model is connected through the existing four-signal engine when `requirements-scam.txt` is installed; rejected candidates are not activated.
+See [one-upload setup](COMBINED_SETUP.md). The canonical API is in `backend/app/`, alongside `front end/` and the complete `trustgraph_extension/`. Root commands remain compatible. Standard backend requirements now include the original trained scam engine; rejected candidates are not activated. Verify genuine inference with `python scripts/verify_scam_model.py` or `/health/scam-model`.
 
 ## Connected React workspace (current FastAPI backend)
 
 The frontend is in **`front end/`**. See [setup instructions](front%20end/README.md) and [integration details](docs/WORKSPACE_INTEGRATION.md). Configure PostgreSQL in the ignored root `.env`, build the frontend, then run `python run_server.py` to serve both at http://127.0.0.1:8000.
 
-The current workspace has real email/password accounts, opaque cookie sessions, CSRF protection and per-account verdict history. Sign in, create a code in Settings, and pair the extension. Analyze saves verdict metadata, not messages. Message checks first compare normalized fingerprints and wording against 1,038 stored synthetic examples (302 ScamShield-origin, 36 original authored, 700 new authored variants). A qualifying record match skips the model; otherwise the original four-signal scam engine gives the final result when available. Scores are evidence, not fraud probabilities. See [records-first scam demo and limits](docs/SCAM_MESSAGE_PIPELINE.md) and [account/extension setup](docs/ACCOUNT_EXTENSION_INTEGRATION.md). AI-written/deepfake weights and email recovery are not configured. The default lightweight Vercel deployment uses catalog matching, not the local trained model.
+The current workspace has real email/password accounts, opaque cookie sessions, CSRF protection and per-account verdict history. Sign in, create a code in Settings, and pair the extension. Analyze saves verdict metadata, not messages. Message checks first compare normalized fingerprints and wording against 1,038 stored synthetic examples (302 ScamShield-origin, 36 original authored, 700 new authored variants). A qualifying record match skips the model; otherwise the original four-signal scam engine gives the final result when available. Scores are evidence, not fraud probabilities. See [records-first scam demo and limits](docs/SCAM_MESSAGE_PIPELINE.md) and [account/extension setup](docs/ACCOUNT_EXTENSION_INTEGRATION.md). AI-written/deepfake weights and email recovery are not configured. Vercel configuration now includes the CPU scam engine and baseline assets; isolated local bundle inference passed, but a cloud build/deployment remains unverified.
 
 <p align="center">
   <strong>A privacy-first browser extension that checks any message for scam signals, right where you read it. Only the verdict comes home.</strong>

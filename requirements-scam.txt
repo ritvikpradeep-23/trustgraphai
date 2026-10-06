@@ -1,5 +1,3 @@
-# Optional original TrustGraph scam engine only (no Torch downloads).
--r requirements-dev.txt
-joblib==1.6.0
-pandas==3.0.6
-scikit-learn==1.9.1
+# Compatibility alias: scam inference is now included in standard backend setup.
+# Install requirements-dev.txt separately to run the test suite.
+-r backend/requirements.txt

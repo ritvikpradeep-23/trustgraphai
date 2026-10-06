@@ -35,7 +35,7 @@ The catalog has 1,038 unique synthetic message examples: 302 ScamShield-origin, 
 
 Real-runtime spot checks produced different scores (3.7, 76.1 and 61.9 / 100). The original model still has false negatives: a short lottery/registration-fee message outside the catalog returned LOW at 61.9 / 100 under its original bands. Connecting a trained model does not establish reliable scam accuracy. No band was lowered merely to make those demonstrations look successful; evaluate and calibrate on independent labelled messages before relying on it.
 
-The default lightweight Vercel bundle excludes the trained model and dependencies. It uses catalog matching; local full-runtime inference is active when installed. Read `VERCEL_DEPLOYMENT.md` before deploying. No new cloud deployment has been performed.
+Standard backend dependencies now include the CPU scam runtime. Vercel packaging includes `src/trustgraph/`, the original Isolation Forest, risk bands and public synthetic precedent fixture; rejected candidates and private data stay excluded. Eight genuine model API cases passed in an isolated local upload file set. `/health/scam-model` runs a real inference probe and returns 503 when unavailable. Read `VERCEL_DEPLOYMENT.md`; no cloud build/deployment has been performed.
 
 ## Verification and remaining limits
 

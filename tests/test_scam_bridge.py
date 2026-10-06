@@ -80,8 +80,7 @@ def test_unavailable_model_is_not_a_safe_zero(monkeypatch):
 
 
 def test_real_original_model_is_used_as_fallback(monkeypatch):
-    if scam_engine.engine() is None:
-        pytest.skip("Install requirements-scam.txt for real model integration")
+    assert scam_engine.engine() is not None, "Standard setup must provide the original scam model"
     monkeypatch.setattr(detection_api, "find_previous_report_matches", lambda *a, **kw: [])
     monkeypatch.setattr(detection_api, "scam_analyze", scam_engine.analyze)
     benign = detection_api.detect(DetectionRequest(channel="other", text="Are we still meeting for lunch tomorrow?"), Mock())
@@ -90,6 +89,24 @@ def test_real_original_model_is_used_as_fallback(monkeypatch):
     assert 0 <= benign.risk_score < scam.risk_score <= 1
     assert benign.risk_level == "LOW" and scam.risk_level in {"CAUTION", "HIGH"}
     assert scam.signals.anomaly is not None
+
+
+def test_real_model_health_probe():
+    from fastapi.testclient import TestClient
+    from app.main import app
+    response = TestClient(app).get("/health/scam-model")
+    assert response.status_code == 200
+    assert response.json()["inference"] == "verified"
+    assert response.json()["signals"] == ["anomaly", "continuity", "precedent", "similarity"]
+
+
+def test_model_health_returns_unavailable_not_success(monkeypatch):
+    from fastapi.testclient import TestClient
+    from app.main import app
+    monkeypatch.setattr("app.api.model_health.analyze", lambda *a: None)
+    response = TestClient(app).get("/health/scam-model")
+    assert response.status_code == 503
+    assert response.json() == {"ok": False, "model": "original-scam-engine", "inference": "unavailable"}
 
 
 def test_compatibility_extension_scorer_does_not_hardcode_high(monkeypatch):

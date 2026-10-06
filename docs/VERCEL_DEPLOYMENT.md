@@ -18,15 +18,19 @@ An earlier version used Vercel Services (beta). On projects without Services it 
 
 ## Model availability
 
-The default lightweight function intentionally excludes `src/`, `models/` and `data/` and does not install scikit-learn/pandas. Therefore it runs the PostgreSQL catalog fallback, **not** the original trained anomaly model. The full source ZIP retains the model and sources. To run real model inference, use the full combined backend with `requirements-scam.txt` on a suitable Python host; cloud model packaging/limits have not been validated. Do not add heavyweight AI-written/deepfake dependencies and claim a successful Vercel model deployment without checking the actual build and weights.
+The function now installs the CPU scam runtime by default: pinned numpy, scipy, joblib, pandas and scikit-learn, with Python 3.12 in `.python-version`. It uploads `src/trustgraph/`, `models/anomaly_isolation_forest.joblib` (~1.4 MB), `models/risk_bands.json` and `data/precedent/reports.json` (public synthetic identifiers). `.vercelignore` keeps all other data and model directories out, including private reports, training inputs, rejected candidates and media weights. `excludeFiles` no longer discards the required precedent file.
+
+Records-first order is unchanged: a qualifying PostgreSQL match skips the model; otherwise the original engine produces the final review score. No Torch, Hugging Face download, external provider or new training is required for scam messages. The model still has false negatives/positives; inference availability is not proof of accuracy.
+
+`tests/test_scam_model_bundle.py` stages the actual tracked/new file set using ignore rules and function exclusions, then runs eight genuine inference API cases in an isolated subprocess, with no access to the original source tree or real database. Missing model, bands or precedent files produce unavailable/503, not fabricated scores. This verifies local packaging, **not** Linux dependency installation, Vercel bundle size, cold-start latency or a cloud deployment. The final build log and `/health/scam-model` on the deployed domain are still required. Do not install optional heavyweight media requirements into this function.
 
 ## Checks after deploying
 
-- `/health` → `{"status": "ok"}`; `/health/database` → `{"ok": true, ...}`.
+- `/health` → `{"status": "ok"}`; `/health/database` → `{"ok": true, ...}`; `/health/scam-model` → HTTP 200 with `inference: "verified"`. A 503 means model inference is unavailable even if the website loads.
 - `/login` and `/signup` load directly; protected `/app/analyze` and `/app/analytics` require an account.
 - `/api/unknown` → a JSON 404 from FastAPI, not the site.
 - Analyze a non-sensitive test message.
 
 ## Verified here (not on Vercel)
 
-The pre-account static/API layout was previously tested from the upload file set. Current schema validation, API entrypoint, deep-link/asset routing and authentication tests pass locally; real PostgreSQL account/pairing isolation was checked in a rolled-back temporary schema. No cloud deployment or current clean cloud bundle build was performed. A real Vercel build log remains the final check.
+Local API entrypoint, deep-link/asset routing and isolated scam-model upload-file inference checks pass. Real PostgreSQL account-scoped persistence and records-first/model-second checks use a temporary schema and roll everything back. No cloud build/deployment was performed; a real Vercel build log remains the final check.

@@ -7,7 +7,7 @@
   "functions": {
     "api/index.py": {
       "maxDuration": 30,
-      "excludeFiles": "{front end/**,tests/**,docs/**,scripts/**,data/**,trustgraph_extension/**}"
+      "excludeFiles": "{front end/**,tests/**,docs/**,scripts/**,trustgraph_extension/**,training/**,routine/**,eval/**,models/candidate/**}"
     }
   },
   "rewrites": [

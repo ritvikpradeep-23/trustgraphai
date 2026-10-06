@@ -11,10 +11,9 @@ if (-not (Test-Path -LiteralPath '.venv/Scripts/python.exe')) {
 $taskPython = Join-Path $PSScriptRoot '.venv/Scripts/python.exe'
 & $taskPython -m pip install -r backend/requirements.txt
 if ($LASTEXITCODE -ne 0) { throw 'Backend dependency installation failed.' }
-if ($ScamModel) {
-    & $taskPython -m pip install -r requirements-scam.txt
-    if ($LASTEXITCODE -ne 0) { throw 'Original scam model dependency installation failed.' }
-}
+# -ScamModel is retained for old commands; the model is installed by default.
+& $taskPython scripts/verify_scam_model.py
+if ($LASTEXITCODE -ne 0) { throw 'Original scam model inference check failed; setup is not ready.' }
 Push-Location -LiteralPath 'front end'
 try {
     & npm.cmd ci

@@ -5,6 +5,12 @@ python-dotenv
 python-multipart
 SQLAlchemy>=2.0,<3.0
 psycopg[binary]>=3.0,<4.0
-# Known-fakes image fingerprint matching (no trained AI model required).
-numpy
+# Original CPU scam runtime, pinned to the environment verified with this artifact.
+# No Torch, external model provider or model download is needed for scam messages.
+numpy==2.5.3
+scipy==1.18.1
+joblib==1.6.0
+pandas==3.0.6
+scikit-learn==1.9.1
+# Known-fakes image fingerprints (separate from trained media AI).
 Pillow
