@@ -76,14 +76,14 @@ class AIDetectorEndpointTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         payload = response.json()
-        self.assertEqual(payload["risk_level"], "PENDING")
+        self.assertEqual(payload["risk_level"], "UNKNOWN")
         self.assertIsNone(payload["risk_score"])
-        self.assertEqual(payload["reasons"], ["Scam analysis is pending AI integration; no score was produced."])
+        self.assertIn("No stored scam pattern", payload["reasons"][0])
+        self.assertEqual(payload["method"], "database-pattern-matching")
         self.assertEqual(payload["previous_report_matches"], [])
         self.assertEqual(set(payload["signals"]), {"anomaly", "continuity", "similarity", "precedent"})
         self.assertTrue(all(value is None for value in payload["signals"].values()))
-        self.assertFalse(payload["ai_written"]["available"])
-        self.assertIsNone(payload["ai_written"]["ai_written_score"])
+        self.assertIsNone(payload["ai_written"])
 
     def test_existing_routes_remain_registered(self):
         paths = app.openapi()["paths"]

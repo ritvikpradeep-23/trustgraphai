@@ -1,4 +1,4 @@
-export type RiskLevel = "SAFE" | "LOW" | "CAUTION" | "HIGH" | "CRITICAL" | "PENDING";
+export type RiskLevel = "SAFE" | "LOW" | "CAUTION" | "HIGH" | "CRITICAL" | "PENDING" | "UNKNOWN";
 export type Channel = "whatsapp" | "gmail" | "messenger" | "instagram" | "other";
 export type DetectionStatus = "new" | "reviewed";
 export type Feedback = "none" | "right" | "false_alarm";

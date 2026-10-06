@@ -8,7 +8,7 @@
 
 The frontend is in **`front end/`**. See [setup instructions](front%20end/README.md) and [integration details](docs/WORKSPACE_INTEGRATION.md). Configure PostgreSQL in the ignored root `.env`, build the frontend, then run `python run_server.py` to serve both at http://127.0.0.1:8000.
 
-The current backend has no authentication or trained AI detector. Message analysis returns pending/null scores and is not automatically saved. History reads existing database records; account/pairing/review/delete controls are unavailable. Keep this prototype private/local. Older extension/engine sections below describe separate or legacy components, not features of this connected backend.
+The current backend has no authentication or trained AI detector. Message analysis now uses database pattern matching without AI and is not automatically saved. Seed the synthetic catalog with `python scripts/seed_demo_patterns.py`; see [judge-demo texts](docs/DEMO_SCAM_PATTERNS.md). History reads existing database records; account/pairing/review/delete controls are unavailable. Keep this prototype private/local. Older extension/engine sections below describe separate or legacy components, not features of this connected backend.
 
 <p align="center">
   <strong>A privacy-first browser extension that checks any message for scam signals, right where you read it. Only the verdict comes home.</strong>

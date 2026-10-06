@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class DetectionRequest(BaseModel):
     channel: str
     sender: Optional[str] = None
-    text: str
+    text: str = Field(min_length=1, max_length=20000)
     url: Optional[str] = None
     submission_id: Optional[str] = None
 
@@ -45,6 +45,7 @@ class DetectionResponse(BaseModel):
     reasons: list[str]
     previous_report_matches: list["PreviousReportMatchResponse"] = Field(default_factory=list)
     ai_written: ModalityCheckResponse | None = None
+    method: str = "database-pattern-matching"
 
 
 class PreviousReportMatchResponse(BaseModel):

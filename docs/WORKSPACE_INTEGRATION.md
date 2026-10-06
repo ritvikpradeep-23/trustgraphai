@@ -12,11 +12,11 @@ Only `.env.example` is committed; `.env`, frontend `.env.local`, dependencies, v
 
 - `GET /api/workspace/detections`: read-only frontend DTOs. Existing `/api/detections` contracts remain unchanged.
 - `GET /api/workspace/detections/{id}`: projected detail or JSON 404.
-- `GET /api/workspace/status`: API reachability, explicitly no authentication, pairing, or AI detector.
+- `GET /api/workspace/status`: API reachability, explicitly no authentication or pairing. Message checks use deterministic database matching; AI modalities remain unavailable.
 
 The projection maps MEDIUM to CAUTION and unsupported/invalid scores to PENDING. It excludes raw submission fields and returns only a URL hostname. Historical backend explanation strings are retained. Current history is unpaginated at the API; the frontend filters/paginates it in memory. Add server-side pagination before large deployments.
 
-Message analysis calls `/api/detect` without a submission ID: previous-report matching reads the database, but no message/result is persisted. URL analysis is deterministic and does not make outbound requests. No fake scores, account tokens, or pairing status are produced.
+Message analysis calls `/api/detect` without a submission ID: previous-report matching reads the database, but no message/result is persisted. URL analysis is deterministic and does not make outbound requests. Text checks now use the existing report matcher directly, without AI. Scores are text similarity, not fraud probability. UNKNOWN means no known match, not safe. Seed 12 synthetic examples using `python scripts/seed_demo_patterns.py`; verify via `python scripts/verify_demo_patterns.py` against the running API. No account tokens or pairing status are produced.
 
 ## Verification
 
@@ -38,4 +38,4 @@ Workspace tests use fake sessions, never the configured database. They verify om
 
 No authentication or per-user authorization is implemented by the backend. Do not expose it to the internet as-is. Existing raw API endpoints can return submission data; the sanitized view is not an access-control boundary. Disabled frontend buttons also are not authorization.
 
-AI detection, extension pairing, review/feedback writes, notifications, and account deletion remain unavailable. Analytics reflect stored backend values, not a trained model. Backend startup uses create_all, not migrations. Production needs authorization, migrations, bounded queries, input limits, observability, and trained/validated detectors.
+AI-written/media detection, extension pairing, review/feedback writes, notifications, and account deletion remain unavailable. Analytics reflect stored backend values, not a trained model. Backend startup uses create_all, not migrations. Production needs authorization, migrations, bounded queries, input limits, observability, and trained/validated detectors.

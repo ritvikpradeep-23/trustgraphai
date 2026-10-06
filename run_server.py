@@ -1,7 +1,7 @@
 """Start the TrustGraph local service: python run_server.py
 
 The built React frontend (front end/dist) and FastAPI API share one origin:
-  /                     React workspace     /api/detect           pending AI check
+  /                     React workspace     /api/detect           pattern matching
   /api/workspace/*      sanitized history   /api/url/analyze      URL structure
   /health               service health      /docs                 API documentation
 

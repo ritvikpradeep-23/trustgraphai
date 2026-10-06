@@ -8,9 +8,8 @@ from app.schemas.detection import (
     DetectionRequest,
     DetectionResponse,
     DetectionSignals,
-    ModalityCheckResponse,
 )
-from app.services.ai_model import TrustGraphAI
+from app.services.pattern_detection import verdict
 from app.services.previous_report_matcher import (
     find_previous_report_matches,
     store_previous_report_matches,
@@ -19,7 +18,6 @@ from app.services.previous_report_matcher import (
 
 router = APIRouter(tags=["Detection"])
 
-ai_service = TrustGraphAI()
 
 
 @router.post("/detect", response_model=DetectionResponse)
@@ -30,9 +28,6 @@ def detect(request: DetectionRequest, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Submission not found",
         )
-
-    result = ai_service.analyze("scam", request.model_dump())
-    ai_written_result = ai_service.analyze("ai_content", {"text": request.text})
 
     previous_report_matches = find_previous_report_matches(
         db,
@@ -47,22 +42,18 @@ def detect(request: DetectionRequest, db: Session = Depends(get_db)):
             matches=previous_report_matches,
         )
 
+    similarity, level, reasons = verdict(previous_report_matches)
     return DetectionResponse(
         detection_id=f"det_{uuid4().hex[:12]}",
-        risk_score=result.risk_score,
-        risk_level=result.risk_level,
+        risk_score=similarity,
+        risk_level=level,
         signals=DetectionSignals(
-            anomaly=result.anomaly,
-            continuity=result.continuity,
-            similarity=result.similarity,
-            precedent=result.precedent,
+            anomaly=None,
+            continuity=None,
+            similarity=similarity,
+            precedent=similarity,
         ),
-        reasons=result.reasons,
+        reasons=reasons,
         previous_report_matches=previous_report_matches,
-        ai_written=ModalityCheckResponse(
-            ai_written_score=None,
-            available=ai_written_result.available,
-            model=ai_written_result.model,
-            reasons=ai_written_result.reasons,
-        ),
+        ai_written=None,
     )

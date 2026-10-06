@@ -63,7 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     </aside>
     <main inert={mobileOpen} className={`app-main ${collapsed ? "app-main-expanded" : ""}`}>
       <div className="app-topbar"><button ref={menuButton} type="button" className="mobile-menu-button" aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="workspace-sidebar" onClick={() => setMobileOpen(true)} data-testid="sidebar-mobile-open"><Menu size={19} /></button><div className="topbar-title">TrustGraph <span>/ Workspace</span></div><div className="topbar-user"><div className="avatar">{user?.name.slice(0, 1) || "A"}</div><span className="hidden sm:inline" data-testid="topbar-user-name">{user?.name}</span></div></div>
-      {appConfig.USE_MOCK ? <DemoBanner onClear={() => setConfirmClear(true)} /> : <div className="demo-banner" role="status">Live local API · No authentication or extension pairing is configured. Keep this service private; AI detection is pending integration.</div>}
+      {appConfig.USE_MOCK ? <DemoBanner onClear={() => setConfirmClear(true)} /> : <div className="demo-banner" role="status">Live local API · No authentication or extension pairing is configured. Keep this service private; message checks use database pattern matching.</div>}
       <div className="app-content">{children}</div>
     </main>
     {appConfig.USE_MOCK && <DevPanel />}

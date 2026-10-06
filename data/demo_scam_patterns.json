@@ -1,0 +1,62 @@
+[
+  {
+    "id": "demo_pattern_v1_01",
+    "title": "KYC / OTP theft",
+    "text": "Your KYC has expired and your bank account will be blocked today. Update your PAN details at https://kyc-demo.invalid and share the OTP to keep your account active."
+  },
+  {
+    "id": "demo_pattern_v1_02",
+    "title": "Bank account suspension",
+    "text": "Dear customer, your Lotus Bank account is suspended. Verify your password and card PIN at https://bank-demo.invalid within 24 hours or your account will be permanently closed."
+  },
+  {
+    "id": "demo_pattern_v1_03",
+    "title": "Courier fee phishing",
+    "text": "Your parcel is held at customs. Pay the clearance fee of Rs 49 at https://parcel-demo.invalid within 12 hours or it will be returned to the sender."
+  },
+  {
+    "id": "demo_pattern_v1_04",
+    "title": "Lottery advance fee",
+    "text": "Congratulations! Your number won Rs 25 lakh in our lucky draw. Pay a processing fee of Rs 2000 first to release your prize money."
+  },
+  {
+    "id": "demo_pattern_v1_05",
+    "title": "Job registration fee",
+    "text": "You are selected for a work from home data entry job paying Rs 30000 a month. Pay the registration fee of Rs 999 today to receive your offer letter."
+  },
+  {
+    "id": "demo_pattern_v1_06",
+    "title": "Electricity disconnection",
+    "text": "Dear consumer, your electricity will be disconnected tonight at 9 pm because your bill is not updated. Transfer Rs 500 immediately to our officer to stop disconnection."
+  },
+  {
+    "id": "demo_pattern_v1_07",
+    "title": "Verification code takeover",
+    "text": "Hi, I sent my verification code to your number by mistake. Please forward the six digit OTP you just received. It is urgent and I need it to log in."
+  },
+  {
+    "id": "demo_pattern_v1_08",
+    "title": "Family emergency impersonation",
+    "text": "Mum, this is my new number because I lost my phone. I urgently need money to pay a bill. Transfer Rs 8000 to this account and please do not tell Dad."
+  },
+  {
+    "id": "demo_pattern_v1_09",
+    "title": "UPI refund / PIN theft",
+    "text": "Your refund of Rs 1500 is ready. Approve the collect payment request in your UPI app and enter your UPI PIN to receive the money."
+  },
+  {
+    "id": "demo_pattern_v1_10",
+    "title": "Guaranteed investment returns",
+    "text": "Join our VIP trading group. Our bot guarantees 300 percent returns every month. Deposit Rs 5000 today and withdraw guaranteed profit daily with zero risk."
+  },
+  {
+    "id": "demo_pattern_v1_11",
+    "title": "Remote support scam",
+    "text": "This is technical support. Your computer is infected and your bank account is at risk. Install the remote access app and share the access code so we can fix it."
+  },
+  {
+    "id": "demo_pattern_v1_12",
+    "title": "Digital arrest / police impersonation",
+    "text": "This is the cyber police. A parcel in your name contains illegal items and you are under digital arrest. Transfer Rs 50000 to our verification account now and do not contact anyone."
+  }
+]

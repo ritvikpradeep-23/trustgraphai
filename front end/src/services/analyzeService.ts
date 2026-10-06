@@ -3,6 +3,8 @@ import { appConfig } from "@/config/appConfig";
 import type { RiskLevel } from "@/types/trustgraph";
 
 export interface AnalysisResult {
+  method: string;
+  previous_report_matches: { report_id: string; report_type: string; status: string; similarity_score: number }[];
   detection_id: string;
   risk_score: number | null;
   risk_level: RiskLevel;
