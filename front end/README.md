@@ -11,7 +11,7 @@ Use Node.js 22.18+ and npm. Dependencies are pinned in `package-lock.json`.
 ## Run
 
 ```bash
-cd frontend
+cd "front end"
 npm ci
 npm run dev
 ```
