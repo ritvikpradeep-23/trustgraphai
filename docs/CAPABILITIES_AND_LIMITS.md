@@ -8,12 +8,12 @@ This covers everything built so far, so you can judge it and decide what to impr
 | Function | Status today | Where |
 |---|---|---|
 | Browser extension (shield on messages, chat scan, verdicts) | ✅ Working | `trustgraph_extension/` |
-| Scam-message check (4-signal engine) | ✅ Working, connected to the extension | `src/trustgraph/`, `POST /api/score` |
-| Similar-report search ("others reported this") | ✅ Working (downloads a small model on first use) | `POST /api/text/report`, `/api/text/analyze` |
+| Scam-message check (4-signal engine) | ✅ Working, stand-alone (the website's `/api/score` now uses PostgreSQL report matching instead) | `src/trustgraph/`, `run_website.py` |
+| Similar-report search ("others reported this") | ✅ Working, now the website's own word-similarity matching in PostgreSQL | `POST /api/detect`, `/api/reports` |
 | New-scam learning routine | ✅ Working, fresh dataset every 2 hours | `learn_cycle.py` |
 | Accuracy routine | ✅ Working, every 2 hours (needs trained models to score) | `run_cycle.py` |
-| AI-written text check | ⚠️ Built and tested, **not trained yet** | `text_detector.py`, `POST /api/text/ai-check` |
-| Deepfake video check | ⚠️ Built and tested, **not trained yet** | `video_detector.py`, `POST /api/video/analyze` |
+| AI-written text check | ⚠️ Built into the website backend and tested, **not trained yet** | `backend/app/ai/`, `POST /api/text/ai-check` |
+| Deepfake video check | ⚠️ Built into the website backend and tested, **not trained yet** | `backend/app/ai/`, `POST /api/video/analyze`, `/api/media/check` |
 | Extension showing AI-text / video results | ❌ Not connected yet (waiting for trained models) | |
 | Combining text + video + audio into one verdict | ❌ Not built (each is judged separately) | |
 
@@ -21,6 +21,14 @@ This covers everything built so far, so you can judge it and decide what to impr
 > versions from the improvement rounds (`fast_r12`) and the learning routine (`learn_*`) sit in `models/candidate/`
 > until you promote one. So the extension currently gets the weaker engine (see the numbers below). See
 > "Quickest wins" at the end.
+
+> **Since the website reorganisation** (`backend/`, PostgreSQL): the AI-text and deepfake engines live in
+> `backend/app/ai/` and answer through `TrustGraphAI.analyze` (`backend/app/services/ai_model.py`) once
+> `requirements-ai.txt` is installed and the models are trained; otherwise "pending", never a made-up score. The
+> extension's `/api/score` is now answered by the website's PostgreSQL report matching, not by the 4-signal engine
+> below, and `/api/feedback` and `/api/accuracy` were removed (the website keeps its data in PostgreSQL only). The
+> 4-signal engine and both routines still run as stand-alone scripts. Section 3 describes the older
+> sentence-model search; the website now uses `docs/DEMO_SCAM_PATTERNS.md`'s word similarity.
 
 ---
 
@@ -35,7 +43,7 @@ This covers everything built so far, so you can judge it and decide what to impr
   lookalike links, sender mismatch, impersonation, a sudden change in a sender's behaviour, and known scam wording.
 - Rules in **English, Hindi, Hinglish, Malayalam and Manglish**. Leetspeak and spacing tricks are normalised, and
   negation is understood ("we will never ask for your OTP").
-- It asks the local server (`/api/score`) for a second opinion and combines both. If the server doesn't answer
+- It asks the local server (`/api/score`, the website's report matching) for a second opinion and combines both. If the server doesn't answer
   within 3 seconds, it uses its own rules.
 - **Privacy:** the stored record has no message text (a test enforces this). History can be exported or deleted.
 
@@ -119,7 +127,7 @@ the learning routine does pick up its reports.
 
 **What it can do**
 - Every 2 hours it takes **one fresh dataset it has never used**: your files in `data/learning/datasets/` first,
-  then a new synthetic one. Reports and corrections (`/api/feedback`, `add_examples.py`) join each run.
+  then a new synthetic one. Reports and corrections you add with `add_examples.py` join each run.
 - It records how many scams it caught **before** learning them. That's your running "new-scam catch rate".
 - It learns the misses and the wrongly flagged honest messages.
 - It keeps a new version only if the safety gate passes: all tests pass, all 24 demo scenarios are unchanged, dev
@@ -152,8 +160,7 @@ the learning routine does pick up its reports.
 
 ## 5. AI-written text check
 
-**What it will do once trained:** gives each text a 0–1 "AI-written" score (`/api/text/ai-check`, and
-`ai_written` inside `/api/score`). It uses `distilroberta-base` (Hugging Face, about 82M parameters), fine-tuned on
+**What it will do once trained:** gives each text a 0–1 "AI-written" score (`/api/text/ai-check`). It uses `distilroberta-base` (Hugging Face, about 82M parameters), fine-tuned on
 **HC3**: human and ChatGPT answers to the same questions.
 
 **Limits** (expect these even after training):
@@ -168,7 +175,7 @@ the learning routine does pick up its reports.
 **Tune it:**
 - `train_text.py`: `--max-train` (more data), `--epochs` (2), `--max-length` (256), `--base-model` (e.g. a larger
   `roberta-base` if your GPU allows).
-- `.env` → `AI_TEXT_THRESHOLD` (0.5).
+- `AI_THRESHOLD` environment variable (0.5), shared with the video check.
 - Best improvement: add **real** short messages, both human and AI-written, as a CSV with
   `prepare_data.py text --csv`.
 
@@ -177,11 +184,11 @@ the learning routine does pick up its reports.
 ## 6. Deepfake video check
 
 **What it will do once trained:**
-1. It picks 16 frames spread over the whole video (the API: about 1 per second, up to 30, also spread over the
-   whole video).
+1. It picks 16 frames spread over the whole video (the API does the same). The extension's media check sends its
+   own captured frames.
 2. It crops the largest face in each frame.
 3. **EfficientNet-B0** (Hugging Face, frozen) plus **your trained layer** score each face, and the scores are
-   combined. The API's answer is likely_fake / likely_real / inconclusive.
+   averaged. The answer is LIKELY_FAKE / LIKELY_REAL, or INCONCLUSIVE when no face is found.
 
 **Limits:**
 - **Faces only:** it ignores the voice (cloned voices aren't checked), lip-sync and the background.
@@ -190,19 +197,14 @@ the learning routine does pick up its reports.
 - **Each frame is judged alone.** Motion over time (flicker, unnatural blinking) isn't used.
 - **Dataset bias:** Celeb-DF / FaceForensics++ deepfakes come from older methods. Newer generators, heavy
   WhatsApp compression and screen recordings can score much worse.
-- API limits: 50 MB and 60 seconds per video.
 
 **Tune it:**
 - `train_video.py`:
   - `--epochs`
   - `--unfreeze-last N`: lets the last blocks adapt; usually the biggest gain once you have enough data
   - `--frames`
-- `.env`:
-  - `DEEPFAKE_MODE=efficientnet` (needed after training)
-  - `FRAME_FAKE_THRESHOLD` (0.5)
-  - `VIDEO_FAKE_RATIO_THRESHOLD` (0.5)
-  - `VIDEO_MAX_FRAMES` (30)
-  - `FACE_MARGIN` (0.2)
+- Environment variables: `AI_THRESHOLD` (0.5), `EFFICIENTNET_HEAD_PATH` (`models/efficientnet_head.pt`).
+- `backend/app/ai/engines.py`: `FRAMES_PER_VIDEO` (16), `FACE_MARGIN` (0.2).
 - More varied training data (DFDC, recent deepfakes, compressed clips) helps more than any setting.
 
 ---
@@ -210,10 +212,10 @@ the learning routine does pick up its reports.
 ## 7. Accuracy routine, server and privacy
 
 - `run_cycle.py` scores **one unused test batch** per detector every 2 hours, never reuses a batch, and never trains.
-  It reports accuracy, precision, recall, F1, ROC-AUC and the confusion matrix (`show_report.py`, `/api/accuracy`).
+  It reports accuracy, precision, recall, F1, ROC-AUC and the confusion matrix (`show_report.py`).
   It needs the trained models.
-- One local server, `python run_server.py`, at `127.0.0.1:8000`. Only this computer can reach it. `/docs` lists
-  every endpoint.
+- The website backend, `python backend/run_server.py`, at `127.0.0.1:8000` (needs PostgreSQL, see
+  `TRUSTGRAPH_HANDOFF.md`). `/docs` lists every endpoint.
 - Privacy:
   - Message text is never written to the server log.
   - Reports are never returned to anyone.
@@ -238,7 +240,7 @@ the learning routine does pick up its reports.
 
 1. **Promote the improved scam engine:**
    `python scripts/promote_model.py models/candidate/fast_r12 --yes`, or the latest accepted `learn_*` version from
-   `runs/learning_best.json`. Then restart the server. This moved scams caught on the final test from 51.7% to 65.0%
+   `runs/learning_best.json`. (This is the stand-alone engine; the website doesn't use it.) This moved scams caught on the final test from 51.7% to 65.0%
    (synthetic data). `--rollback` undoes it.
 2. **Feed it real data.** Real scam messages and real honest messages, as CSVs in `data/learning/datasets/`. This
    matters more than any setting.
@@ -246,6 +248,7 @@ the learning routine does pick up its reports.
 4. **Train the two models:**
    - AI text: `prepare_data.py text --hc3`, then `train_text.py`.
    - Video: request Celeb-DF v2, then `train_video.py`, then `--unfreeze-last 2`.
-5. **Connect the extension** to the AI-text and video results once `/health` shows both as `configured`.
+5. **Show the AI-text and video results** in the extension/website once both are trained (`/api/text/ai-check`
+   answers `"available": true`).
 6. **Later:** late fusion (one verdict from text plus video), a voice-clone check, a stronger face detector, and a
    real shared reports database for the precedent signal.

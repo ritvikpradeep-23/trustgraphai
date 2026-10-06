@@ -16,7 +16,7 @@ ai_service = TrustGraphAI()
 def analyze_video(file: UploadFile = File(...)):
     result = ai_service.analyze("video", {"file": file.file, "filename": file.filename})
     return VideoAnalyzeResponse(
-        fake_score=None,
+        fake_score=result.risk_score,  # None unless a trained engine answered
         available=result.available,
         model=result.model,
         reasons=result.reasons,
@@ -27,7 +27,7 @@ def analyze_video(file: UploadFile = File(...)):
 def check_ai_written_text(request: AIWrittenCheckRequest):
     result = ai_service.analyze("ai_content", {"text": request.text})
     return ModalityCheckResponse(
-        ai_written_score=None,
+        ai_written_score=result.risk_score,  # None unless a trained engine answered
         available=result.available,
         model=result.model,
         reasons=result.reasons,

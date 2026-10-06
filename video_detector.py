@@ -14,17 +14,20 @@ default), the same file the API uses with DEEPFAKE_MODE=efficientnet.
 """
 import argparse
 import sys
+from pathlib import Path
 
 import numpy as np
 import torch
 
-from app.deepfake_engine import efficientnet_wrapper as effnet
-from app.deepfake_engine.combined_model import EfficientNetDeepfakeModel
-from app.deepfake_engine.face_detector import FaceDetector
-from app.deepfake_engine.frame_extractor import extract_evenly
-from detection_common import best_device, load_config, resolve
+# The AI engine (EfficientNet-B0 + your layer) lives in backend/app/ai, shared with the server.
+sys.path.insert(0, str(Path(__file__).resolve().parent / "backend"))
 
-FACE_MARGIN = 0.2  # same as the API (app/config.py face_margin)
+from app.ai import efficientnet_wrapper as effnet  # noqa: E402
+from app.ai.combined_model import EfficientNetDeepfakeModel  # noqa: E402
+from app.ai.engines import FACE_MARGIN  # noqa: E402  (same crop margin as the server)
+from app.ai.face_detector import FaceDetector  # noqa: E402
+from app.ai.frame_extractor import extract_evenly  # noqa: E402
+from detection_common import best_device, load_config, resolve  # noqa: E402
 
 
 def sample_frames(path: str, n: int) -> list[np.ndarray]:

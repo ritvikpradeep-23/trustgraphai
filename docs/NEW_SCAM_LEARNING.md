@@ -35,8 +35,10 @@ It is a plain Python script. It never calls Claude, and everything stays on your
 | You type one | `python add_examples.py scam "the message" --type "fake electricity bill"` |
 | An honest message that was wrongly flagged | `python add_examples.py honest "the message"` |
 | A file of many | `python add_examples.py --csv new.csv` (columns `text,label[,scam_type]`, label `scam` or `honest`) |
-| From the extension or website (once connected) | `POST /api/feedback` `{"text": ..., "label": "scam" or "not_scam", "scam_type": ...}` |
-| Reported through the API | `POST /api/text/report`: picked up automatically from `data/scam_reports.json` |
+| An older reports file | `data/scam_reports.json`, if present, is picked up automatically |
+
+Reports made on the website are stored in PostgreSQL (the website keeps all its data there) and are **not** read by
+the routine yet. Export them to a CSV and use `add_examples.py --csv` until that is connected.
 
 **Honest examples matter as much as scams.** In the report-once experiment, learning from scam reports alone made the
 engine *worse* (81% → 75% caught). Adding a few honest messages turned that into a gain (81% → 91%). All of that was
@@ -71,7 +73,7 @@ synthetic data.
      backup first. The server still needs a restart to load them.
 
 Reports go to `reports/learning/latest.md` and `reports/learning/history.csv`. `python show_report.py` shows the
-trend, and `GET /api/accuracy` includes it under `new_scam_learning`. Logs go to `logs/learn_cycle.log`.
+trend. Logs go to `logs/learn_cycle.log`.
 
 ## Settings (`detection_config.json`, `"learning"`)
 

@@ -11,39 +11,41 @@ TrustGraph checks what people receive in chats for three things:
 Everything runs **on your own laptop**. No accounts, no API keys, no cloud service; message text never leaves the
 computer.
 
-> Status: everything runs as **one local service** (`python run_server.py`, http://127.0.0.1:8000). The scam check
-> is connected to the browser extension. The AI-text and deepfake video checks have their own endpoints, and the
-> AI-text result is added to the extension's scam answers, but both detectors are **not trained on real data yet**, and
-> the extension doesn't show them yet.
+> Status: the website backend (`python backend/run_server.py`, http://127.0.0.1:8000) now has the AI-text and
+> deepfake engines built in (`backend/app/ai/`). They answer once you install `requirements-ai.txt` and train them on
+> your computer; until then they say "pending" and never make up a score. Both detectors are **not trained on real
+> data yet**. The 4-signal scam engine and the two routines run as stand-alone Python scripts.
 
 ---
 
 ## 1. The big picture
 
 ```
- Browser extension (WhatsApp / Gmail / … pages)          Test page in your browser
-        │  HTTP + JSON:  POST /api/score                        │  GET /
-        ▼                                                       ▼
- ONE local service:  python run_server.py   →   http://127.0.0.1:8000   (FastAPI, Python)
-   ├─ POST /api/score            scam check (4-signal engine in src/trustgraph)
-   │                             + "ai_written" once the AI-text model is trained
-   ├─ POST /api/text/ai-check    AI-written text? (fine-tuned distilroberta)
-   ├─ POST /api/video/analyze    deepfake video (EfficientNet-B0 + your head)
-   ├─ POST /api/text/report, /api/text/analyze   similar scam reports (sentence embeddings)
-   ├─ GET  /api/accuracy         latest results of the accuracy and learning routines
-   ├─ POST /api/feedback         "this is a scam" / "wrongly flagged" → learning inbox
-   └─ GET  /health, /docs        what is configured, list of all endpoints
+ Browser extension / React website ("front end/")
+        │  HTTP + JSON
+        ▼
+ Website backend:  python backend/run_server.py   →   http://127.0.0.1:8000   (FastAPI + PostgreSQL)
+   ├─ POST /api/detect, /api/score, /api/reports …   scam matching against PostgreSQL reports (teammate's)
+   ├─ POST /api/text/ai-check    AI-written text?   ┐  both go through TrustGraphAI.analyze
+   ├─ POST /api/video/analyze    deepfake video     ┘  (backend/app/services/ai_model.py)
+   ├─ POST /api/media/check      frames from the extension: fingerprint match + deepfake check
+   └─ GET  /health, /docs        status, list of all endpoints
+                                         │ only if installed AND trained
+                                         ▼
+                      backend/app/ai/   text: distilroberta-base fine-tuned (models/text_detector)
+                                        video: EfficientNet-B0 + your layer (models/efficientnet_head.pt)
 
- Stand-alone Python (no server):
+ Stand-alone Python (no server, needs requirements-ai.txt):
+   ├─ src/trustgraph/                     the 4-signal scam engine (run_website.py demo page)
    ├─ train_video.py / train_text.py      training
-   ├─ run_cycle.py   ← Task Scheduler every 2 hours (accuracy routine)
+   ├─ run_cycle.py   ← every 2 hours (accuracy routine)
    └─ learn_cycle.py ← every 2 hours: one fresh dataset per run (new-scam learning routine)
 ```
 
-**How the pieces talk:** the extension calls the **local service** through an **HTTP API** (JSON in, JSON out). The
-service is written in Python and loads the AI as **Python modules**. If it doesn't answer within 3 seconds the
-extension uses its built-in rules instead. `python run_website.py` (the older server with only the scam check and the
-page) still works; don't run both, they use the same port.
+**How the pieces talk:** the website and extension call the backend through an **HTTP API** (JSON in, JSON out). The
+backend loads the AI as **Python modules**, once, the first time a check needs them. The AI packages (PyTorch,
+transformers, OpenCV) are optional, in `requirements-ai.txt`, so the hosted Vercel copy stays small: without them,
+or without trained model files, each AI check answers "pending AI integration; no score was produced".
 
 ---
 
@@ -55,18 +57,19 @@ page) still works; don't run both, they use the same port.
 | **Model** | 4 signals combined: similarity to scam scripts + red-flag patterns, anomaly model (IsolationForest), continuity, precedent | Google **EfficientNet-B0** (pretrained, frozen) + **your layer** on top (1280 features → 1 score) | **distilroberta-base**, fine-tuned for human vs AI |
 | **Output** | Low / Caution / High + score + explanation | Fake score 0–1 per video (average of frame scores) | AI score 0–1 per text |
 | **Trained on** | Synthetic scam/legit messages (labelled as synthetic) | Not yet. Plan: Celeb-DF v2 | Not yet. Plan: HC3 |
-| **Code** | `src/trustgraph/` | `video_detector.py`, `train_video.py`, `app/deepfake_engine/` | `text_detector.py`, `train_text.py` |
-| **Reachable over HTTP** | ✅ `POST /api/score` | ✅ `POST /api/video/analyze` (after training, with `DEEPFAKE_MODE=efficientnet`) | ✅ `POST /api/text/ai-check`, and `ai_written` in `/api/score` (after training) |
-| **Shown by the extension** | ✅ yes | ❌ not yet | ❌ not yet (the field arrives; the extension ignores it) |
+| **Code** | `src/trustgraph/` | `backend/app/ai/` (engine), `video_detector.py`, `train_video.py` | `backend/app/ai/text_detector.py`, `text_detector.py`, `train_text.py` |
+| **Reachable over HTTP** | ❌ stand-alone (the website uses its own PostgreSQL matching) | ✅ `POST /api/video/analyze`, `POST /api/media/check` (after training) | ✅ `POST /api/text/ai-check` (after training) |
+| **Shown by the extension** | via the website's own scam matching | media check result (after training) | ❌ not yet |
 
 ### Your own model's role (deepfake video)
 
-- Your model is the **head**: one small trained layer (`app/deepfake_engine/combined_model.py`).
+- Your model is the **head**: one small trained layer (`backend/app/ai/combined_model.py`).
 - **EfficientNet-B0** is the **backbone**. It turns each face into 1,280 numbers, and the head turns those into a fake
   score. This is **transfer learning**.
 - **Stage 1** trains only the head, with EfficientNet frozen. **Stage 2** (optional) also adapts EfficientNet's last
   blocks, at a 100× lower learning rate.
-- The API can run `DEEPFAKE_MODE=mine`, `efficientnet` or `both`. `both` averages the two image models.
+- The API uses EfficientNet-B0 + your head. (The older TorchScript "mine"/"both" modes were dropped when the
+  backend was reorganised.)
 
 ---
 
@@ -135,8 +138,8 @@ Every `INTERVAL_HOURS` (default 2, set in `detection_config.json`):
 
 `learn_cycle.py`, every 2 hours after the last run finished:
 1. It takes one fresh dataset it has never used (your files in `data/learning/datasets/`, else a new synthetic one),
-   plus scams reported through `POST /api/feedback`, `POST /api/text/report` or `add_examples.py`, and honest
-   messages that were wrongly flagged.
+   plus scams and wrongly flagged honest messages you add with `add_examples.py`. (Reports made on the website are
+   stored in PostgreSQL and are not read by the routine yet.)
 2. It first records how many of the new scams the engine **already** caught. That's the live new-scam catch rate.
 3. It learns the misses, then runs the same safety gate as the improvement rounds.
 4. An accepted version waits in `models/candidate/learn_<time>/` until you promote it (or `AUTO_PROMOTE`).
@@ -162,14 +165,15 @@ Rewordings are caught far better once a few reports of that scam have been learn
 ## 7. Run it
 
 ```
-python -m pip install -r requirements.txt
-python run_server.py                          # the one local service, port 8000 (extension uses this)
+python -m pip install -r requirements-ai.txt  # website + AI packages (PostgreSQL: see TRUSTGRAPH_HANDOFF.md)
+python backend/run_server.py                  # the website backend, port 8000 (needs DATABASE_URL)
 python check_gpu.py                           # is the GPU usable?
 python prepare_data.py text --hc3             # then: video --folder <Celeb-DF folder>
 python train_video.py ; python train_text.py
 python run_cycle.py ; python show_report.py
 python install_schedule.py                    # every 2 hours
-python -m pytest -q                           # all tests
+python -m pytest tests/engine -q              # AI + routine tests (no database needed)
+python -m pytest tests -q                     # everything (needs DATABASE_URL)
 ```
 
 Details: `docs/DETECTION_ROUTINE.md`. Model setup: `models/README.md`.
@@ -178,8 +182,7 @@ Details: `docs/DETECTION_ROUTINE.md`. Model setup: `models/README.md`.
 
 ## 8. What's next
 
-1. **Train on real data** (on your laptop): HC3 and Celeb-DF, then let the routine measure. After training the video
-   model, put `DEEPFAKE_MODE=efficientnet` in `.env` so the server uses it.
-2. **Extension** (needs your decision, it changes what users see): show the `ai_written` result on verdicts, and a
-   "check a video" button that calls `/api/video/analyze`.
+1. **Train on real data** (on your laptop): HC3 and Celeb-DF, then let the routine measure. Restart the backend
+   afterwards so it loads the new models.
+2. **Extension / website** (needs your decision, it changes what users see): show the AI-text result on verdicts.
 3. **Later:** late fusion across modalities, checking audio for cloned voices.

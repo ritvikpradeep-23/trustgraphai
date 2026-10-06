@@ -142,11 +142,13 @@ def scenario_check(index: dict, bands: dict) -> dict:
 
 
 def run_tests(model_dir: str | None) -> tuple[bool, str]:
-    """The whole test suite, with the engine loading from this bundle."""
+    """The engine and routine tests (tests/engine), with the engine loading from this bundle.
+    The website tests need PostgreSQL and don't use this engine, so they are not run here."""
     env = {**os.environ, "PYTHONPATH": os.pathsep.join(["src", "."])}  # ";" on Windows, ":" elsewhere
     if model_dir:
         env["TRUSTGRAPH_MODEL_DIR"] = model_dir
-    p = subprocess.run([sys.executable, "-m", "pytest", "-q", "tests"], env=env, capture_output=True, text=True)
+    p = subprocess.run([sys.executable, "-m", "pytest", "-q", "tests/engine"], env=env,
+                       capture_output=True, text=True)
     return p.returncode == 0, p.stdout.strip().splitlines()[-1] if p.stdout.strip() else p.stderr[-300:]
 
 
