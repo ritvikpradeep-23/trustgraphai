@@ -7,7 +7,7 @@
 - `backend/run_server.py`: local launcher. Root `run_server.py` and `requirements.txt` are compatibility forwarders.
 - `trustgraph_extension/`: complete Manifest V3 extension, settings, content scripts and tests.
 - `data/`, `scripts/`, `docs/`, `tests/`: public synthetic catalog, seed/import/calibration tools, documentation and verification.
-- `api/index.py`: tiny upstream compatibility deployment shim, updated to import from `backend/`. Root Vercel Services config does not use it.
+- `api/index.py`: the Vercel Python function; imports the FastAPI app from `backend/` (no backend code here). `api/requirements.txt` mirrors `backend/requirements.txt`.
 - `web-app/` and `browser-extension/`, if present, are older prototypes, not the canonical frontend/extension.
 
 The old root `app/` is gone, not the backend: 30 of 31 original source files were moved to `backend/app/`. The obsolete SQLite fingerprint health route was replaced by PostgreSQL `/health/database` upstream. Do not recreate a competing root backend.
@@ -43,9 +43,9 @@ Image fingerprints use perceptual hashes, four indexed 16-bit bands and PostgreS
 
 ## One Vercel project
 
-The canonical root `vercel.json` uses Vercel Services: Vite frontend rooted at `front end/`, FastAPI backend rooted at `backend/` with `app.main:app` entrypoint. Ordered rewrites route API, health and docs to the backend while preserving paths; extensionless frontend navigation receives the SPA fallback. Missing API/asset paths must not become HTML.
+The root `vercel.json` is an ordinary single project (the beta Services layout deployed nothing on projects without Services: Vercel 404 on every URL). The site is built from `front end/` to static files; `api/index.py` serves `backend/app/main.py`'s FastAPI app as one Python function. Ordered rewrites route API, health and docs to the function while preserving paths; extensionless navigation receives the SPA fallback. Missing API/asset paths must not become HTML.
 
-Import the whole repository as one project with Root Directory `.`, not either subfolder. Use Services support and remove conflicting old dashboard build overrides. Set private database configuration, `VITE_USE_MOCK=false` and `VITE_API_BASE_URL=/api`. See `docs/VERCEL_DEPLOYMENT.md` for settings and post-deployment checks. No Vercel account settings, secrets or cloud deployment were changed here.
+Import the whole repository as one project with Root Directory `.`, not either subfolder. Framework Preset: Other; remove dashboard build overrides. Set private database configuration, `VITE_USE_MOCK=false` and `VITE_API_BASE_URL=/api`. See `docs/VERCEL_DEPLOYMENT.md` for settings and post-deployment checks. No Vercel account settings, secrets or cloud deployment were changed here.
 
 Keep Deployment Protection enabled until authentication/authorization is implemented. Do not expose raw submissions/history publicly. Extension access to a protected deployment requires an authorized plan; no bypass is supplied. The unpacked extension defaults to a local backend URL and must be configured separately for an authorized hosted URL.
 
