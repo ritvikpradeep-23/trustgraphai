@@ -1,0 +1,11 @@
+# Python dependencies for the Vercel function (api/index.py). Must match
+# backend/requirements.txt (tests/test_vercel_layout.py checks this).
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+python-multipart
+SQLAlchemy>=2.0,<3.0
+psycopg[binary]>=3.0,<4.0
+numpy
+Pillow
