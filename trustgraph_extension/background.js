@@ -137,12 +137,15 @@ async function fetchJson(url, { method = "GET", body, timeout = TG.TIMEOUT_SMALL
   return { ok: res.ok, status: res.status, data };
 }
 
-// POST for RemoteEngine: short timeout, one quiet retry on a network failure.
+// POST for RemoteEngine: one quiet retry when the connection fails at once
+// (a dropped connection). Not after a timeout: a slow server would only make
+// the user wait twice as long.
 async function postWithRetry(url, body, timeout) {
+  const started = Date.now();
   try {
     return await fetchJson(url, { method: "POST", body, timeout });
   } catch (err) {
-    if (!(err instanceof OfflineError)) throw err;
+    if (!(err instanceof OfflineError) || Date.now() - started > 1000) throw err;
     await new Promise((r) => setTimeout(r, 300));
     return fetchJson(url, { method: "POST", body, timeout });
   }
@@ -159,7 +162,14 @@ async function scoreMessage(text, channel, meta = {}) {
   const settings = await readSettings();
   const links = Array.isArray(meta.links) ? meta.links.slice(0, 20).filter((l) => l && typeof l.href === "string").map((l) => ({ href: l.href.slice(0, 2000), text: String(l.text || "").slice(0, 300) })) : [];
   const input = { text: String(text || "").slice(0, TG.MAX_TEXT), channel, sender: meta.sender || null, senderName: meta.senderName || null, links };
-  const verdict = await engineFor(settings).scoreMessage(input, { sensitivity: settings.sensitivity });
+  const opts = { sensitivity: settings.sensitivity };
+  const scoring = engineFor(settings).scoreMessage(input, opts);
+  // Always answer in time: if the server is still busy (e.g. a cold start),
+  // use the on-device verdict, marked as checked without the server.
+  const verdict =
+    settings.engine === "local"
+      ? await scoring
+      : await Promise.race([scoring, new Promise((r) => setTimeout(r, TG.SCORE_DEADLINE_MS)).then(() => Verdict.LocalEngine.scoreMessage(input, { ...opts, status: "offline" }))]);
   if (!verdict.empty && settings.engine === "remote") {
     await chrome.storage.local.set({ last_score_source: verdict.source === "server" || verdict.database ? "server" : verdict.offline ? "basic" : "error" });
   }
