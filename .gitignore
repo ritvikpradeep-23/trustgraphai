@@ -25,3 +25,19 @@ models/text_detector/
 data/learning/
 models/candidate/learn_*/
 runs/learning_best.json
+
+# Local-only secrets and data backups
+.env.*
+!.env.example
+!.env.*.example
+backups/
+backup/
+**/backups/
+**/backup/
+*.sql
+*.dump
+*.bak
+*.backup
+*.sqlite
+*.sqlite3
+*.db

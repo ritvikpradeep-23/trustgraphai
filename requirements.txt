@@ -1,23 +1,7 @@
-joblib==1.6.0
-numpy==2.4.6
-pandas==3.0.6
-pytest==9.1.1
-scikit-learn==1.9.1
-# --- Backend API (app/) ---
-fastapi==0.142.2
-uvicorn[standard]==0.54.0
-python-multipart==0.0.32
-pydantic-settings==2.15.0
-httpx==0.28.1
-sentence-transformers==6.1.0
-torch==2.14.1
-opencv-python-headless==4.14.0.94
-# --- EfficientNet-B0 (Hugging Face, public: no token needed) ---
-transformers==5.18.0
-torchvision==0.29.1
-pillow==12.3.0
-# --- Deepfake video + AI-text detectors and the accuracy routine ---
-# Nothing extra: torch, torchvision, transformers (with huggingface_hub, used to fetch HC3), scikit-learn,
-# pillow and OpenCV are above. OpenCV stays the "headless" build: opencv-python next to it breaks cv2.
-# The `datasets` package is deliberately NOT used: it installs pyarrow, which pandas then loads
-# automatically, and pyarrow + torch in one process crashes Python on Windows.
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+python-multipart
+SQLAlchemy>=2.0,<3.0
+psycopg[binary]>=3.0,<4.0
