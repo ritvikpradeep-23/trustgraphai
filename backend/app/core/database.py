@@ -175,6 +175,54 @@ class FingerprintRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
+class ExtensionTokenRecord(Base):
+    """A browser extension paired with this workspace (POST /api/extension/pair).
+    Only a SHA-256 of the token is stored."""
+
+    __tablename__ = "extension_tokens"
+
+    token_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class PairingCodeRecord(Base):
+    """A one-time code the web workspace shows, valid for 10 minutes."""
+
+    __tablename__ = "extension_pairing_codes"
+
+    code: Mapped[str] = mapped_column(String(16), primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+
+class ExtensionResultRecord(Base):
+    """A verdict the extension synced (its Result record: no message text,
+    no sender, no snippet; trustgraph_extension/shared/result.js)."""
+
+    __tablename__ = "extension_results"
+
+    result_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    token_id: Mapped[str] = mapped_column(ForeignKey("extension_tokens.token_id"), nullable=False, index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    risk_level: Mapped[str] = mapped_column(String(16), nullable=False)
+    score: Mapped[int] = mapped_column(Integer, nullable=False)
+    signal_ids: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    channel: Mapped[str] = mapped_column(String(40), nullable=False)
+    domain: Mapped[str] = mapped_column(String(253), nullable=False, default="")
+    feedback: Mapped[str] = mapped_column(String(16), nullable=False, default="none")
+
+
+class ExtensionHeartbeatRecord(Base):
+    """When an extension last checked in (POST /api/status), per source."""
+
+    __tablename__ = "extension_heartbeats"
+
+    source: Mapped[str] = mapped_column(String(40), primary_key=True)
+    last_seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
 def get_db() -> Generator:
     db = SessionLocal()
     try:

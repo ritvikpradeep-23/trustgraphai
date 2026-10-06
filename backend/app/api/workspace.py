@@ -3,7 +3,7 @@
 Preserve the existing /api/detections contract. Never send stored submission
 text, captions, senders, media references, or URL query strings to this UI.
 """
-from datetime import timezone
+from datetime import datetime, timedelta, timezone
 import math
 from urllib.parse import urlsplit
 
@@ -11,7 +11,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
-from app.core.database import DetectionRecord, get_db
+from app.core.database import (
+    DetectionRecord,
+    ExtensionHeartbeatRecord,
+    ExtensionResultRecord,
+    ExtensionTokenRecord,
+    get_db,
+)
 
 router = APIRouter(prefix="/workspace", tags=["Workspace"])
 
@@ -49,21 +55,68 @@ def detection_view(record):
     }
 
 
+# Verdicts synced by the paired browser extension (app/api/extension_sync.py).
+# They carry no message text: only level, score, signal types, channel, domain.
+SIGNAL_NAMES = {
+    "urgency": "Urgency pressure", "money_request": "Request for money, gift cards or crypto",
+    "credential_request": "Credential or OTP request", "suspicious_link": "Suspicious link or lookalike domain",
+    "sender_mismatch": "Sender mismatch", "impersonation": "Impersonation of a contact or brand",
+    "continuity_break": "Unusual continuity break", "pattern_similarity": "Similar to known scam patterns",
+}
+EXTENSION_CHANNELS = {"whatsapp", "gmail", "messenger", "instagram"}
+
+
+def extension_view(record):
+    ts = record.timestamp if record.timestamp.tzinfo else record.timestamp.replace(tzinfo=timezone.utc)
+    names = [SIGNAL_NAMES.get(s, s.replace("_", " ").capitalize()) for s in (record.signal_ids or [])]
+    explanation = ("Signs found by the browser extension: " + ", ".join(n.lower() for n in names) + "."
+                   if names else "The browser extension found no scam signs.")
+    return {
+        "id": record.result_id, "createdAt": ts.isoformat(),
+        "channel": record.channel if record.channel in EXTENSION_CHANNELS else "other",
+        "site": record.domain or "Browser extension",
+        "riskLevel": record.risk_level.upper(), "riskScore": max(0, min(100, record.score)) / 100,
+        "explanation": explanation,
+        "signals": [{"name": n, "score": None, "explanation": "Found by the browser extension"} for n in names],
+        "engineVersion": "browser-extension", "status": "new",
+        "feedback": "false_alarm" if record.feedback == "false_alarm" else "none",
+        "isDemo": False, "editable": False,
+    }
+
+
 @router.get("/detections")
 def detections(db: Session = Depends(get_db)):
     statement = select(DetectionRecord).options(selectinload(DetectionRecord.submission)).order_by(DetectionRecord.created_at.desc())
-    return [detection_view(record) for record in db.scalars(statement).all()]
+    items = [detection_view(record) for record in db.scalars(statement).all()]
+    items += [extension_view(record) for record in db.scalars(select(ExtensionResultRecord)).all()]
+    return sorted(items, key=lambda item: item["createdAt"], reverse=True)
 
 
 @router.get("/detections/{detection_id}")
 def detection(detection_id: str, db: Session = Depends(get_db)):
     statement = select(DetectionRecord).options(selectinload(DetectionRecord.submission)).where(DetectionRecord.detection_id == detection_id)
     record = db.scalar(statement)
-    if record is None:
-        raise HTTPException(status_code=404, detail="Detection not found")
-    return detection_view(record)
+    if record is not None:
+        return detection_view(record)
+    synced = db.get(ExtensionResultRecord, detection_id)
+    if synced is not None:
+        return extension_view(synced)
+    raise HTTPException(status_code=404, detail="Detection not found")
+
+
+# The extension sends a heartbeat every 15 s while a supported page is open.
+CONNECTED_WITHIN = timedelta(minutes=2)
 
 
 @router.get("/status")
-def status():
-    return {"state": "CONNECTED", "lastSeen": None, "authentication": False, "extensionPairing": False, "aiAvailable": False}
+def status(db: Session = Depends(get_db)):
+    last = db.scalar(select(ExtensionHeartbeatRecord.last_seen).order_by(ExtensionHeartbeatRecord.last_seen.desc()).limit(1))
+    paired = db.scalar(select(ExtensionTokenRecord.token_id).limit(1)) is not None
+    if last is not None and last.tzinfo is None:
+        last = last.replace(tzinfo=timezone.utc)
+    if last is None:
+        state = "UNKNOWN"
+    else:
+        state = "CONNECTED" if datetime.now(timezone.utc) - last <= CONNECTED_WITHIN else "NOT CONNECTED"
+    return {"state": state, "lastSeen": last.isoformat() if last else None, "authentication": False,
+            "extensionPairing": paired, "aiAvailable": False}
