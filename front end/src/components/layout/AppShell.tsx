@@ -12,7 +12,7 @@ import { ConfirmDialog } from "@/components/common/ConfirmDialog";
 import { detectionService } from "@/services/detectionService";
 import { useQueryClient } from "@tanstack/react-query";
 
-const navigation = [{ label: "Overview", href: "/app/dashboard", icon: LayoutDashboard }, { label: "Detection history", href: "/app/detections", icon: FileClock }, { label: "Analytics", href: "/app/analytics", icon: BarChart3 }, { label: "Profile", href: "/app/profile", icon: UserRound }, { label: "Settings", href: "/app/settings", icon: Settings }];
+const navigation = [{ label: "Analyze", href: "/app/analyze", icon: BarChart3 }, { label: "Overview", href: "/app/dashboard", icon: LayoutDashboard }, { label: "Detection history", href: "/app/detections", icon: FileClock }, { label: "Analytics", href: "/app/analytics", icon: BarChart3 }, { label: "Profile", href: "/app/profile", icon: UserRound }, { label: "Settings", href: "/app/settings", icon: Settings }];
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -59,11 +59,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="sidebar-top"><BrandMark /><button className="sidebar-collapse" type="button" onClick={() => setCollapsed(!collapsed)} aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} data-testid="sidebar-collapse-button">{collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}</button><button className="sidebar-mobile-close" type="button" aria-label="Close navigation" onClick={() => setMobileOpen(false)} data-testid="sidebar-mobile-close"><X size={18} /></button></div>
       <div className="sidebar-label">Workspace</div>
       <nav className="sidebar-nav" aria-label="App navigation">{navigation.map(({ label, href, icon: Icon }) => <NavLink key={href} to={href} aria-label={label} title={collapsed ? label : undefined} onClick={() => setMobileOpen(false)} className={({ isActive }) => `sidebar-link ${isActive ? "sidebar-link-active" : ""}`} data-testid={`sidebar-link-${label.toLowerCase().replaceAll(" ", "-")}`}><Icon size={18} /><span>{label}</span></NavLink>)}</nav>
-      <div className="sidebar-bottom"><div className="sidebar-extension"><span className="live-dot" /><span>Extension companion</span></div><button className="sidebar-logout" type="button" aria-label="Sign out" disabled={busy} onClick={async () => { setBusy(true); try { await logout(); navigate("/"); } catch { toast.error("Could not sign out. Try again."); } finally { setBusy(false); } }} data-testid="sidebar-logout-button"><LogOut size={17} /><span>Sign out</span></button></div>
+      <div className="sidebar-bottom"><div className="sidebar-extension"><span className="live-dot" /><span>{appConfig.USE_MOCK ? "Extension companion" : "Local backend workspace"}</span></div>{appConfig.USE_MOCK && <button className="sidebar-logout" type="button" aria-label="Sign out" disabled={busy} onClick={async () => { setBusy(true); try { await logout(); navigate("/"); } catch { toast.error("Could not sign out. Try again."); } finally { setBusy(false); } }} data-testid="sidebar-logout-button"><LogOut size={17} /><span>Sign out</span></button>}</div>
     </aside>
     <main inert={mobileOpen} className={`app-main ${collapsed ? "app-main-expanded" : ""}`}>
       <div className="app-topbar"><button ref={menuButton} type="button" className="mobile-menu-button" aria-label="Open navigation" aria-expanded={mobileOpen} aria-controls="workspace-sidebar" onClick={() => setMobileOpen(true)} data-testid="sidebar-mobile-open"><Menu size={19} /></button><div className="topbar-title">TrustGraph <span>/ Workspace</span></div><div className="topbar-user"><div className="avatar">{user?.name.slice(0, 1) || "A"}</div><span className="hidden sm:inline" data-testid="topbar-user-name">{user?.name}</span></div></div>
-      {appConfig.USE_MOCK && <DemoBanner onClear={() => setConfirmClear(true)} />}
+      {appConfig.USE_MOCK ? <DemoBanner onClear={() => setConfirmClear(true)} /> : <div className="demo-banner" role="status">Live local API · No authentication or extension pairing is configured. Keep this service private; AI detection is pending integration.</div>}
       <div className="app-content">{children}</div>
     </main>
     {appConfig.USE_MOCK && <DevPanel />}

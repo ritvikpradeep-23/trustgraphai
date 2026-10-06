@@ -1,4 +1,4 @@
-export type RiskLevel = "SAFE" | "LOW" | "CAUTION" | "HIGH" | "CRITICAL";
+export type RiskLevel = "SAFE" | "LOW" | "CAUTION" | "HIGH" | "CRITICAL" | "PENDING";
 export type Channel = "whatsapp" | "gmail" | "messenger" | "instagram" | "other";
 export type DetectionStatus = "new" | "reviewed";
 export type Feedback = "none" | "right" | "false_alarm";
@@ -8,7 +8,7 @@ export interface DetectionFilters extends DateRange { q?: string; level?: string
 
 export interface Signal {
   name: string;
-  score: number;
+  score: number | null;
   explanation: string;
 }
 
@@ -18,7 +18,7 @@ export interface Detection {
   channel: Channel;
   site: string;
   riskLevel: RiskLevel;
-  riskScore: number;
+  riskScore: number | null;
   explanation: string;
   signals: Signal[];
   confidence?: number;
@@ -30,6 +30,7 @@ export interface Detection {
   status: DetectionStatus;
   feedback: Feedback;
   isDemo: boolean;
+  editable?: boolean;
 }
 
 export interface User {
@@ -65,7 +66,8 @@ export interface AnalyticsSummary {
   caution: number;
   high: number;
   reviewed: number;
-  highRate: number;
+  highRate: number | null;
+  pending: number;
 }
 
 export interface AnalyticsPoint {

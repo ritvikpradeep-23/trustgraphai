@@ -7,6 +7,7 @@ const meta: Record<RiskLevel, { label: string; className: string; icon: typeof S
   CAUTION: { label: "CAUTION", className: "risk-caution", icon: AlertTriangle },
   HIGH: { label: "HIGH RISK", className: "risk-high", icon: ShieldAlert },
   CRITICAL: { label: "CRITICAL", className: "risk-critical", icon: ShieldAlert },
+  PENDING: { label: "PENDING", className: "risk-pending", icon: AlertTriangle },
 };
 
 export function RiskBadge({ level, small = false }: { level: RiskLevel; small?: boolean }) {

@@ -1,4 +1,9 @@
-from fastapi import FastAPI
+import os
+from pathlib import Path
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from app.api.ai_detectors import router as ai_detectors_router
 from app.api.detect import router as detect_router
@@ -9,6 +14,7 @@ from app.api.provenance import router as provenance_router
 from app.api.submission import router as submission_router
 from app.api.url_analysis import router as url_analysis_router
 from app.core.database import create_tables
+from app.api.workspace import router as workspace_router
 
 
 app = FastAPI(
@@ -25,6 +31,14 @@ app.include_router(ai_detectors_router, prefix="/api")
 app.include_router(provenance_router, prefix="/api")
 app.include_router(url_analysis_router, prefix="/api")
 app.include_router(relationships_router, prefix="/api")
+app.include_router(workspace_router, prefix="/api")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origin.strip() for origin in os.getenv("CORS_ORIGINS", "http://127.0.0.1:5173,http://localhost:5173").split(",") if origin.strip()],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
 
 
 @app.on_event("startup")
@@ -35,3 +49,25 @@ def startup() -> None:
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+# Built frontend and API can share one origin. API/docs routes keep their own
+# 404 behavior rather than being swallowed by the SPA fallback.
+FRONTEND_DIST = Path(__file__).resolve().parents[1] / "front end" / "dist"
+
+
+@app.get("/{path:path}", include_in_schema=False)
+def frontend(path: str):
+    if any(part.startswith(".") for part in Path(path).parts) or path.split("/", 1)[0] in {"api", "health", "docs", "redoc", "openapi.json"}:
+        raise HTTPException(status_code=404, detail="Not found")
+    asset = (FRONTEND_DIST / path).resolve()
+    if not asset.is_relative_to(FRONTEND_DIST.resolve()):
+        raise HTTPException(status_code=404, detail="Not found")
+    if asset.is_file():
+        return FileResponse(asset)
+    if path.startswith("assets/") or Path(path).suffix:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    index = FRONTEND_DIST / "index.html"
+    if not index.is_file():
+        raise HTTPException(status_code=503, detail='Build the frontend first: cd "front end" and npm run build. For development, run npm run dev separately.')
+    return FileResponse(index)

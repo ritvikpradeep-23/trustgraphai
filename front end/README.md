@@ -1,44 +1,43 @@
 # TrustGraph frontend
 
-The React/TypeScript workspace dashboard recovered from the Emergent preview, with corrected filters, analytics, settings, authentication-state handling, accessibility, and responsive layouts.
+React/TypeScript dashboard in the requested `front end/` folder. Live mode is the default and connects to the repository's FastAPI backend, not the Emergent preview.
 
-This app is separate from the existing plain-JavaScript browser extension in `../trustgraph_extension/`. It currently uses browser-local demo data. No production authentication, scoring backend, or live extension pairing is connected. Do not use a real password for the demo.
+## Run the combined application
 
-## Requirements
+From the repository root (Python 3.11+, Node.js 22.18+):
 
-Use Node.js 22.18+ and npm. Dependencies are pinned in `package-lock.json`.
-
-## Run
-
-```bash
+```text
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements-dev.txt
 cd "front end"
 npm ci
-npm run dev
+npm run build
+cd ..
+.venv\Scripts\python run_server.py
 ```
 
-Open the localhost URL printed by Vite. Sign in with any valid email address and a password of at least eight characters. Profile and detection preferences persist in this browser; remember-me controls whether the demo session persists across browser sessions.
+Before starting, create a local root `.env` using `.env.example` and configure `DATABASE_URL`. Use the SQLAlchemy `postgresql+psycopg://` scheme and your provider's SSL settings. Never put database credentials in a frontend environment variable or commit them.
 
-## Verify and build
+Open http://127.0.0.1:8000/app/dashboard. FastAPI serves the built frontend and API from one origin, including refreshes on nested routes.
 
-```bash
+For development, leave the backend running and run `npm run dev` from this folder. Vite proxies `/api` to port 8000; set the shell variable `TRUSTGRAPH_API_URL` for another local backend address. The client API prefix is controlled by `VITE_API_BASE_URL` (default `/api`). Restart/rebuild after environment changes.
+
+## Connected features and limits
+
+- Dashboard, search, risk/date filters, detail views, and analytics read sanitized PostgreSQL detection history through `/api/workspace/detections`.
+- The projection omits stored submission text, captions, sender identities, media references, and full URL paths/query strings. Backend explanation text is still displayed.
+- Analyze calls existing `POST /api/detect` and `POST /api/url/analyze`. It does not submit or persist messages. The existing detect API does not save results; an analysis response will not appear in history.
+- No trained AI detector is connected. Null scores appear as **pending**, never low risk or zero. URL structure checks do not establish website safety.
+- This is an **unauthenticated, private/local prototype**, not a production account system. There is no per-user history isolation. Do not publish the backend without real authorization and a security review. CORS is not authentication.
+- Workspace name and time-estimate preferences are browser-local. Notifications, password changes, pairing keys, feedback/review, history deletion, and account deletion are disabled because the backend does not implement them.
+- JSON export contains projected history and local preferences. The contact form remains a labelled local demo and does not send messages.
+- Optional offline demo: set `VITE_USE_MOCK=true` and rebuild/restart. Demo sign-in is simulated; never enter real passwords. Analyze requires live mode.
+
+## Verify
+
+```text
 npm test
 npm run build
-npm run preview
 ```
 
-Ten regression tests use isolated in-memory storage. They cover filtering, pagination, high/critical grouping, analytics totals, empty results, session persistence, profile/settings validation, account cleanup, and malformed storage. They do not delete browser data.
-
-Vite writes the static production build to `dist/`. Configure the hosting provider to serve `index.html` for application routes such as `/app/analytics`. Generated output and `node_modules/` are intentionally not committed.
-
-## Main routes
-
-- `/`: public home, with informational pages at `/features`, `/how-it-works`, `/privacy`, `/about`, and `/contact`.
-- `/login` and `/register`: demo authentication.
-- `/app/dashboard`: overview and extension status.
-- `/app/detections`: searchable, filterable result history and individual detail pages.
-- `/app/analytics`: date-range analytics.
-- `/app/profile` and `/app/settings`: account display and local preferences.
-
-The preview's extension status/key are illustrative. Password changes and extension installation are explicitly unavailable. The contact form is a local demo and does not send inquiries. Export generates a JSON download; download completion could not be verified in the available in-app browser.
-
-The service layer is in `src/services/` and demo behavior is in `src/mock/`. `src/config/appConfig.ts` currently enables mock mode. Integrating a production backend or connecting the extension is a separate task.
+Fourteen Node regression tests cover filtering, pagination, analytics, pending scores, demo storage, and local preferences. See `docs/WORKSPACE_INTEGRATION.md` in the repository root for backend verification and integration details.

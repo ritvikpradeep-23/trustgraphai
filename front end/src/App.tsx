@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { appConfig } from "@/config/appConfig";
+import { AnalyzePage } from "@/pages/AnalyzePage";
 import { Link, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { AppShell } from "@/components/layout/AppShell";
@@ -32,16 +34,17 @@ export default function App() {
       <Route path="/about" element={<PublicPage path="/about" />} />
       <Route path="/privacy" element={<PublicPage path="/privacy" />} />
       <Route path="/contact" element={<ContactPage />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/login" element={appConfig.USE_MOCK ? <LoginPage /> : <Navigate to="/app/dashboard" replace />} />
+      <Route path="/register" element={appConfig.USE_MOCK ? <RegisterPage /> : <Navigate to="/app/dashboard" replace />} />
+      <Route path="/forgot-password" element={appConfig.USE_MOCK ? <ForgotPasswordPage /> : <Navigate to="/app/dashboard" replace />} />
+      <Route path="/reset-password" element={appConfig.USE_MOCK ? <ResetPasswordPage /> : <Navigate to="/app/dashboard" replace />} />
       <Route path="/app" element={<ProtectedLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="detections" element={<DetectionsPage />} />
         <Route path="detections/:id" element={<DetectionDetailPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="analyze" element={<AnalyzePage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="*" element={<NotFound />} />

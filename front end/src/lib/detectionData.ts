@@ -32,6 +32,8 @@ export function buildAnalytics(items: Detection[], range: DateRange = {}, now = 
   const low = detections.filter(item => item.riskLevel === "LOW" || item.riskLevel === "SAFE").length;
   const caution = detections.filter(item => item.riskLevel === "CAUTION").length;
   const high = detections.filter(item => item.riskLevel === "HIGH" || item.riskLevel === "CRITICAL").length;
+  const pending = detections.filter(item => item.riskLevel === "PENDING").length;
+  const assessed = low + caution + high;
   const end = new Date(range.to ?? now);
   const earliest = detections.length ? Math.min(...detections.map(item => new Date(item.createdAt).getTime())) : dateRangeForDays(7, end).from!;
   const start = new Date(range.from ?? earliest);
@@ -52,9 +54,9 @@ export function buildAnalytics(items: Detection[], range: DateRange = {}, now = 
     };
   });
   return {
-    summary: { total: detections.length, low, caution, high, reviewed: detections.filter(item => item.status === "reviewed").length, highRate: detections.length ? Math.round(high / detections.length * 100) : 0 },
+    summary: { total: detections.length, low, caution, high, pending, reviewed: detections.filter(item => item.status === "reviewed").length, highRate: assessed ? Math.round(high / assessed * 100) : null },
     timeseries,
-    distribution: [{ label: "Low / safe", count: low, color: "#3EE6A8" }, { label: "Caution", count: caution, color: "#FFB938" }, { label: "High / critical", count: high, color: "#FF5468" }],
+    distribution: [{ label: "Low / safe", count: low, color: "#3EE6A8" }, { label: "Caution", count: caution, color: "#FFB938" }, { label: "High / critical", count: high, color: "#FF5468" }, ...(pending ? [{ label: "Pending", count: pending, color: "#7E92C3" }] : [])],
     channels: (["whatsapp", "gmail", "messenger", "instagram", "other"] as const).map(channel => ({ channel, count: detections.filter(item => item.channel === channel).length })),
   };
 }

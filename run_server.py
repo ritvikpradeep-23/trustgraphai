@@ -1,15 +1,13 @@
 """Start the TrustGraph local service: python run_server.py
 
-One server for everything, at http://127.0.0.1:8000 (the address the browser
-extension uses by default):
-  /                     test page            /api/score            scam check (extension)
-  /api/text/ai-check    AI-written text?     /api/video/analyze    deepfake video
-  /api/text/report, /api/text/analyze        similar scam reports
-  /api/accuracy         latest accuracy-routine results
-  /health               what is configured   /docs                 all endpoints, try them
+The built React frontend (front end/dist) and FastAPI API share one origin:
+  /                     React workspace     /api/detect           pending AI check
+  /api/workspace/*      sanitized history   /api/url/analyze      URL structure
+  /health               service health      /docs                 API documentation
 
-It replaces run_website.py (which still works on its own). Don't run both: they
-use the same port. 127.0.0.1 means only this computer can reach it.
+Configure DATABASE_URL in local .env and build the frontend first. The current
+backend has no authentication or trained AI engine. Keep it private/local.
+127.0.0.1 means only this computer can reach it.
 """
 import os
 import sys
