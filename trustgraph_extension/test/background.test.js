@@ -164,7 +164,7 @@ function send(msg, sender = { tab: { url: "https://web.whatsapp.com/chat?x=secre
 
   // Open in workspace -> mock web app page.
   await send({ type: TG.MSG.OPEN_WORKSPACE, id: r4.record.id });
-  check(tabsCreated.pop() === "chrome-extension://test/ui/webapp.html#/results/" + r4.record.id, "Open in workspace opens the (mock) web app result page");
+  check(tabsCreated.pop() === "chrome-extension://test/ui/webapp.html#/app/detections/" + r4.record.id, "Open in workspace opens the (mock) web app result page");
 
   // Retention: old results pruned.
   store.history.push({ ...r4.record, id: "old-result-000001", hash: undefined, timestamp: Date.now() - 40 * 86400000 });
