@@ -131,7 +131,8 @@
    "Dear customer, I'm abroad so I can't show the apartment, but pay the first month via the agency link and I'll courier the keys: http://pay91.test/portal Cheers.",
    "Subject: I'm abroad so I can't\n\nI'm abroad so I can't show the apartment, but pay the first month via the agency link and I'll courier the keys: http://help97.test/portal",
    "Your holiday villa booking is confirmed once you transfer the security deposit today. The listing site will refund it later.",
-   "Hey, To confirm your cab/hotel b00k1ng, pay the refundable deposit to th1s account; you'll get a c0nf1rm4t10n code."
+   "Hey, To confirm your cab/hotel b00k1ng, pay the refundable deposit to th1s account; you'll get a c0nf1rm4t10n code.",
+   "Hey, Hi, saw you liked the apartment. I'm out of t0wn for work, but if you s3nd a small h0ld1ng deposit I'll reserve it for you. Cheers."
   ],
   "fake customer-care number": [
    "We saw your post about the failed payment. Our support team can help, call [PHONE] and keep your banking app open. Cheers.",
@@ -154,7 +155,9 @@
    "Hello, Hi, it's the seller from the marketplace. 👍 My app shows the money didn't go. 🎉 I've sent a request; approve and you'll get it back. 🎉",
    "Hi, it's the seller from the marketplace. My app shows the money didn't go. I've sent a request; approve and you'll get it back. Cheers.",
    "Dear customer, Hi, it's the seller from the marketplace. My app shows the money didn't go. I've sent a request; approve and you'll get it back. Regards.",
-   "Hi, it's the seller fr0m the marketplace. My app sh0ws the money didn't go. I've sent a request; 4ppr0v3 and you'll get it back. Sent from my phone"
+   "Hi, it's the seller fr0m the marketplace. My app sh0ws the money didn't go. I've sent a request; 4ppr0v3 and you'll get it back. Sent from my phone",
+   "Hey, Sorry, I sent Rs. 15,000 to your number by mistake. I've raised a UPI r e q u e s t, p l e a s e approve it so it gets refunded.",
+   "Subject: Your r3fund of £2,500 is\n\nYour r3fund of £2,500 is ready. Acc3pt the payment request in your UPI app and enter the PIN to r3c31v3 it."
   ],
   "task or like-and-earn": [
    "Dear customer, Part-time job: rate hotels online and earn commission. No experience needed. Join our group: https://claim-help.example.org/jtr8w6 Sent from my phone",
@@ -189,7 +192,8 @@
    "Hey, AI trading bot se roz profit kamao. Group join karo, admin aapka account khol denge. Minimum Rs. 249. Regards.",
    "Subject: Hi, Our artificial intelligence robot\n\nHi, Our artificial intelligence robot trades for you 24/7. Members withdraw profit daily. Minimum entry $4,999. Cheers.",
    "RoboTrade Circle update: the bot closed another winning week. Members in premium access earned 40% this month. Message the admin to join. Thanks.",
-   "Hey, RoboTrade Circle update: the bot closed another winning week. M e m b e r s in VIP s i g n a l s earned 300% this quarter. Message the admin to join."
+   "Hey, RoboTrade Circle update: the bot closed another winning week. M e m b e r s in VIP s i g n a l s earned 300% this quarter. Message the admin to join.",
+   "Hi, Welcome to AI Quant Club! Our AI bot returned steady daily profit. Deposit $15,000 to unlock VIP signals."
   ],
   "digital arrest": [
    "Hello, Main CBI officer bol raha hoon. Aapke naam pe case darj hai. 💰 Video call band mat karna, warna turant giraftari hogi. Kisi ko kuch mat batana. 💰 Sent from my phone",
@@ -315,7 +319,8 @@
    "Hey, Verify you are human: follow the 3 steps shown and run the command this page has copied for you to continue to the document. Regards.",
    "Verify you are human: follow the 3 steps shown and run the command this page has copied for you to continue to the document. Thanks.",
    "Hey, verify you are human: follow the 3 steps shown and run the command this page has copied for you to continue to the document.",
-   "R0b0t ch3ck failed. Open your system's run tool and p4st3 the fix we copied, then it will restore your access. Sent from my phone"
+   "R0b0t ch3ck failed. Open your system's run tool and p4st3 the fix we copied, then it will restore your access. Sent from my phone",
+   "Hi, Your browser needs a manual upd4t3 to show th1s file. Run the c0p13d script to finish the update."
   ],
   "electricity disconnection": [
    "Hey, Your smart meter subscription has expired. Renew at help-track.invalid/hyrk5s or the power will stop.",
@@ -329,7 +334,8 @@
    "Hi, dear consumer, last month's bill is not updated. to avoid disconnection, pay the pending amount at [link].",
    "Hello, Dear consumer, last month's bill is not updated. To avoid disconnection, pay the pending amount at [LINK]. Regards.",
    "Power supply office: your power will be cut within 2 hours because a payment failed. Call [PHONE] or pay at [LINK]. Cheers.",
-   "Hey, Power supply office: your power will be cut within 2 hours because a payment failed. Call [PHONE] or pay at [LINK]. Cheers."
+   "Hey, Power supply office: your power will be cut within 2 hours because a payment failed. Call [PHONE] or pay at [LINK]. Cheers.",
+   "Your electricity bill update failed. Power will be disconnected tonight. Download the app and verify payment: electricity-bill-update.apk"
   ],
   "FASTag or toll balance": [
    "Hey, Toll notice: your tag was charged twice. Claim your refund by entering your card details here. Cheers.",
@@ -344,7 +350,8 @@
   ],
   "prize or lottery": [
    "Dear customer, global promotion result: you are a winner of a holiday package. To claim, share your account number before midnight.",
-   "Lucky customer! Spin the wheel at my-secure.invalid/vkrryt and claim your free smartphone, only delivery charges apply. Thanks."
+   "Lucky customer! Spin the wheel at my-secure.invalid/vkrryt and claim your free smartphone, only delivery charges apply. Thanks.",
+   "Hi, you've been s3l3ct3d for a l0y4lty reward from a sh0pp1ng festival. No rush, just confirm your address and we'll arrange it."
   ],
   "courier or customs parcel held": [
    "Dear customer, Your courier c0nt41ns a restricted item. To avoid l3g4l action, call the customs d3sk immediately.",
@@ -355,13 +362,16 @@
    "Subject: Hi, Are you free? I\n\nHi, Are you free? I n33d you to handle something for me d1scr33tly t0d4y. Regards."
   ],
   "sextortion": [
-   "Remember our video call last night? It was recorded. Transfer Rs 25,000 to this UPI in 1 hour or I upload it to YouTube and send it to your wife and office group."
+   "Remember our video call last night? It was recorded. Transfer Rs 25,000 to this UPI in 1 hour or I upload it to YouTube and send it to your wife and office group.",
+   "Hey, you look cute. Want to video chat? ... I recorded our call. Send $500 or I'll post it on all your socials and tag your family.",
+   "Sir aapki video call record ho gayi hai. YouTube pe upload karne se pehle 21,000 bhej do, warna Delhi police case karegi."
   ],
   "hi mum new number": [
    "Hello Papa, this is your daughter. New SIM. Fees deadline is today and my card is blocked. Please pay Rs 42,000 to this account, it's the college account. Don't call, I'm in class."
   ],
   "virtual kidnapping": [
-   "We have your son. He is with us and he is safe for now. Send Rs 5 lakh in 2 hours. If you call police or tell anyone, you will never see him again. Stay on WhatsApp."
+   "We have your son. He is with us and he is safe for now. Send Rs 5 lakh in 2 hours. If you call police or tell anyone, you will never see him again. Stay on WhatsApp.",
+   "Papa bachao! ... Sun, tera beta humare paas hai. 5 lakh taiyar rakh, police ko bataya toh khatam. Phone mat kaatna."
   ],
   "fake medical crowdfunding": [
    "Please help! 2-year-old Aarav has blood cancer and needs Rs 18 lakh for treatment by Friday. Doctors say every hour matters. Donate any amount to this UPI. God will bless you. Share to 10 groups.",
@@ -386,28 +396,37 @@
   ],
   "matrimonial scam": [
    "Hi, I liked your profile on the matrimony site. I'm a doctor in London and my parents have approved you. I sent you a gift worth 40,000 pounds but customs is asking Rs 65,000 duty. Please pay, I'll refund when I visit.",
-   "My dear, before our marriage I need to clear a small loan or my company won't release my visa. Rs 1.5 lakh only. Don't tell your parents, they will misunderstand. We are going to be husband and wife."
+   "My dear, before our marriage I need to clear a small loan or my company won't release my visa. Rs 1.5 lakh only. Don't tell your parents, they will misunderstand. We are going to be husband and wife.",
+   "I'm an NRI engineer from Canada. I liked your daughter's profile. I'm sending her a gift parcel with jewellery and dollars, please pay the customs duty of Rs 38,000 to receive it."
   ],
   "elder befriending": [
    "Hello dear, I'm a widow too and so lonely since my husband passed. Talking to you each morning makes my day. I'm in a bit of trouble with my pension transfer, could you help me with $400? You're like family now.",
    "Uncle ji, you're the only one who listens to me. My landlord is throwing me out tonight and I have nowhere to go. Can you send 8,000? I'll come and touch your feet when I get my salary.",
-   "We've been talking for months and I feel I can trust you with my secret. I'm inheriting money but need someone kind to receive it. Just send the bank fee and half is yours."
+   "We've been talking for months and I feel I can trust you with my secret. I'm inheriting money but need someone kind to receive it. Just send the bank fee and half is yours.",
+   "Aunty ji I'm the boy who helped you at the bank last week. My mother is sick, I need 5,000 urgently. Please send to this number, you are like my grandmother."
   ],
   "self-harm guilt extortion": [
    "I can't take it anymore. I owe the loan app people and they're calling my family. I'm on the bridge. Please send Rs 20,000 to this number now, it's your choice whether I live.",
-   "Babe, I'm going to hurt myself if you leave me. I just need $250 for the rent so I can calm down. Send it and prove you care."
+   "Babe, I'm going to hurt myself if you leave me. I just need $250 for the rent so I can calm down. Send it and prove you care.",
+   "You led me on for months. Now I'm depressed and I can't afford therapy. If you don't pay for it, whatever happens to me is on you."
   ],
   "curse removal astrology": [
    "Someone close to you has done black magic on your family. That is why your son is sick and business is failing. Pay Rs 21,000 for the puja tonight or the dosh will take a life within 7 days.",
    "Baba ji ne aapki kundli dekhi hai. Ghar me bahut bada sankat aane wala hai. 11,000 dakshina bhejo aaj hi, warna parivar pe sankat aayega. Kisi ko mat batana, upay kaam nahi karega.",
-   "Your aura shows a dark spirit attached to you. If you don't cleanse it, someone in your family will fall ill this month. Send 5,000 for the cleansing ritual. Tell no one."
+   "Your aura shows a dark spirit attached to you. If you don't cleanse it, someone in your family will fall ill this month. Send 5,000 for the cleansing ritual. Tell no one.",
+   "Your partner's love has been taken by someone else through vashikaran. I'll bring them back in 48 hours. Pay Rs 7,000 advance for the puja."
   ],
   "scam recovery fraud": [
-   "Cyber police refund cell: your complaint about the lost money is approved. Pay Rs 4,999 verification charge to release the refund. Final chance, otherwise the case closes."
+   "Cyber police refund cell: your complaint about the lost money is approved. Pay Rs 4,999 verification charge to release the refund. Final chance, otherwise the case closes.",
+   "We saw that you were a victim of an investment scam. Our law firm works with Interpol and has recovered $1.2M for clients. Pay a $500 retainer to start the recovery.",
+   "Recovery Department: we have located your lost funds of $14,200. To release them, a transaction fee of $700 is required.",
+   "Have you lost money to online fraud? Our team of ethical hackers can recover it. Pay only 10% upfront. Contact us on Telegram."
   ],
   "stranded friend hacked account": [
    "Hey, sorry to bother you. I'm stuck in Istanbul, got robbed and lost my wallet and passport. The embassy is closed till Monday. Can you lend me $600 for the hotel? I'll pay you back the second I'm home.",
-   "Yaar emergency hai, Goa me phas gaya hu, wallet chori ho gaya. 7,500 is UPI pe bhej de, ghar pahunch ke de dunga. Kisi aur ko mat bata, bahut sharam aa rahi hai."
+   "Yaar emergency hai, Goa me phas gaya hu, wallet chori ho gaya. 7,500 is UPI pe bhej de, ghar pahunch ke de dunga. Kisi aur ko mat bata, bahut sharam aa rahi hai.",
+   "Hey it's me! I'm on holiday in Bali and lost my wallet. Can you send $200 by Western Union? I'm messaging from my Instagram because my phone was stolen too.",
+   "Hey! Quick question, do you have PayPal? I'm in a bit of a bind abroad and need to borrow £200 till Monday."
   ],
   "threat extortion": [
    "We know where your children go to school. Pay Rs 1 lakh to this account by Friday and nothing happens. This is your only warning."
@@ -431,21 +450,25 @@
   "voice clone family emergency": [
    "Grandpa did you hear my voicemail? I'm in jail in Mexico, they took my phone. The officer here says $3,000 in gift cards gets me out tonight. Please please don't call my parents, they'll kill me.",
    "Mum my voice sounds weird because my nose is broken, I was in a fight at uni. I need £600 for the dentist before they close, can you send to my flatmate's account? Sort code 20-45-77, I'll pay back Friday x",
-   "Mom please call me back on this number only, the cops took my phone. I need $2,000 bail, the attorney's assistant will text you how to pay. Please hurry."
+   "Mom please call me back on this number only, the cops took my phone. I need $2,000 bail, the attorney's assistant will text you how to pay. Please hurry.",
+   "Beta, it's Papa. I'm at the hospital, they took my phone and wallet in the accident. Send Rs 35,000 to the doctor's number right now, don't ask questions."
   ],
   "bereavement fund scam": [
    "RIP to your mother, she was an angel. She told me before she died she wanted you to have the gold she kept with me. Courier charges and customs are 12,000, send and I'll ship it tomorrow.",
-   "Condolences on your father's passing. Our records show he had an unpaid loan of $3,800 with us. To avoid it passing to the family, settle it today by debit card over the phone."
+   "Condolences on your father's passing. Our records show he had an unpaid loan of $3,800 with us. To avoid it passing to the family, settle it today by debit card over the phone.",
+   "We are collecting for the cremation expenses of your colleague Suresh, who passed away suddenly. Please contribute via this UPI, the family is in deep distress."
   ],
   "loneliness companion scam": [
    "You told me you feel alone since your wife passed. I feel it too. I want to fly to see you but the airline won't take my card from Ghana. Can you buy the ticket? It's $1,240. I promise you'll never be lonely again.",
    "Hey handsome, I'm Anna from the dating app. My premium chat costs $9.99 per message on this site but for you I'll do it free if you verify you're real with your card here: annachat-verify.live",
    "Good morning dear, I prayed for you today. I'm stuck at the airport in Istanbul, customs want $650 for my luggage. You're the only person I trust. Please don't let me sleep here.",
-   "I haven't stopped thinking about you since we matched. My bank card is blocked abroad, could you send $200 by Apple gift card so I can eat this week? I'll pay you back when we meet."
+   "I haven't stopped thinking about you since we matched. My bank card is blocked abroad, could you send $200 by Apple gift card so I can eat this week? I'll pay you back when we meet.",
+   "You're the sweetest man I've ever met online. I want to visit you but my visa agent needs $900. Can you help me so we can finally hold hands?"
   ],
   "military romance": [
    "Darling I'm a surgeon with the UN in Yemen. I have a box with my savings, 750,000 dollars, that I'm shipping to you for safekeeping. The diplomat will call you for the delivery fee. Please trust me, this is our future.",
-   "Honey, I'm finally getting out of the base next month. They need $1,500 for my flight clearance and I can't access my pay out here. Please, I want to be with you."
+   "Honey, I'm finally getting out of the base next month. They need $1,500 for my flight clearance and I can't access my pay out here. Please, I want to be with you.",
+   "My dear, I'm a UN peacekeeper in Sudan. Our communication is monitored. Please email my commander to request my leave and pay the $1,300 fee, then I'm all yours."
   ],
   "celebrity impersonation romance": [
    "This is the private account of a famous singer you follow. I read your comments and fell for your kindness. Join my VIP fan card for $350 so we can video call, my manager will send you the link."
@@ -464,17 +487,20 @@
   ],
   "fake animal rescue": [
    "This dog will be put down at 6pm today unless someone pays the $250 vet bill 💔🐶 We've had no help. Please send to our CashApp $SaveBuddyNow, every dollar saves a life. Share and donate!",
-   "Rescue alert: puppies found in a drain need urgent surgery. Our foundation's account is under audit, please send donations to volunteer Priya's UPI. Every rupee counts!"
+   "Rescue alert: puppies found in a drain need urgent surgery. Our foundation's account is under audit, please send donations to volunteer Priya's UPI. Every rupee counts!",
+   "Injured cow found on highway, needs surgery, our gaushala has no funds. Donate to the caretaker's UPI immediately. Jai Gau Mata 🙏"
   ],
   "religious guilt donation": [
    "God put your name on my heart tonight. Sow a seed of $77 into this ministry and your debts will be cancelled within 7 days. If you ignore this you are ignoring God."
   ],
   "flattery selection scam": [
-   "Congratulations! Out of 20,000 applicants YOU were chosen for our mentorship because of your inspiring story. To confirm your seat pay the $199 enrolment deposit within 24 hours or it goes to the next person."
+   "Congratulations! Out of 20,000 applicants YOU were chosen for our mentorship because of your inspiring story. To confirm your seat pay the $199 enrolment deposit within 24 hours or it goes to the next person.",
+   "Your writing is amazing! Our publishing house has selected your work for our bestseller list. Pay $499 for editing and marketing to secure your contract."
   ],
   "fake illness sympathy": [
    "Hi, sorry to message a stranger. I'm 19 and I have leukaemia. My chemo is tomorrow and I'm short $340. I saw your post and you seemed kind. Here's my CashApp, please don't ignore me.",
-   "My little girl needs a heart operation and we've sold everything. Please, as a fellow parent, send anything to this account. God sees your heart. Don't just scroll past 😢"
+   "My little girl needs a heart operation and we've sold everything. Please, as a fellow parent, send anything to this account. God sees your heart. Don't just scroll past 😢",
+   "My wife is in ICU on a ventilator. Hospital will stop treatment tonight without 1.8 lakh. Please, as a human being, send whatever you can. Account details below."
   ],
   "upi collect request": [
    "Sir I sent 5,000 by mistake to your number instead of 500. Please check and return 4,500, I am a poor student. I've sent a request, just accept."
@@ -505,7 +531,8 @@
   ],
   "pig-butchering investment": [
    "Welcome to the SEBI-registered stock group! Our analyst's AI picks returned 312% this month. Download our institutional app to get IPO allotment, minimum 50,000.",
-   "Your account shows a profit of $63,000. To withdraw, the platform requires a security deposit of $6,300 to verify your wallet."
+   "Your account shows a profit of $63,000. To withdraw, the platform requires a security deposit of $6,300 to verify your wallet.",
+   "Hello, I'm an assistant to a famous stock market professor. He's sharing free tips in our VIP group this week only. Join and get a free stock analysis report."
   ],
   "account phishing": [
    "Your Apple ID was used to sign in on a Windows PC in Moscow. If this wasn't you, secure your account now: appleid-secure-review.com",
@@ -526,13 +553,126 @@
    "Amazon: your order of iPhone 17 Pro ($1,199) has been placed. If you didn't order this, call 1-844-xxx to cancel and receive a refund."
   ],
   "shame extortion": [
-   "Your video from the hotel room is with us. Pay 50,000 rupees in the next 3 hours or we post it to your family WhatsApp group. Don't try to block us."
+   "Your video from the hotel room is with us. Pay 50,000 rupees in the next 3 hours or we post it to your family WhatsApp group. Don't try to block us.",
+   "We have proof you visited adult websites. Pay Rs 15,000 fine to the cyber cell or an FIR will be filed and your family will be informed."
   ],
   "delivery smishing": [
    "Evri: we couldn't deliver your parcel today. Pay a small 99p fee to rebook: evri-redeliver.uk/pay"
   ],
   "esim swap": [
    "Airtel: your SIM will be deactivated in 24 hours. Upgrade to eSIM by sending the OTP you received to our executive."
+  ],
+  "booking platform phishing": [
+   "Hello from the hotel reception. Our system flagged your card for your stay next week. Kindly re-enter your card details on this secure link within 24h to keep the booking: secure-hotelpay.net"
+  ],
+  "fake travel agent": [
+   "Umrah package 2026 at half price! Only 10 seats left. Pay 50% advance to our agent's personal account today. Visa guaranteed."
+  ],
+  "zelle fraud alert": [
+   "Bank of America Fraud Alert: did you attempt a Zelle payment of $500 to Michael R? Reply YES or NO. If NO, our agent will call you to reverse it."
+  ],
+  "brand ambassador scam": [
+   "Hey babe! We love your feed and want you as a brand ambassador 💕 You get 50% off our products, just pay shipping and use your code. DM us to accept!"
+  ],
+  "influencer collab fee": [
+   "Hi, we're a big fashion brand and want to collab with you for $2,000. To receive the contract you must first buy a sample pack for $150."
+  ],
+  "account takeover friend": [
+   "Hey can you vote for me in this contest? Just log in with your Instagram on this link, it takes 2 seconds 🙏 insta-contest-vote.com"
+  ],
+  "gaming account scam": [
+   "Bro I accidentally reported your Steam account. Talk to this Steam admin on Discord to clear it, he'll need your login to verify.",
+   "Hey, I'm a Fortnite moderator. Your account was flagged for cheating. Send me your login so I can check it before it's banned."
+  ],
+  "discord nitro scam": [
+   "Discord is giving away 3 months of Nitro for free! Claim before it expires: discord-gift-nitro.com"
+  ],
+  "fake government scheme": [
+   "Free laptop scheme for students 2026. Register now with your college details and pay Rs 499 delivery charge: free-laptop-yojana.co",
+   "Your Ayushman card bonus of Rs 5 lakh is pending. Complete KYC by installing this app: ayushman_update.apk"
+  ],
+  "fake exam admission": [
+   "NEET 2026 paper leaked! Get the real paper 2 days before the exam for Rs 50,000. 100% confirmed, join our Telegram.",
+   "Get a direct admission in IIT without JEE through the NRI quota. Pay registration Rs 1 lakh to confirm your seat today."
+  ],
+  "fake government job": [
+   "Railway recruitment: you're selected for TC post without exam. Pay Rs 35,000 for training and uniform to get your joining letter."
+  ],
+  "insurance policy lapse": [
+   "Your car insurance has lapsed and you could be fined. Renew now at 60% discount by paying via this link: car-insure-renew.net"
+  ],
+  "reward points expiry": [
+   "Your HDFC credit card reward points worth Rs 7,850 expire today. Redeem now: hdfc-rewards-redeem.in"
+  ],
+  "pension scam": [
+   "Your pension will be stopped this month unless you complete your life certificate online. Share Aadhaar and bank details on this number."
+  ],
+  "tv licence scam": [
+   "TV Licensing: your direct debit failed and your licence will expire. Update your payment details today to avoid prosecution: tvlicence-renewal.uk"
+  ],
+  "dvla scam": [
+   "DVLA: your vehicle tax payment was unsuccessful. Update your details to avoid a fine of up to £1,000: dvla-vehicle-tax.co.uk"
+  ],
+  "cost of living payment scam": [
+   "DWP: you are eligible for the Cost of Living Payment of £301. Apply now before it closes: dwp-payment-apply.com"
+  ],
+  "fake puppy sale": [
+   "Beautiful Frenchie puppies for sale, $600 including shipping! Pay by Zelle to reserve. The pet transport company will contact you for insurance and crate fees."
+  ],
+  "car sale escrow": [
+   "I'm selling my 2020 Honda Civic for $6,000 because I'm deployed overseas. The car is held by eBay Motors escrow, pay with eBay gift cards and it will be delivered to you."
+  ],
+  "sugar daddy scam": [
+   "Hey sweetie, I'm a busy CEO looking for a sugar baby. I'll pay you $1,000 weekly allowance. Just send $50 for the first transfer fee to verify your account."
+  ],
+  "fake lawyer settlement": [
+   "This is Barrister James from London. A deceased client with your surname left $7.5 million with no heir. We can claim it together; please send your details and a small legal fee."
+  ],
+  "romance escalation": [
+   "My love, the doctors say I need surgery and my insurance doesn't cover it abroad. I'm so embarrassed to ask. If you could cover $2,400 I'll pay you back the moment I'm home, I swear on my mother."
+  ],
+  "fake relative abroad": [
+   "Beta, I'm your mother's cousin from Dubai, maybe you don't remember me. I'm stuck at the hospital here, they won't release me without payment. Please send 60,000, your mother will be so proud of you.",
+   "Hello dear, I'm your grandfather's old friend from Kenya. He left something for you with me. To send it I need $200 for shipping, I don't want to burden your parents."
+  ],
+  "grief pet psychic": [
+   "I'm a pet psychic and your late dog has a message for you. He's not at peace. For a $49 reading I can tell you what he wants you to know."
+  ],
+  "grief medium scam": [
+   "Your late husband came to me in a vision. He has an important message about money hidden in the house. Pay for a private session and I'll reveal it."
+  ],
+  "guilt friend crisis": [
+   "Are you there? I need help, I'm scared. Someone hacked my bank and I can't buy food for my kids. Can you send $150 to my cousin's CashApp? I'll pay you back I promise."
+  ],
+  "fear pressure arrest": [
+   "You have been accused of sending obscene messages to a woman. She is going to file a case. I am her brother. Pay 40,000 to settle or face jail."
+  ],
+  "blackmail chat screenshots": [
+   "I have screenshots of everything you said to me. Pay $800 or I send them to your girlfriend and your boss. Decide fast."
+  ],
+  "charity emotional": [
+   "Our orphanage roof collapsed in the rain and 40 children have no shelter. Please send whatever you can to the director's personal Google Pay. God will repay you."
+  ],
+  "utility shutoff": [
+   "Gas service disconnection notice: your account is past due. Pay within 1 hour by calling our billing department, or a technician will cut off your gas."
+  ],
+  "visa immigration scam": [
+   "Your US green card lottery application has been selected! Pay the $330 visa fee to proceed with your interview appointment."
+  ],
+  "overpayment fake check": [
+   "I accidentally paid you $500 extra for the camera. Can you send the extra back by Venmo before the bank reverses the payment?"
+  ],
+  "rental deposit scam": [
+   "PG available near your college, Rs 7,000/month. Owner out of town; pay one month advance + deposit online and he'll send the keys by courier."
+  ],
+  "hospital bill emergency": [
+   "Hello, your brother was admitted to our hospital after a fall. He's unconscious. We need a deposit of $1,200 for treatment. Pay through this link."
+  ],
+  "loyalty test romance": [
+   "Prove you love me by sending me the code you just received. If you don't trust me, then what are we even doing?"
+  ],
+  "widow investment befriending": [
+   "My late husband taught me forex trading, it's how I support my kids now. I'd love to teach you, start with $300 on my platform and I'll guide you."
   ]
  },
  "legit_messages": [
@@ -694,7 +834,25 @@
   "Hi team, CFO approved the vendor payment in the finance system. Please process per normal workflow once both signatures are in.",
   "Did you see the news about the digital arrest scams? Mum got a call yesterday, she hung up. Please warn your parents too.",
   "Your DHL parcel cleared customs. Duty of £12.40 was paid on your behalf by the sender.",
-  "I'm using AnyDesk so the IT team can fix my laptop, they're from our company's helpdesk, ticket #4521."
+  "I'm using AnyDesk so the IT team can fix my laptop, they're from our company's helpdesk, ticket #4521.",
+  "Booking.com: your reservation at Hotel Marina is confirmed. Check-in Oct 18, 3pm. Manage your booking in the app.",
+  "PG&E scheduled maintenance: power off Oct 12, 9am to 1pm in your area.",
+  "Got a settlement payment from that data breach lawsuit, $28 lol. Came by check.",
+  "Windows Update installed tonight. Your PC restarted at 2am.",
+  "I've told my daughter about you, she can't wait to meet you at Diwali! She's already asking what you like to eat 😄",
+  "Beta, Dubai wali mausi bol rahi hu. Next month India aa rahi hu, tumse milne zaroor aaungi.",
+  "Saw your post about losing your job, I'm so sorry. Our team is hiring, want me to refer you? Send me your CV.",
+  "Papa ye mera naya number hai, purana wala band ho gaya. Save kar lo.",
+  "Instagram: your post was removed because it may contain copyrighted music. Learn more in the app.",
+  "Hey Dad, uni's going well. Accommodation sorted, rent paid. Love you.",
+  "Shared the FBI's warning about crypto scams in the family group, read it please.",
+  "Joined a stock market course at the community college, it's pretty good.",
+  "The boy's family liked our daughter's profile on the matrimony site! Meeting next Sunday.",
+  "Hi Mum, I dropped my phone in the toilet 🙈 it's in rice now. Will call from Jake's phone later.",
+  "Sorry, wrong number!",
+  "Can I borrow your PayPal to buy concert tickets? I'll give you cash.",
+  "Vet says the dog will be fine, just a sprain.",
+  "haircut confirmed for the 21st, 2pm. Call us to reschedule."
  ],
  "normalized": false
 }
