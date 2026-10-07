@@ -150,6 +150,33 @@ RED_FLAGS = [
      r"\b(deposit|token advance|holding fee|advance)\b.{0,60}\b(hold|block|reserve|secure|confirm)\b.{0,40}"
      r"\b(flat|room|apartment|villa|studio|pg|booking|it)\b"
      r"|\b(hold|block|reserve)\b.{0,30}\b(flat|room|apartment)\b.{0,60}\b(deposit|advance)\b"),
+    # ---- Email rules (eval/email/, real phishing and advance-fee emails).
+    # An honest provider may ask you to confirm details; phishing adds "or it gets closed".
+    (0.5, "asks you to verify your account or lose it",
+     r"\b(verify|confirm|validate|re-?validate|update|re-?activate|authenticate|upgrade|restore|unlock)\b.{0,60}"
+     r"\b(e-?mail|mail ?box|web-?mail|account|password|log-?in|credentials|ownership|identity|(account|billing|personal) (details|information))\b.{0,250}"
+     r"\b(suspend\w*|de-?activat\w*|disabled?|blocked|limited|restricted|expire[ds]?|terminated|closed|shut ?down|locked|deleted|cancell?ed|lose|loss of)\b"
+     r"|\b(suspend\w*|de-?activat\w*|disabled|blocked|limited|restricted|expire[ds]?|terminated|shut ?down|locked)\b.{0,250}"
+     r"\b(verify|confirm|validate|re-?validate|re-?activate|authenticate|upgrade|restore|unlock)\b.{0,60}"
+     r"\b(e-?mail|mail ?box|web-?mail|account|password|log-?in|credentials|ownership|identity|(account|billing|personal) (details|information))\b"),
+    (0.5, "says your mail is held or your mailbox is full, and asks you to click",
+     r"\b((mail ?box|mail quota|e-?mail quota|storage|inbox)\b.{0,60}\b(full|exceeded|\d+ ?%|limit|running (out|low))"
+     # No \b after this list: scraped emails run words together ("could not be deliveredThere are").
+     r"|(messages?|e-?mails?|mails?)\b.{0,40}\b(pending|on hold|held|placed on hold|could not be delivered|undelivered|not delivered|delayed|stopped))"
+     r".{0,300}\b(click|verify|confirm|validate|release|retrieve|upgrade|increase|log ?in|sign ?in)\b"),
+    (0.4, "says your password or mailbox is about to expire, with a link to click",
+     r"\b(password|mail ?box|e-?mail account|web-?mail|account)\b.{0,40}\b(will|is going to|is about to|about to)\b.{0,20}"
+     r"\b(expire|be (suspended|deactivated|closed|deleted|shut ?down|disabled|blocked|terminated))\b.{0,200}"
+     r"\b(click|check it out|here|link|below|button)\b"),
+    (0.6, "offers you a share of a stranger's money (advance-fee fraud)",
+     r"\b(next of kin|beneficiary|foreign (partner|account)|late (husband|father|client|mr|dr)|deceased|unclaimed|dormant|abandoned)\b.{0,400}"
+     r"(\b(million|millions)\b|\bus\$|\busd\b|\$\s?\d|£\s?\d|€\s?\d)"
+     r"|(\b(million|millions)\b|\bus\$|\busd\b|\$\s?\d|£\s?\d|€\s?\d).{0,400}"
+     r"\b(next of kin|beneficiary|foreign (partner|account)|late (husband|father|client|mr|dr)|deceased|unclaimed|dormant|abandoned)\b"
+     r"|\b\d{1,2} ?(%|percent|per cent)\b.{0,60}\b(of (the|this) (total )?(sum|fund|funds|money|amount))\b"),
+    (0.5, "says you won a lottery, award or donation you never entered",
+     r"\b(won|winner|winning|selected|awarded|chosen)\b.{0,100}\b(lottery|lotto|sweepstakes?|draw|award|prize|grant|donation|jackpot)\b.{0,300}"
+     r"\b(claim|contact|fill|send|processing|reply|payment)\b"),
 ]
 _FLAGS = [(e, reason, re.compile(p, re.IGNORECASE | re.DOTALL)) for e, reason, p in RED_FLAGS]
 
