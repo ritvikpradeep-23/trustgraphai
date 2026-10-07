@@ -79,6 +79,41 @@ def test_negation_guard_doesnt_hide_real_asks(text):
     assert "asks for a one-time code, PIN or password" in _score(text).explanation
 
 
+@pytest.mark.parametrize("text, reason", [
+    ("Mum I'm fine but I hit a cyclist. Please send £700 to the man's account so he doesn't call the police.",
+     "asks you to pay someone else's account in an emergency"),
+    ("Uncle I'm in hospital after a bike crash, they need 15,000 before the scan, please send it now.",
+     "asks for money inside an emergency story"),
+    ("Hi Dad, lost my phone, this is my new number. Can you transfer $450 for my rent today?",
+     "asks for money from a new or borrowed phone"),
+    ("If you ever cared about me you'll send 8,000 tonight.",
+     "pressures you with guilt, self-harm or a threat to pay"),
+    ("Pay 20,000 by Friday or I'll send the screenshots to your wife.",
+     "threatens to contact your contacts, family or employer"),
+    ("Stay on this video call and do not inform anyone, you are under investigation.",
+     "tells you to stay on a video call (\"digital arrest\")"),
+])
+def test_emotional_pressure_rules(text, reason):
+    assert reason in _score(text).explanation
+
+
+@pytest.mark.parametrize("text", [
+    # Real emergencies and honest money talk between family must not trip the new rules.
+    "Mum, small crash on the way home, nobody hurt. Insurance is sorting it, call you later.",
+    "Dad's in hospital for a routine check, all fine. Visiting hours are 4 to 6.",
+    "Hi Dad, new number! Old phone died. Save this one, see you Sunday.",
+    "Can you lend me 2,000 till Friday? No worries if not.",
+    "Sent the 500 to your account for the cab, thanks!",
+    "Share the photos with your family too, they'll love them.",
+])
+def test_honest_emotional_messages_dont_trip_new_rules(text):
+    new_rules = {"asks you to pay someone else's account in an emergency", "asks for money inside an emergency story",
+                 "asks for money from a new or borrowed phone", "pressures you with guilt, self-harm or a threat to pay",
+                 "threatens to contact your contacts, family or employer"}
+    explanation = _score(text).explanation
+    assert not any(rule in explanation for rule in new_rules)
+
+
 def test_wording_alone_is_capped():
     # Indistinguishable from a real "new number" text: needs another signal to agree.
     signal = _score("hi mum its me, phone broke this is my new number. need to pay something today can u help")

@@ -6,6 +6,21 @@ from training.data import balance, data_hash, group_folds, load
 from training.phase0 import run
 
 
+def test_cached_red_flags_follow_rule_changes(tmp_path, monkeypatch):
+    # The cache key includes the rules, so a rule change never reuses old flag results.
+    from training import scoring
+    from trustgraph.similarity import detector as sim
+    monkeypatch.setattr(scoring, "CACHE", tmp_path)
+    monkeypatch.setattr(scoring.engine, "score_rows",
+                        lambda rows, setting: [{"continuity": 0, "precedent": 0, "anomaly": 0} for _ in rows])
+    rows = [{"id": "x", "text": "please keep this between us", "label": "scam"}]
+    before = scoring.base_signals("t", rows)["flag_keep"][0]
+    monkeypatch.setattr(sim, "RED_FLAGS", [])
+    monkeypatch.setattr(sim, "_FLAGS", [])
+    after = scoring.base_signals("t", rows)["flag_keep"][0]
+    assert before < 1.0 and after == 1.0
+
+
 def test_training_code_cannot_read_the_test_split():
     with pytest.raises(ValueError, match="never reads"):
         load("test")
