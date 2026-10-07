@@ -27,13 +27,15 @@ def engine():
         from trustgraph import paths
         paths.DEFAULT_DIR = str(AI / "models")
         from trustgraph.pipeline import score_interaction
-        from trustgraph.fusion import risk_band
         # Resolve the baseline paths without changing process working directory.
         from trustgraph.precedent import detector as precedent
         precedent.REPORTS_PATH = str(AI / "data/precedent/reports.json")
         from trustgraph.anomaly import detector as anomaly
         anomaly._load_bundle()
-        return score_interaction, risk_band
+        # Levels use the app's one score rule (app/core/risk_bands.py), not the
+        # model's calibration file, so the website and extension agree.
+        from app.core.risk_bands import band
+        return score_interaction, band
     except Exception as error:
         logger.warning("Original scam engine unavailable (%s); database matcher remains active.", type(error).__name__)
         return None
