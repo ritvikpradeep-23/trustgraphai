@@ -1,0 +1,60 @@
+{"id": "hol000", "text": "Nana it's me, I'm at the police station, I was in a fight. I need $1,200 for a lawyer right now. Send it to his account, please don't tell my parents.", "label": "scam", "group": "family emergency", "synthetic": true}
+{"id": "hol001", "text": "Mom I'm okay but I'm in the hospital after a crash. They won't treat me until $900 is paid. Send to the nurse's Venmo, I can't use my card.", "label": "scam", "group": "family emergency", "synthetic": true}
+{"id": "hol002", "text": "Bhaiya, accident ho gaya highway pe. Doosri gaadi wala 40,000 maang raha hai warna police bulayega. Uske number pe GPay karo jaldi.", "label": "scam", "group": "family emergency", "synthetic": true}
+{"id": "hol003", "text": "Uncle it's Priya, I'm stranded at the airport abroad, they lost my bag with my passport and money. Please send £400 to my friend's account so I can get a hotel.", "label": "scam", "group": "family emergency", "synthetic": true}
+{"id": "hol004", "text": "Dad, I got into trouble at uni and there's a fine of $750 today or I'm expelled. Please pay to the office account I'll send, and don't tell Mum.", "label": "scam", "group": "family emergency", "synthetic": true}
+{"id": "hol005", "text": "Grandpa, I'm in jail, please don't hang up. The officer says $2,000 bail by tonight. I'll put my lawyer on to explain how to pay.", "label": "scam", "group": "family emergency", "synthetic": true}
+{"id": "hol006", "text": "Amma, en friend accident aayi, hospital il 25,000 adakkanam. Ee number il GPay cheyyu, vegam.", "label": "scam", "group": "family emergency", "synthetic": true}
+{"id": "hol007", "text": "Mum this is my new number, I dropped my phone. Can you pay a parcel fee for me, £3.50? Link: royal-parcels.example.test. Also need £500 for rent later x", "label": "scam", "group": "new number money", "synthetic": true}
+{"id": "hol008", "text": "Hey Mom, new phone who dis 😄 jk it's me. Can you send $820 for my car repair? Garage won't release it and my bank's locked on this phone.", "label": "scam", "group": "new number money", "synthetic": true}
+{"id": "hol009", "text": "Papa ye naya number hai mera. Mujhe 35,000 ek friend ke account me bhejne hain urgent, mere account me problem hai. Abhi bhej do please.", "label": "scam", "group": "new number money", "synthetic": true}
+{"id": "hol010", "text": "Hi Dad, using a mate's phone, mine got stolen. Could you transfer £600 to my flatmate? I owe him rent and he's threatening to kick me out.", "label": "scam", "group": "new number money", "synthetic": true}
+{"id": "hol011", "text": "Sweetheart, I'm stuck at the airport in Dubai, immigration wants $900 or they'll deport me. You're the only one I trust. Please send it now.", "label": "scam", "group": "romance money", "synthetic": true}
+{"id": "hol012", "text": "Honey I've sent you a parcel with jewellery and cash for our future. The courier needs $600 clearance fee, please pay it so it isn't returned.", "label": "scam", "group": "romance money", "synthetic": true}
+{"id": "hol013", "text": "Baby, my mother is sick and the hospital won't wait. I hate asking, but could you send $1,100 tonight? I'll pay it back when my contract ends.", "label": "scam", "group": "romance money", "synthetic": true}
+{"id": "hol014", "text": "Mere pyaar, mera visa reject ho jayega agar aaj 18,000 fee nahi bhari. Tum hi meri ummeed ho, please bhej do.", "label": "scam", "group": "romance money", "synthetic": true}
+{"id": "hol015", "text": "Condolences on your husband's death. He had a loan with us of $2,600. To stop it going to collections and affecting your family, pay today by card over the phone.", "label": "scam", "group": "bereavement", "synthetic": true}
+{"id": "hol016", "text": "Sorry for your loss. I'm collecting for the funeral of our old classmate Arjun, his family can't afford it. Please send to my personal UPI, keep it quiet on the group.", "label": "scam", "group": "bereavement", "synthetic": true}
+{"id": "hol017", "text": "My little boy needs a kidney transplant in 3 days. We've sold everything. Please donate to my PayPal, every dollar is a chance at life. Don't scroll past.", "label": "scam", "group": "sympathy donation", "synthetic": true}
+{"id": "hol018", "text": "Ek gareeb maa ki madad kijiye, beti ka operation kal hai, 80,000 kam pad rahe hain. Is UPI pe jo ho sake bhejiye.", "label": "scam", "group": "sympathy donation", "synthetic": true}
+{"id": "hol019", "text": "I have screenshots of your messages to her. Pay $900 by tomorrow or your wife and your boss get everything.", "label": "scam", "group": "extortion threat", "synthetic": true}
+{"id": "hol020", "text": "Your private video is with me. Send 40,000 or I share it with all your Instagram followers and your college.", "label": "scam", "group": "extortion threat", "synthetic": true}
+{"id": "hol021", "text": "We are watching your house. Pay 2 lakh by Sunday or your family will suffer. Tell no one.", "label": "scam", "group": "extortion threat", "synthetic": true}
+{"id": "hol022", "text": "I always helped you when you needed it. Now I need 15,000 urgently and you're ignoring me? Send it to this account today, you owe me that much.", "label": "scam", "group": "guilt pressure", "synthetic": true}
+{"id": "hol023", "text": "Please, I'm begging you, they will cut my electricity and my kids are cold. Send $200 to my neighbour's CashApp, I'll pay you back next week.", "label": "scam", "group": "guilt pressure", "synthetic": true}
+{"id": "hol024", "text": "Your daughter is with us. You heard her crying. Wire $5,000 in the next hour. If you call police, you'll regret it.", "label": "scam", "group": "kidnapping", "synthetic": true}
+{"id": "hol025", "text": "Tumhara beta humare paas hai. 4 lakh tayyar rakho, kisi ko bataya toh achha nahi hoga. Account number bhej rahe hain.", "label": "scam", "group": "kidnapping", "synthetic": true}
+{"id": "hol026", "text": "Babe, prove you trust me, tell me your bank PIN. Couples shouldn't have secrets.", "label": "scam", "group": "loyalty test", "synthetic": true}
+{"id": "hol027", "text": "Your stars show a deadly danger to your husband this month. Pay Rs 11,000 for the protective havan today or the dosh will grow.", "label": "scam", "group": "religious pressure", "synthetic": true}
+{"id": "hol028", "text": "Hello Auntie, I'm the boy from the temple. My mother is in hospital, I need 6,000 urgently. Please send to my number, you are like family to me.", "label": "scam", "group": "elder befriending", "synthetic": true}
+{"id": "hol029", "text": "If you don't send me 5,000 tonight I don't know what I'll do to myself. You'll have to live with it.", "label": "scam", "group": "self-harm pressure", "synthetic": true}
+{"id": "hol030", "text": "Nana, I'm home from the station, the police just took my statement about the stolen bike. All okay.", "label": "legit", "group": "family emergency", "synthetic": true}
+{"id": "hol031", "text": "Mom, I'm at the hospital with Sam, he twisted his ankle. Insurance card worked, we're waiting for the X-ray.", "label": "legit", "group": "family emergency", "synthetic": true}
+{"id": "hol032", "text": "Bhaiya, gaadi ka chhota accident hua, bumper toota bas. Insurance claim kar diya hai.", "label": "legit", "group": "family emergency", "synthetic": true}
+{"id": "hol033", "text": "Uncle, landed safely! Bag got delayed but the airline will deliver it to the hotel tomorrow.", "label": "legit", "group": "family emergency", "synthetic": true}
+{"id": "hol034", "text": "Dad, got a parking fine on campus, $40. I'll pay it on the university website, sorry!", "label": "legit", "group": "family emergency", "synthetic": true}
+{"id": "hol035", "text": "Amma, friend nu cheriya accident, but okay aanu. Njan hospital il und, vaikunneram varam.", "label": "legit", "group": "family emergency", "synthetic": true}
+{"id": "hol036", "text": "Mum this is my new number, I dropped my phone. Getting it fixed on Monday. Love you x", "label": "legit", "group": "new number", "synthetic": true}
+{"id": "hol037", "text": "Hey Mom, new phone! Same number though, just restored everything.", "label": "legit", "group": "new number", "synthetic": true}
+{"id": "hol038", "text": "Papa ye naya number hai mera, office wala. Personal wala bhi chalu hai.", "label": "legit", "group": "new number", "synthetic": true}
+{"id": "hol039", "text": "Hi Dad, could you send me some money for books this month? Happy to show you the receipts.", "label": "legit", "group": "lending", "synthetic": true}
+{"id": "hol040", "text": "Sent you the 600 I owed for the concert, check your account.", "label": "legit", "group": "lending", "synthetic": true}
+{"id": "hol041", "text": "Can I borrow 500 for the cab? Left my wallet at home, will pay back tonight.", "label": "legit", "group": "lending", "synthetic": true}
+{"id": "hol042", "text": "Landed in Dubai! Hotel is amazing. Call you after dinner ❤️", "label": "legit", "group": "romance", "synthetic": true}
+{"id": "hol043", "text": "I sent you a little parcel, should arrive Thursday. Don't open it before your birthday!", "label": "legit", "group": "romance", "synthetic": true}
+{"id": "hol044", "text": "My mum's in hospital for a small procedure. I'll be with her today, talk tonight?", "label": "legit", "group": "romance", "synthetic": true}
+{"id": "hol045", "text": "Condolences on Raj's passing. The bank asked for the death certificate to close his account, I can come with you.", "label": "legit", "group": "grief", "synthetic": true}
+{"id": "hol046", "text": "We're collecting for flowers for Arjun's funeral at the office, I'll take cash at my desk.", "label": "legit", "group": "grief", "synthetic": true}
+{"id": "hol047", "text": "Little Aarav's transplant was a success! The hospital's charity page has updates, thank you for all the support.", "label": "legit", "group": "illness", "synthetic": true}
+{"id": "hol048", "text": "Beti ka operation kal hai, dua kijiye. Insurance se sab cover ho gaya hai.", "label": "legit", "group": "illness", "synthetic": true}
+{"id": "hol049", "text": "Haven't heard from your daughter since this morning, is she with you? Just checking.", "label": "legit", "group": "worry", "synthetic": true}
+{"id": "hol050", "text": "I've been feeling so low lately. Don't worry, I've booked a therapist. Just wanted you to know.", "label": "legit", "group": "venting", "synthetic": true}
+{"id": "hol051", "text": "I'm begging you, please stop sending me memes during work 😂", "label": "legit", "group": "venting", "synthetic": true}
+{"id": "hol052", "text": "The havan for Papa's health is on Sunday, 8am at home. Please come.", "label": "legit", "group": "religious", "synthetic": true}
+{"id": "hol053", "text": "Auntie, I'll pick you up for the temple on Sunday. Mum says hi!", "label": "legit", "group": "elder", "synthetic": true}
+{"id": "hol054", "text": "Don't tell anyone yet, but we're pregnant!! 🥹", "label": "legit", "group": "secrecy", "synthetic": true}
+{"id": "hol055", "text": "Keep this between us, I'm applying for a new job. Wish me luck!", "label": "legit", "group": "secrecy", "synthetic": true}
+{"id": "hol056", "text": "Client meeting moved to 4pm. Can you send me the deck before then?", "label": "legit", "group": "work", "synthetic": true}
+{"id": "hol057", "text": "Payroll will be a day late this month because of the bank holiday. Sorry everyone.", "label": "legit", "group": "work", "synthetic": true}
+{"id": "hol058", "text": "Rs 15,000 debited from your account to UPI/rentpay. If not done by you, call your bank's helpline on the back of your card.", "label": "legit", "group": "bank alert", "synthetic": true}
+{"id": "hol059", "text": "Your OTP for the transfer is 482193. Never share it with anyone, including bank staff.", "label": "legit", "group": "otp", "synthetic": true}

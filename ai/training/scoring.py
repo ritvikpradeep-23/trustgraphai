@@ -9,6 +9,8 @@ continuity, precedent and anomaly scores don't depend on the candidate, so
 they are computed once and cached; only similarity and the classifier change.
 """
 import csv
+import hashlib
+import json
 import math
 import pickle
 from pathlib import Path
@@ -52,7 +54,9 @@ def base_signals(name: str, rows: list[dict]) -> dict[str, np.ndarray]:
                 "precedent": np.array([s["precedent"] for s in sc]),
                 "anomaly": np.array([s["anomaly"] for s in sc]),
                 "flag_keep": np.array([math.prod(1.0 - e for e, _ in f) for f in flags])}
-    return _cached(f"base_{name}_{len(rows)}", make)
+    # The red-flag rules are part of the key: after a rule change, old cached flags must not be reused.
+    rules = hashlib.sha1(json.dumps(sim.RED_FLAGS).encode()).hexdigest()[:8]
+    return _cached(f"base_{name}_{len(rows)}_{rules}", make)
 
 
 def similarity_scores(index: dict, rows: list[dict], flag_keep: np.ndarray) -> tuple[np.ndarray, np.ndarray]:

@@ -96,6 +96,60 @@ RED_FLAGS = [
      r"\b(processing|release|clearance|administration|admin|withdrawal|handling|redelivery|storage|background[- ]check|"
      r"activation|onboarding|unlock(ing)?) (fee|tax|charge|deposit)s?\b"
      r"|\bpay\b.{0,40}\b(upfront|up front|in advance|before (you|your) (start|first day))\b"),
+    # ---- Emotional-pressure rules (eval/emotional/). A family emergency is often real;
+    # the tell is paying SOMEONE ELSE's account, or money demanded with guilt or a threat.
+    (0.5, "asks you to pay someone else's account in an emergency",
+     r"\b(send|transfer|pay|wire|gpay|venmo|zelle)\b.{0,40}\b(to|on|into|in|via) "
+     # Anyone else's account: "his", "the man's", "my friend's", "the doctor's".
+     r"(his|her|their|(the|this|that|my|a) \w+'s|the (doctor|nurse|lawyer|attorney|inspector|officer|receptionist|clinic|garage|police)) "
+     r"(account|upi|gpay|zelle|venmo|cash ?app|paypal|number|wallet)\b"
+     # Hinglish / Manglish: "unke UPI pe bhejo", "uske number pe GPay karo", "ee number il GPay cheyyu".
+     r"|\b(unke|uske|unka|uska|inke|iske) (upi|number|account|gpay)\b.{0,15}\b(pe|par|me|mein)\b.{0,20}\b(bhej\w*|gpay|transfer|daal\w*|kar\w*)\b"
+     r"|\bee (number|account)\b.{0,10}\b(il|ilekku)\b.{0,15}\b(gpay|ayakk\w*|cheyy\w*)\b"),
+    (0.4, "asks for money inside an emergency story",
+     r"\b(accident|crash(ed)?|hospital|icu|ambulance|surgery|operation|stitches|arrested|jail|bail|police station|"
+     r"stranded|stuck at|deport\w*|fine of)\b.{0,160}"
+     r"(\b(send|transfer|wire|pay|bhej\w*|gpay)\b.{0,40}(\$|£|€|₹|\brs\.?\b|\d|lakh|thousand|\baccount\b|\bupi\b|\bcash ?app\b|\bzelle\b|\bvenmo\b)"
+     # The amount can come first: "they need 15,000 before the scan, please send it now".
+     r"|(\$|£|€|₹|\brs\.?\s?)?\d[\d,.]*\s?(k|lakh|thousand)?\b.{0,60}\b(send|transfer|wire|pay|bhej\w*|gpay)\b"
+     # Hinglish puts the account first: "is account pe bhej dijiye".
+     r"|\b(account|upi)\b.{0,20}\b(bhej\w*|transfer)\b)"),
+    # "New number" is common and honest; a new number plus a money ask is the classic "Hi Mum" scam.
+    (0.5, "asks for money from a new or borrowed phone",
+     r"\b(new number|naya number|friend'?s phone|mate'?s phone|someone else'?s phone|"
+     r"(old |my )?phone (broke|died|smashed|got stolen|was stolen|is broken)|(lost|dropped|broke|smashed) my phone)\b.{0,200}"
+     r"\b(pay|send|transfer|lend|bhej\w*)\b.{0,60}(\$|£|€|₹|\brs\.?\b|\d|lakh|\b(bill|invoice|rent|fee|account|payment)\b)"),
+    (0.6, "pressures you with guilt, self-harm or a threat to pay",
+     r"\b(if you don'?t|unless you)\b.{0,30}\b(send|pay|transfer)\b.{0,80}\b(myself|kill myself|hurt myself|what i'?ll do)\b"
+     r"|\b(if you (ever |really )?(cared|loved|love)|you owe me)\b.{0,80}\b(send|pay|transfer)\b"
+     r"|\b(send|pay|transfer)\b.{0,80}\b(if you (ever |really )?(cared|loved|love)( me)?|you owe me)\b"),
+    # ---- Proposed rules A-H (reports/fast/proposed_rules.md), applied after review.
+    (0.7, "asks for a PIN or approval to RECEIVE money",
+     r"\b(scan|approve|accept|enter|type)\b.{0,60}\b(upi )?pin\b.{0,60}\b(receive|get|credit|refund|come back|aa jayenge|varum)\b"
+     r"|\bapprove\b.{0,30}\b(the |this |my )?(incoming |payment |collect |upi )?request\b.{0,60}\b(receive|credit|refund|get it|back|reverse)"),
+    (0.8, "asks you to run a command or script it copied for you",
+     r"\b(run|paste|execute)\b.{0,50}\b(command|script|code|fix)\b.{0,50}\b(copied|clipboard)\b"
+     r"|\b(copied|clipboard)\b.{0,50}\b(command|script|code)\b.{0,40}\b(run|paste|execute)\b"),
+    (0.7, "asks to connect a wallet or share a recovery phrase",
+     r"\b(connect|link)\b (your )?wallet\b|\b(recovery|seed) (phrase|words)\b|\bprivate key\b"),
+    (0.7, "tells you to stay on a video call (\"digital arrest\")",
+     r"\b(stay|remain|keep)\b (on )?(this|the) (video )?call\b|\bdo not (disconnect|cut|end) (the )?(video )?call\b"
+     r"|\bkeep (the|your) (camera|video) on\b|\bdigital arrest\b"),
+    # Only as a threat ("or I'll send it to your family"), not "share the code with your family too".
+    (0.6, "threatens to contact your contacts, family or employer",
+     r"(\bor\b|\bunless\b|\botherwise\b|\bi'?ll\b|\bi will\b|\bwe'?ll\b|\bwe will\b|\bgoing to\b).{0,30}"
+     r"\b(message|call|contact|send|share|post|forward|tell)\b.{0,40}"
+     r"\b(all |everyone in )?(your|ur) (contacts|contact list|family|employer|boss|office|wife|husband)\b"),
+    (0.5, "asks you to pay to unlock, release or withdraw something",
+     r"\b(pay|deposit|recharge|transfer)\b.{0,50}\bto (unlock|release|restore|withdraw|reactivate)\b"),
+    (0.4, "threatens to cut a service or block an account today",
+     r"\b(power|electricity|current|supply|account|sim|tag|fastag|licen[cs]e)\b.{0,40}"
+     r"\b(cut|disconnected|suspended|blocked|blacklisted|deactivated|frozen)\b.{0,40}"
+     r"\b(today|tonight|within \d+ hours|immediately|in \d+ hours)\b"),
+    (0.4, "asks for a deposit or advance to hold a rental or booking",
+     r"\b(deposit|token advance|holding fee|advance)\b.{0,60}\b(hold|block|reserve|secure|confirm)\b.{0,40}"
+     r"\b(flat|room|apartment|villa|studio|pg|booking|it)\b"
+     r"|\b(hold|block|reserve)\b.{0,30}\b(flat|room|apartment)\b.{0,60}\b(deposit|advance)\b"),
 ]
 _FLAGS = [(e, reason, re.compile(p, re.IGNORECASE | re.DOTALL)) for e, reason, p in RED_FLAGS]
 
