@@ -307,7 +307,7 @@ Run in a **fresh Chrome profile** (chrome://settings/manageProfile → Add).
 | 7 | **Delete all history** | Confirmation dialog, focus on Cancel; after Delete all, the empty state |
 | 8 | Test chat (`test/test-chat.html`): hover the gift-card bubble, click the shield | Pulsing ring, then the panel; the page narrows instead of being covered |
 | 9 | In the panel: switch **Save to history** off | The result disappears from History; Open in workspace greys out |
-| 10 | Click the round button (launcher) | Chat verdict "Across the N messages…", signals with "Jump to message", Continuity and similarity |
+| 10 | (Only with `TG.SHOW_LAUNCHER = true`) Click the round button (launcher) | Chat verdict "Across the N messages…", signals with "Jump to message", Continuity and similarity |
 | 11 | Select text on any site → right-click **Check with TrustGraph** | Panel overlays the page |
 | 12 | Popup → **Sign in** → demo web app → **Connect this browser** | Status chip "Signed in"; new checks appear in the demo web app |
 | 13 | `mock_server.py` (then `--new-shape`, then `--fail`) and check again | "TrustGraph server + on-device rules"; with --fail, "Server error · on-device rules only" |
@@ -321,7 +321,7 @@ Run in a **fresh Chrome profile** (chrome://settings/manageProfile → Add).
 ```bash
 pip install pillow                       # only needed to redraw icons
 python3 trustgraph_extension/scripts/make_icons.py  # icons/*.png + store/assets/promo-440x280.png
-python3 trustgraph_extension/scripts/build_zip.py   # -> dist/trustgraph-0.3.1.zip
+python3 trustgraph_extension/scripts/build_zip.py   # -> dist/trustgraph-0.3.2.zip
 ```
 
 `build_zip.py` strips the dev-only test-page entry and leaves out `test/`,

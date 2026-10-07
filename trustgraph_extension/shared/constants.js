@@ -11,7 +11,7 @@
 
   const TG = root.TG || {};
 
-  TG.VERSION = "0.3.1";
+  TG.VERSION = "0.3.2";
 
   // Settings the user can change. Only keys the user has actually changed are
   // saved in chrome.storage.local; everything else falls back to these.
@@ -79,6 +79,11 @@
   // default Balanced sensitivity. The rules engine, the verdict bands and
   // the panel all read this one value; High stays at 70.
   TG.FLAG_THRESHOLD = 35;
+
+  // The floating round "Scan this chat" button on chat sites. Off: checks
+  // start from the hover shield on one message, or a text selection
+  // (right-click "Check with TrustGraph" / the popup's button).
+  TG.SHOW_LAUNCHER = false;
 
   // Chat scans on sites whose adapter sets `scanFilters` (WhatsApp): what
   // never reaches the model. A message is long enough with at least
