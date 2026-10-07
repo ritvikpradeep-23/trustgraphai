@@ -42,7 +42,7 @@ export const mockDetections: Detection[] = Array.from({ length: 60 }, (_, index)
     channel: site[0],
     site: site[1],
     riskLevel,
-    riskScore: riskLevel === "HIGH" ? 0.78 + (index % 6) / 100 : riskLevel === "CAUTION" ? 0.43 + (index % 8) / 100 : 0.08 + (index % 28) / 100,
+    riskScore: riskLevel === "HIGH" ? 0.78 + (index % 6) / 100 : riskLevel === "CAUTION" ? 0.43 + (index % 8) / 100 : 0.04 + (index % 20) / 100,
     explanation,
     signals: [
       { name: "continuity", score: activeSignals.includes("continuity") ? 0.84 : 0, explanation: activeSignals.includes("continuity") ? "The conversation has continuity with known context." : "Continuity signal is not active yet." },
