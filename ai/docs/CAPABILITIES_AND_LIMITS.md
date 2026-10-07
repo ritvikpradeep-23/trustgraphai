@@ -13,9 +13,8 @@ This covers everything built so far, so you can judge it and decide what to impr
 | New-scam learning routine | ✅ Working, fresh dataset every 2 hours | `learn_cycle.py` |
 | Accuracy routine | ✅ Working, every 2 hours (needs trained models to score) | `run_cycle.py` |
 | AI-written text check | ⚠️ Built into the website backend and tested, **not trained yet** | `backend/app/ai/`, `POST /api/text/ai-check` |
-| Deepfake video check | ⚠️ Built into the website backend and tested, **not trained yet** | `backend/app/ai/`, `POST /api/video/analyze`, `/api/media/check` |
-| Extension showing AI-text / video results | ❌ Not connected yet (waiting for trained models) | |
-| Combining text + video + audio into one verdict | ❌ Not built (each is judged separately) | |
+| Extension showing AI-text results | ❌ Not connected yet (waiting for a trained model) | |
+| Combining the scam and AI-text answers into one verdict | ❌ Not built (each is judged separately) | |
 
 > **Important when judging:** the live engine is still the **starting ("demo-safe") version**. The improved
 > versions from the improvement rounds (`fast_r12`) and the learning routine (`learn_*`) sit in `models/candidate/`
@@ -25,8 +24,8 @@ This covers everything built so far, so you can judge it and decide what to impr
 > **How the website uses this** (`backend/`, PostgreSQL; all AI files are in this `ai` folder):
 > - **Scam check** (`/api/detect`, `/api/score`, Analyze): records first. If a stored report matches, that is the
 >   answer. Otherwise the 4-signal engine below scores it (`backend/app/ai/scam_engine.py`, loading `ai/models`).
-> - **AI-text and deepfake** answer through `TrustGraphAI.analyze` (`backend/app/services/ai_model.py`) once
->   `requirements-ai.txt` is installed and the models are trained; otherwise "pending", never a made-up score.
+> - **AI-text** answers through `TrustGraphAI.analyze` (`backend/app/services/ai_model.py`) once
+>   `requirements-ai.txt` is installed and the model is trained; otherwise "pending", never a made-up score.
 > - `/api/feedback` and `/api/accuracy` were removed (the website keeps its data in PostgreSQL only). Both routines
 >   run as scripts in this folder. Section 3 describes the older sentence-model search; the website now uses the
 >   word similarity in the repository's `docs/DEMO_SCAM_PATTERNS.md`.
@@ -52,7 +51,7 @@ This covers everything built so far, so you can judge it and decide what to impr
 - It reads what the page shows. If a site changes its layout, the shield can disappear until the site's selectors
   are updated (the extension has fallbacks, but no guarantee).
 - **Text only.** It doesn't look at images, voice notes or videos in a chat.
-- It doesn't yet show the AI-text or video results, even though the server can produce them.
+- It doesn't yet show the AI-text result, even though the server can produce it.
 
 **Tune it**
 - Extension settings → **Sensitivity**: `relaxed` / `balanced` / `strict`. Strict flags more scams but also more
@@ -176,41 +175,13 @@ the learning routine does pick up its reports.
 **Tune it:**
 - `train_text.py`: `--max-train` (more data), `--epochs` (2), `--max-length` (256), `--base-model` (e.g. a larger
   `roberta-base` if your GPU allows).
-- `AI_THRESHOLD` environment variable (0.5), shared with the video check.
+- `AI_THRESHOLD` environment variable (0.5).
 - Best improvement: add **real** short messages, both human and AI-written, as a CSV with
   `prepare_data.py text --csv`.
 
 ---
 
-## 6. Deepfake video check
-
-**What it will do once trained:**
-1. It picks 16 frames spread over the whole video (the API does the same). The extension's media check sends its
-   own captured frames.
-2. It crops the largest face in each frame.
-3. **EfficientNet-B0** (Hugging Face, frozen) plus **your trained layer** score each face, and the scores are
-   averaged. The answer is LIKELY_FAKE / LIKELY_REAL, or INCONCLUSIVE when no face is found.
-
-**Limits:**
-- **Faces only:** it ignores the voice (cloned voices aren't checked), lip-sync and the background.
-- The OpenCV face detector misses side profiles, small or dark faces. A video with no detectable face is
-  "inconclusive", never a guess.
-- **Each frame is judged alone.** Motion over time (flicker, unnatural blinking) isn't used.
-- **Dataset bias:** Celeb-DF / FaceForensics++ deepfakes come from older methods. Newer generators, heavy
-  WhatsApp compression and screen recordings can score much worse.
-
-**Tune it:**
-- `train_video.py`:
-  - `--epochs`
-  - `--unfreeze-last N`: lets the last blocks adapt; usually the biggest gain once you have enough data
-  - `--frames`
-- Environment variables: `AI_THRESHOLD` (0.5), `EFFICIENTNET_HEAD_PATH` (`models/efficientnet_head.pt`).
-- `backend/app/ai/engines.py`: `FRAMES_PER_VIDEO` (16), `FACE_MARGIN` (0.2).
-- More varied training data (DFDC, recent deepfakes, compressed clips) helps more than any setting.
-
----
-
-## 7. Accuracy routine, server and privacy
+## 6. Accuracy routine, server and privacy
 
 - `run_cycle.py` scores **one unused test batch** per detector every 2 hours, never reuses a batch, and never trains.
   It reports accuracy, precision, recall, F1, ROC-AUC and the confusion matrix (`show_report.py`).
@@ -228,8 +199,7 @@ the learning routine does pick up its reports.
 
 1. **No real-world validation yet.** Almost all numbers are synthetic data. The only real-data check is 4,827 UK
    text messages, used for false alarms only.
-2. **Not multimodal.** Text, video and (missing) audio are judged separately; a scam with a deepfake video attached
-   isn't scored as one thing.
+2. **Not multimodal.** Only text is checked, and the scam and AI-text answers are judged separately.
 3. **No voice or image checks.** Voice-clone calls and fake screenshots aren't covered.
 4. **It depends on your laptop:** server, routines and models run locally. Nothing protects users while it's off,
    except the extension's own rules.
@@ -247,10 +217,8 @@ the learning routine does pick up its reports.
 2. **Feed it real data.** Real scam messages and real honest messages, as CSVs in `data/learning/datasets/`. This
    matters more than any setting.
 3. **Review the 8 proposed red-flag rules** in `reports/fast/proposed_rules.md`. They target known misses.
-4. **Train the two models:**
-   - AI text: `prepare_data.py text --hc3`, then `train_text.py`.
-   - Video: request Celeb-DF v2, then `train_video.py`, then `--unfreeze-last 2`.
-5. **Show the AI-text and video results** in the extension/website once both are trained (`/api/text/ai-check`
-   answers `"available": true`).
-6. **Later:** late fusion (one verdict from text plus video), a voice-clone check, a stronger face detector, and a
-   real shared reports database for the precedent signal.
+4. **Train the AI-text model:** `prepare_data.py text --hc3`, then `train_text.py`.
+5. **Show the AI-text result** in the extension/website once it is trained (`/api/text/ai-check` answers
+   `"available": true`).
+6. **Later:** one verdict from the scam and AI-text answers, a voice-clone check, and a real shared reports database
+   for the precedent signal.

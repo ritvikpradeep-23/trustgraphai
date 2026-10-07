@@ -37,8 +37,8 @@ PYTHONPATH=src python scratch/similarity_check.py 99   # independent check, any 
 # TrustGraph backend API (`app/`)
 
 One FastAPI service for the website, the browser extension and future messaging bots. Bots and the
-extension only carry messages here (`app/integrations/base.py`). All scam and deepfake logic lives in
-`app/scam_engine` and `app/deepfake_engine`.
+extension only carry messages here (`app/integrations/base.py`). All scam logic lives in
+`app/scam_engine`.
 
 ## Run it
 
@@ -50,31 +50,26 @@ uvicorn app.main:app --port 8001     # then open http://127.0.0.1:8001/docs
 ```
 
 The first text request downloads the `all-MiniLM-L6-v2` embedding model (~90 MB, once), so it needs internet.
-The deepfake endpoint needs a model file; see `ai/models/README.md`. Without one it answers 503.
-`DEEPFAKE_MOCK=1` enables a fake model for demos, and its answers say `"mock": true`.
 
 ## Endpoints
 
 | Method | Path | Body | Answer |
 |---|---|---|---|
-| GET | `/health` | none | `status`, `reports_stored`, `embedding_model_loaded`, `deepfake_model` |
+| GET | `/health` | none | `status`, `reports_stored`, `embedding_model_loaded` |
 | POST | `/api/text/report` | `{"text": "...", "source": "website"}` | `201 {"id": "...", "status": "stored"}` |
 | POST | `/api/text/analyze` | `{"text": "...", "source": "extension"}` | `{"risk_level": "LOW/MEDIUM/HIGH", "top_similarity": 0.91, "similar_reports": 2, "matches": [{"id", "similarity", "source"}]}` |
-| POST | `/api/video/analyze` | multipart form field `file` (MP4) | `{"result": "likely_fake/likely_real/inconclusive", "confidence", "frames_examined", "faces_examined", "fake_frame_ratio"}` (+ `"mock": true` with the mock) |
 
-Every error has the same shape, for example `{"error": "model_not_configured", "detail": "..."}`:
+Every error has the same shape, for example `{"error": "empty_text", "detail": "..."}`:
 
 | Code | Error |
 |---|---|
-| 413 | `text_too_long`, `file_too_large` |
-| 415 | `unsupported_media_type` |
-| 422 | `invalid_request`, `empty_text`, `empty_file`, `video_unreadable`, `video_too_long` |
-| 503 | `embedding_model_unavailable`, `model_not_configured` |
+| 413 | `text_too_long` |
+| 422 | `invalid_request`, `empty_text` |
+| 503 | `embedding_model_unavailable` |
 
 ```bash
 curl -X POST localhost:8001/api/text/analyze -H "Content-Type: application/json" \
      -d '{"text": "Your bank account is blocked, verify at the link", "source": "website"}'
-curl -F "file=@clip.mp4" localhost:8001/api/video/analyze
 ```
 
 ## Privacy

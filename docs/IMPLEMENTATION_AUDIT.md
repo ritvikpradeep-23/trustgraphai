@@ -31,7 +31,7 @@ Settings now reads account identity from the server rather than claiming a brows
 | Forgot-password email | A configured, verified email-delivery/recovery workflow; signed-in password changes now work separately |
 | Notifications | An actual notification delivery service; disabled toggles do not pretend to deliver alerts |
 | Contact page | A delivery destination/backend inquiry workflow and agreed handling of personal data; the form is clearly labelled demo-only |
-| AI-written / deepfake / audio | Applicable trained artifacts and optional runtimes. Audio has no implemented trained adapter. Parameters alone cannot supply missing models |
+| AI-written / audio | Applicable trained artifacts and optional runtimes. Audio has no implemented trained adapter. Parameters alone cannot supply missing models |
 | Experimental scam text classifier | `ai/models/candidate/classifier_v1` is marked rejected by its own evaluation. It was not activated without informed experimental-use approval |
 | Extension-result review from website | Synced extension snapshots remain read-only. Extension false-alarm feedback can be submitted by the extension; website-authored checks now support both review and feedback |
 | URL analysis | Structural inspection only; does not visit or verify a site, and is not saved as a scam-message detection |

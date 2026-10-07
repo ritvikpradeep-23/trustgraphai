@@ -134,9 +134,7 @@ class DatabaseTests(unittest.TestCase):
         self.assertTrue(copy["fingerprint"]["db_match"])
         self.assertEqual(copy["fingerprint"]["matched_record_id"], self.record_id)
         self.assertFalse(other["fingerprint"]["db_match"])
-        # No model is connected: the answer says so instead of making up a score.
-        self.assertEqual(seeded["deepfake"]["result"], "not_checked")
-        self.assertFalse(seeded["deepfake"]["available"])
+        self.assertNotIn("deepfake", seeded)  # fingerprint match only; no deepfake model
 
     def test_media_check_video_frames(self):
         frames = [{"t": 0.0, "data": data_url(self.unrelated)}, {"t": 0.5, "data": data_url(recompressed(self.known))}]

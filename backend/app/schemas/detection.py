@@ -44,13 +44,6 @@ class ModalityCheckResponse(BaseModel):
     reasons: list[str]
 
 
-class VideoAnalyzeResponse(BaseModel):
-    fake_score: float | None = None
-    available: bool
-    model: str
-    reasons: list[str]
-
-
 class DetectionResponse(BaseModel):
     detection_id: str
     risk_score: float | None

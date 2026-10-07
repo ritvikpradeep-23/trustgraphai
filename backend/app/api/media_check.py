@@ -3,13 +3,11 @@ extension's click-to-check on any website.
 
 Request:  {type: "image", payload: <data: URL>, hostname, timestamp, capture}
           {type: "video", payload: [{t: <seconds>, data: <data: URL>}, ...], ...}
-Response: {type, hostname, frames, frame_times,
-           deepfake: the AI boundary's answer (explicitly unavailable until a
-                     real engine is connected; no score is made up),
+Response: {type, hostname, frames, frame_times, capture,
            fingerprint: {db_match, similarity, matched_record_id, ...}}
 
-Images are decoded in memory only and never stored. The database match is a
-separate field, never blended into a model score.
+A match against the known-fakes fingerprint database only; no deepfake model
+is used. Images are decoded in memory only and never stored.
 """
 import logging
 from typing import Literal
@@ -23,11 +21,9 @@ from app.fingerprint import config
 from app.fingerprint import service as fp
 from app.fingerprint.hashing import BadImage, decode_image
 from app.fingerprint.store import NO_MATCH
-from app.services.ai_model import TrustGraphAI
 
 router = APIRouter(tags=["Media check"])
 logger = logging.getLogger("trustgraph.media")
-ai_service = TrustGraphAI()
 
 
 class MediaFrame(BaseModel):
@@ -62,11 +58,6 @@ def media_check(body: MediaCheckRequest, request: Request, db: Session = Depends
     except BadImage as exc:
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, str(exc)) from exc
 
-    model = ai_service.analyze(body.type, {"frames": len(images), "images": images})  # in memory only
-    deepfake = ({"result": "not_checked", "available": False, "reason": model.reasons[0] if model.reasons else ""}
-                if not model.available else
-                {"result": model.risk_level, "available": True, "score": model.risk_score, "reasons": model.reasons})
-
     try:
         fingerprint = fp.check_image(db, images[0]) if body.type == "image" else fp.check_frames(db, images)
     except Exception as exc:  # the database must never hide the rest of the answer
@@ -78,4 +69,4 @@ def media_check(body: MediaCheckRequest, request: Request, db: Session = Depends
                 (body.hostname or "")[:100], fingerprint["db_match"])
     return {"type": body.type, "hostname": (body.hostname or "")[:253], "frames": len(images),
             "frame_times": [f.t for f in frames], "capture": body.capture,
-            "deepfake": deepfake, "fingerprint": fingerprint}
+            "fingerprint": fingerprint}

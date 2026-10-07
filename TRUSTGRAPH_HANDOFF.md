@@ -7,7 +7,7 @@
 - `backend/run_server.py`: local launcher. Root `run_server.py` and `requirements.txt` are compatibility forwarders.
 - `trustgraph_extension/`: complete Manifest V3 extension, settings, content scripts and tests.
 - `data/`, `scripts/`, `docs/`, `tests/`: public synthetic catalog, seed/import/calibration tools, documentation and verification.
-- `ai/`: everything AI: the scam engine (`ai/src/trustgraph`) and its model files (`ai/models`), the deepfake and AI-text training, both 2-hour routines, their data, reports, tests (`ai/tests`) and docs. See `ai/README.md`. The backend reaches it only through `backend/app/ai/`.
+- `ai/`: everything AI: the scam engine (`ai/src/trustgraph`) and its model files (`ai/models`), the AI-text training, both 2-hour routines, their data, reports, tests (`ai/tests`) and docs. See `ai/README.md`. The backend reaches it only through `backend/app/ai/`.
 - `api/index.py`: the Vercel Python function; imports the FastAPI app from `backend/` (no backend code here). `api/requirements.txt` mirrors `backend/requirements.txt`.
 - `web-app/` and `browser-extension/`, if present, are older prototypes, not the canonical frontend/extension.
 
@@ -21,7 +21,7 @@ The catalog contains 300 distinct synthetic example messages: 36 authored demos 
 
 The calibrated threshold is 0.712 (71.2% text similarity). Tiers are exact (100%), very strong (90–<100%), strong (80–<90%), partial (71.2–<80%) and below threshold. Exact copies legitimately score 100%; paraphrase results vary naturally. Similarity is not a fraud probability. No match means UNKNOWN, not safe. Calibration uses 13 unseeded English paraphrases and 16 benign controls; this is not an independent accuracy evaluation and does not establish multilingual accuracy. See `docs/DEMO_SCAM_PATTERNS.md`.
 
-AI-written text and video/deepfake checks come from the trained engines in `backend/app/ai/`, behind the single `TrustGraphAI.analyze` boundary in `backend/app/services/ai_model.py`. An engine answers only when its packages are installed (`pip install -r ai/requirements-ai.txt`, kept out of the Vercel requirements) AND its trained model exists on that computer: `ai/models/text_detector/` (fine-tuned distilroberta-base, `ai/train_text.py`) and `ai/models/efficientnet_head.pt` (EfficientNet-B0 + trained real/fake layer, `ai/train_video.py`). Otherwise the exact "pending" answers are returned. No weights are committed, so the hosted deployment stays "pending". Cryptographic C2PA verification remains unavailable. Do not turn unavailable responses into invented scores. Engine and routine tests are in `ai/tests/` and are skipped when the AI packages are missing; `tests/conftest.py` hides any locally trained model from the website tests.
+The AI-written text check comes from the trained engine in `backend/app/ai/`, behind the single `TrustGraphAI.analyze` boundary in `backend/app/services/ai_model.py`. It answers only when its packages are installed (`pip install -r ai/requirements-ai.txt`, kept out of the Vercel requirements) AND its trained model exists on that computer: `ai/models/text_detector/` (fine-tuned distilroberta-base, `ai/train_text.py`). Otherwise the exact "pending" answer is returned. There is no deepfake model: the scam messaging model is the AI that is fully working, and `/api/media/check` is a known-fakes fingerprint lookup only. No weights are committed, so the hosted deployment stays "pending". Cryptographic C2PA verification remains unavailable. Do not turn unavailable responses into invented scores. Engine and routine tests are in `ai/tests/` and are skipped when the AI packages are missing; `tests/conftest.py` hides any locally trained model from the website tests.
 
 ## Backend routes and persistence
 
@@ -31,7 +31,7 @@ AI-written text and video/deepfake checks come from the trained engines in `back
 - Core: `POST /api/submit`, `POST /api/detect`, `GET /api/detections`, `GET /api/detections/{id}`, `POST /api/reports`, `GET /api/reports`, `GET /api/reports/{id}`.
 - Workspace: `/api/workspace/*`; legacy extension scoring: `POST /api/score`.
 - Extension ↔ workspace (`backend/app/api/extension_sync.py`): `POST /api/extension/pairing-code`, `POST /api/extension/pair`, `POST|GET|DELETE /api/results`, `DELETE /api/results/{id}`, `GET /api/export`, `POST /api/feedback`, `POST /api/status` (heartbeat). Results are verdict-only (no text; extra fields rejected); tokens are stored as SHA-256. See `docs/WORKSPACE_INTEGRATION.md`.
-- Optional boundaries: `POST /api/text/ai-check`, `POST /api/video/analyze`, `POST /api/provenance/analyze`.
+- Optional boundaries: `POST /api/text/ai-check`, `POST /api/provenance/analyze`.
 - Deterministic features: `POST /api/url/analyze`, `POST /api/relationships`, `GET /api/relationships`, `POST /api/media/check`.
 
 PostgreSQL only: set private `DATABASE_URL`, or `POSTGRES_URL` as fallback. Plain postgres/postgresql URLs select installed psycopg automatically. SQLAlchemy uses pooled-connection pre-ping. Never commit credentials or use a frontend VITE-prefixed database variable.
