@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="128" height="128">
   <title>TrustGraph</title>
-  <!-- The website's logo (front end/src/components/common/BrandMark.tsx):
+  <!-- TrustGraph logo (front end/src/components/common/BrandMark.tsx; same file as trustgraph_extension/icons/icon.svg):
        blue #2F66F0 rounded tile, white Lucide shield-check. -->
   <rect width="36" height="36" rx="10" fill="#2F66F0"/>
   <g transform="translate(7 7) scale(0.9167)" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
