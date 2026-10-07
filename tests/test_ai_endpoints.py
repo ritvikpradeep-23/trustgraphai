@@ -1,6 +1,5 @@
 import unittest
 from datetime import datetime, timezone
-from io import BytesIO
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
@@ -58,23 +57,6 @@ class AIDetectorEndpointTests(unittest.TestCase):
             },
         )
 
-    def test_video_endpoint_reports_unavailable_without_a_score(self):
-        response = self.client.post(
-            "/api/video/analyze",
-            files={"file": ("sample.mp4", BytesIO(b"not analyzed"), "video/mp4")},
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(),
-            {
-                "fake_score": None,
-                "available": False,
-                "model": "AI integration pending",
-                "reasons": ["Video analysis is pending AI integration; no score was produced."],
-            },
-        )
-
     def test_detect_keeps_legacy_fields_and_separates_ai_written_status(self):
         with patch("app.api.detect.find_previous_report_matches", return_value=[]):
             response = self.client.post(
@@ -103,7 +85,6 @@ class AIDetectorEndpointTests(unittest.TestCase):
             "/api/detections",
             "/api/reports",
             "/api/text/ai-check",
-            "/api/video/analyze",
         ):
             self.assertIn(path, paths)
 

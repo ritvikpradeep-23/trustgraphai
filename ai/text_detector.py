@@ -1,4 +1,4 @@
-"""Step 5: AI-written text detector (EfficientNet is not used for text).
+"""Step 5: AI-written text detector.
 
 A small pretrained language model from Hugging Face (distilroberta-base by
 default, ~82M parameters, fits easily on a laptop GPU) with a 2-class layer,

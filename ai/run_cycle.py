@@ -3,11 +3,11 @@
     python run_cycle.py
 
 Each run:
-  1. takes the NEXT UNUSED numbered test batch for video and for text
+  1. takes the NEXT UNUSED numbered test batch for the AI-written text detector
   2. scores it with the current trained detector (no training, no tuning)
   3. computes accuracy, precision, recall, F1, ROC-AUC and the confusion matrix
   4. marks the batch as used, so it is never scored again
-  5. prints a two-line summary, appends to reports/history.csv and rewrites reports/latest.md
+  5. prints a one-line summary, appends to reports/history.csv and rewrites reports/latest.md
 
 When a detector's batches run out it logs a warning and stops for that
 detector instead of reusing old ones. A detector that isn't trained yet is
@@ -72,28 +72,6 @@ def model_fingerprint(path: Path) -> str:
     return h.hexdigest()[:12]
 
 
-def score_video(rows, cfg) -> tuple[list[int], list[float], str]:
-    from video_detector import VideoDetector
-    detector = VideoDetector(cfg["video"]["model_path"])
-    labels, scores, no_face, failed = [], [], 0, 0
-    for row in rows:
-        try:
-            result = detector.score_video(row["path"])
-        except Exception as exc:  # an unreadable file is reported, not guessed
-            failed += 1
-            log.error("Could not score %s: %s", row["path"], exc)
-            continue
-        labels.append(row["label"])
-        scores.append(result["score"])
-        no_face += not result["faces_found"]
-    notes = []
-    if no_face:
-        notes.append(f"{no_face} video(s) had no detectable face (frame centres used)")
-    if failed:
-        notes.append(f"{failed} video(s) could not be read and are left out")
-    return labels, scores, "; ".join(notes)
-
-
 def score_text(rows, cfg) -> tuple[list[int], list[float], str]:
     from text_detector import TextDetector
     detector = TextDetector(cfg["text"]["model_dir"])
@@ -106,7 +84,7 @@ def run_detector(kind: str, cfg: dict) -> dict:
     manifest = load_manifest(kind)
     if manifest is None:
         return {"kind": kind, "status": "skipped", "reason": f"no test batches yet (run prepare_data.py {kind})"}
-    model_path = resolve(cfg[kind]["model_path"] if kind == "video" else cfg[kind]["model_dir"])
+    model_path = resolve(cfg[kind]["model_dir"])
     if not model_path.exists():
         return {"kind": kind, "status": "skipped", "reason": f"not trained yet ({model_path.name} missing)"}
     used = set(used_batches(kind))
@@ -122,7 +100,7 @@ def run_detector(kind: str, cfg: dict) -> dict:
         return {"kind": kind, "status": "skipped", "reason": f"{batch['name']} was modified after the split"}
 
     rows = read_csv(path)
-    labels, scores, note = (score_video if kind == "video" else score_text)(rows, cfg)
+    labels, scores, note = score_text(rows, cfg)
     if not labels:
         return {"kind": kind, "status": "skipped", "reason": f"nothing in {batch['name']} could be scored"}
     m = metrics(labels, scores)
@@ -180,7 +158,7 @@ def write_latest(results: list[dict], run_at: str, line: str):
         if r["note"]:
             out += [f"Note: {r['note']}.", ""]
     out += ["These numbers describe one small held-out batch of the prepared dataset, scored once. They are not "
-            "real-world accuracy: real videos and messages differ from any public dataset. Look at the trend in "
+            "real-world accuracy: real messages differ from any public dataset. Look at the trend in "
             "`python show_report.py`, not at one run.", ""]
     LATEST.parent.mkdir(parents=True, exist_ok=True)
     LATEST.write_text("\n".join(out), encoding="utf-8")

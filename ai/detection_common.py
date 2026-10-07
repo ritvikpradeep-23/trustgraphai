@@ -1,4 +1,4 @@
-"""Shared helpers for the deepfake-video and AI-text detectors and the routine.
+"""Shared helpers for the AI-written text detector and the accuracy routine.
 
 Kept in one small file so every script reads the config, the splits and the
 metrics the same way:
@@ -17,11 +17,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = ROOT / "detection_config.json"
-SPLITS_DIR = ROOT / "data" / "detection" / "splits"   # one sub-folder per detector: video/, text/
+SPLITS_DIR = ROOT / "data" / "detection" / "splits"   # one sub-folder per detector: text/
 REPORTS_DIR = ROOT / "reports"
 LOGS_DIR = ROOT / "logs"
-KINDS = ("video", "text")
-LABELS = {"video": ("real", "fake"), "text": ("human", "AI")}  # label 0, label 1
+KINDS = ("text",)
+LABELS = {"text": ("human", "AI")}  # label 0, label 1
 
 
 # ---------------------------------------------------------------- config
@@ -92,8 +92,8 @@ def write_json_atomic(path: Path, data):
 
 # ---------------------------------------------------------------- splits
 def group_split(rows: list[dict], fractions: dict, seed: int):
-    """Split by GROUP, not by row. A group is e.g. one person's face (video) or
-    one question with its human and AI answers (text). Keeping a group on one
+    """Split by GROUP, not by row. A group is e.g. one question with its human
+    and AI answers. Keeping a group on one
     side stops the test pool from containing near-copies of training data."""
     groups = sorted({r["group"] for r in rows})
     random.Random(seed).shuffle(groups)
@@ -173,7 +173,7 @@ def load_manifest(kind: str) -> dict | None:
 
 # ---------------------------------------------------------------- metrics
 def metrics(labels, scores, threshold: float = 0.5) -> dict:
-    """All numbers for one batch. Label 1 = fake video / AI text, and a score
+    """All numbers for one batch. Label 1 = AI-written text, and a score
     at or above the threshold counts as label 1."""
     from sklearn.metrics import (accuracy_score, confusion_matrix, f1_score, precision_score, recall_score,
                                  roc_auc_score)

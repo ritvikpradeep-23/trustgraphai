@@ -64,7 +64,7 @@ The user hovers a message on Gmail, WhatsApp Web, LinkedIn, Telegram, Discord, S
 * ⚫ **Multilingual rules** — English, Malayalam, Manglish, Hinglish and Hindi, with leetspeak and spacing tricks normalised and negation understood ("we will never ask for your OTP").
 * 🔴 **Conversation awareness** — scores runs of messages from one sender together and flags a sender whose ordinary messages suddenly turn into requests (a hacked or impersonated account).
 * ⚪ **Privacy by construction** — the stored record has no text field (a unit test fails if one is added); history export / delete anytime; no scam-report database in the extension; works offline.
-* ⚫ **Python detection engine and API (optional server)** — a four-signal scoring engine (anomaly, identity continuity, scam-wording similarity, report precedent) with a demo page, and a FastAPI backend that matches messages against reported scams and checks MP4 videos for deepfakes (EfficientNet-B0 backbone + a trainable real/fake layer).
+* ⚫ **Python detection engine and API (optional server)** — a four-signal scoring engine (anomaly, identity continuity, scam-wording similarity, report precedent) with a demo page, and a FastAPI backend that matches messages against reported scams.
 
 ---
 
@@ -88,8 +88,6 @@ Optional Python server (this repository's `app/` and `ai/src/trustgraph/`):
 
 ```text
   text  -> normalize -> embed (MiniLM) -> match explicitly reported scams -> LOW / MEDIUM / HIGH + evidence ids
-  video -> validate MP4 -> ~1 frame/s -> largest face -> EfficientNet-B0 (frozen) + real/fake layer
-        -> per-face scores -> likely_fake / likely_real / inconclusive
   detector engine: anomaly + continuity + similarity + precedent --noisy-OR--> Low / Caution / High + explanation
 ```
 
@@ -106,8 +104,8 @@ Optional Python server (this repository's `app/` and `ai/src/trustgraph/`):
 | Layer          | Technologies                             |
 | -------------- | ---------------------------------------- |
 | **Frontend**   | Chrome extension, Manifest V3, plain JavaScript (no build step), Shadow DOM, Lucide icons, bundled Space Grotesk / DM Sans / JetBrains Mono |
-| **Backend**    | Optional TrustGraph scoring server (`POST /api/score`); Python standard-library mock in `trustgraph_extension/scripts/mock_server.py`; FastAPI backend in `app/` (`/api/text/*`, `/api/video/analyze`) |
-| **AI / ML**    | Explainable weighted rule engine (`score = 1 − ∏(1 − w)` plus combination rules); pluggable `RemoteEngine` for a model server; Python engine: scikit-learn (Isolation Forest, TF-IDF), sentence-transformers all-MiniLM-L6-v2, PyTorch + Hugging Face `google/efficientnet-b0`, OpenCV face detection |
+| **Backend**    | Optional TrustGraph scoring server (`POST /api/score`); Python standard-library mock in `trustgraph_extension/scripts/mock_server.py`; FastAPI backend in `app/` (`/api/text/*`) |
+| **AI / ML**    | Explainable weighted rule engine (`score = 1 − ∏(1 − w)` plus combination rules); pluggable `RemoteEngine` for a model server; Python engine: scikit-learn (Isolation Forest, TF-IDF), sentence-transformers all-MiniLM-L6-v2, PyTorch + Hugging Face `distilroberta-base` (AI-written text) |
 | **Database**   | `chrome.storage.local` (verdict history only); web-app sync through an `ApiClient` with a built-in mock |
 | **Processing** | Unicode/leetspeak normalisation, URL heuristics (lookalike brands, punycode, shorteners, raw IPs, risky TLDs) |
 | **Deployment** | Chrome Web Store package via `scripts/build_zip.py` |
@@ -163,7 +161,6 @@ except the real-SMS row; they are not real-world accuracy:
 | Scams caught, final test of the 10-round improvement routine (used once) | 65.0% (starting engine 51.7%), 0.0% of honest messages flagged |
 | Real UK text messages wrongly flagged (4,827 honest SMS, public dataset) | 3.6–9.6% depending on the version |
 | Named demo scenarios | 18/18 scams flagged, 6/6 honest controls kept Low |
-| Deepfake video | Pipeline built and tested; no trained real/fake model yet, so no accuracy to report |
 
 Reports: `reports/2026-10-05-casual/CHANGES.md`, `reports/fast/final_summary.md`, `reports/2026-10-05-training/training_summary.md`.
 
@@ -211,8 +208,7 @@ python -m pytest                              # Python tests (or double-click ru
 
 `run_server.py` serves everything the extension and website need: the test page (`/`), the scam check
 (`POST /api/score`, which the extension already calls), the AI-written text check (`POST /api/text/ai-check`; also
-added to `/api/score` replies as `ai_written` once the text model is trained), deepfake video
-(`POST /api/video/analyze`), similar-report search (`/api/text/report`, `/api/text/analyze`) and the accuracy
+added to `/api/score` replies as `ai_written` once the text model is trained), similar-report search (`/api/text/report`, `/api/text/analyze`) and the accuracy
 routine's latest results (`GET /api/accuracy`). All endpoints are listed at `/docs`. The older
 `python ai/run_website.py` (scam check + page only) still works; don't run both, they use the same port.
 
@@ -223,11 +219,10 @@ routine's latest results (`GET /api/accuracy`). All endpoints are listed at `/do
 records how many it caught *before* learning them, learns the misses, then waits 2 hours before the next dataset. Every new version must pass the safety
 gate and goes live only when you promote it. See [`ai/docs/NEW_SCAM_LEARNING.md`](ai/docs/NEW_SCAM_LEARNING.md).
 
-Settings for the API (thresholds, video limits, `DEEPFAKE_MODE` = mine / efficientnet / both, CORS origins) are listed in
-`.env.example`. The deepfake endpoint answers `503 model_not_configured` until a trained model is installed
-(`ai/models/README.md`); it never makes up a score.
+Settings for the API (thresholds, CORS origins) are listed in `.env.example`. The AI-written text check answers
+"pending" until a trained model is installed (`ai/models/README.md`); it never makes up a score.
 
-**Deepfake video + AI-text detectors with a scheduled accuracy routine:** `ai/train_video.py`, `ai/train_text.py`,
+**AI-written text detector with a scheduled accuracy routine:** `ai/train_text.py`,
 `ai/run_cycle.py` (scores one fresh, never-reused test batch every `INTERVAL_HOURS`) and `ai/show_report.py`. Setup,
 datasets and what the numbers mean: [`ai/docs/DETECTION_ROUTINE.md`](ai/docs/DETECTION_ROUTINE.md).
 

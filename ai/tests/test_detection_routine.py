@@ -1,12 +1,11 @@
-"""Detectors + accuracy routine, end to end, without downloads.
+"""AI-written text detector + accuracy routine, end to end, without downloads.
 
-EfficientNet is an UNTRAINED B0 of the real shape and the text model is a tiny
-random RoBERTa, and the data is generated. So these tests check the plumbing
-(splits, batches used once, lock, reports, schedule), never accuracy."""
+The text model is a tiny random RoBERTa and the data is generated. So these
+tests check the plumbing (splits, batches used once, lock, reports,
+schedule), never accuracy."""
 import copy
 import csv
 import json
-import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -20,13 +19,7 @@ import run_cycle
 import show_report
 import text_detector
 import train_text
-import train_video
-import video_detector
-from app.ai import efficientnet_wrapper as effnet
 from detection_common import check_interval, group_split, make_batches
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-import try_efficientnet_modes  # noqa: E402
 
 REAL_CONFIG = detection_common.load_config()
 
@@ -35,21 +28,16 @@ REAL_CONFIG = detection_common.load_config()
 def env(tmp_path, monkeypatch):
     """Point every path at tmp_path and use small batches."""
     cfg = copy.deepcopy(REAL_CONFIG)
-    cfg["video"].update(test_batch_size=3, frames_per_video=4, model_path=str(tmp_path / "head.pt"))
     cfg["text"].update(test_batch_size=40, max_length=32, model_dir=str(tmp_path / "text_model"))
-    for module in (prepare_data, run_cycle, train_video, train_text, video_detector, text_detector):
+    for module in (prepare_data, run_cycle, train_text, text_detector):
         monkeypatch.setattr(module, "load_config", lambda c=cfg: copy.deepcopy(c))
     monkeypatch.setattr(detection_common, "SPLITS_DIR", tmp_path / "splits")
-    monkeypatch.setattr(prepare_data, "ROOT", tmp_path)
-    monkeypatch.setattr(train_video, "CACHE", tmp_path / "cache")
     monkeypatch.setattr(run_cycle, "LOGS_DIR", tmp_path / "logs")
     monkeypatch.setattr(run_cycle, "HISTORY", tmp_path / "reports" / "history.csv")
     monkeypatch.setattr(run_cycle, "LATEST", tmp_path / "reports" / "latest.md")
     monkeypatch.setattr(show_report, "HISTORY", tmp_path / "reports" / "history.csv")
     monkeypatch.setattr(show_report, "LATEST", tmp_path / "reports" / "latest.md")
     monkeypatch.setattr(show_report, "LEARNING_HISTORY", tmp_path / "reports" / "learning" / "history.csv")
-    monkeypatch.setattr(effnet, "_loaded", {})
-    try_efficientnet_modes.use_random_weights(effnet.MODEL_ID)  # no download
     return {"cfg": cfg, "tmp": tmp_path}
 
 
@@ -153,28 +141,6 @@ def test_untrained_detector_is_skipped_without_using_a_batch(env):
     assert detection_common.used_batches("text") == []
 
 
-# ---------------------------------------------------------------- video, end to end
-def test_video_train_both_stages_then_routine(env):
-    prepare_data.main(["video", "--synthetic", "30"])
-    m = train_video.main(["--epochs", "2", "--unfreeze-last", "1", "--finetune-epochs", "1",
-                          "--out", env["cfg"]["video"]["model_path"]])
-    assert 0 <= m["accuracy"] <= 1
-    saved = torch.load(env["cfg"]["video"]["model_path"], weights_only=True)
-    assert "backbone_state_dict" in saved and saved["frames"] == 4
-    result = video_detector.VideoDetector(env["cfg"]["video"]["model_path"]).score_video(
-        detection_common.read_csv(detection_common.split_dir("video") / "val.csv")[0]["path"])
-    assert 0 <= result["score"] <= 1 and result["frames"] >= 1
-    results = {r["kind"]: r for r in run_cycle.main()}
-    assert results["video"]["status"] == "ok" and results["text"]["status"] == "skipped"
-    assert history_rows(env)[0]["detector"] == "video"
-
-
-def test_frames_are_spread_over_the_whole_video(env):
-    prepare_data.main(["video", "--synthetic", "30"])
-    path = detection_common.read_csv(detection_common.split_dir("video") / "train.csv")[0]["path"]
-    assert len(video_detector.sample_frames(path, 4)) == 4  # clips have 16 frames
-
-
 # ---------------------------------------------------------------- lock, reports, schedule
 def test_overlapping_run_is_skipped(env):
     (env["tmp"] / "logs").mkdir()
@@ -191,7 +157,7 @@ def test_stale_lock_is_taken_over(env):
     lock.write_text("pid 1")
     old = time.time() - 7 * 3600
     os.utime(lock, (old, old))
-    assert [r["kind"] for r in run_cycle.main()] == ["video", "text"]
+    assert [r["kind"] for r in run_cycle.main()] == ["text"]
     assert not lock.exists()
 
 

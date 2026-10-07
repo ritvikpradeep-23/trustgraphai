@@ -1,22 +1,21 @@
 # How TrustGraph's AI works
 
-A plain-language walk-through of what happens to a message or video, from the moment it arrives to the answer you
+A plain-language walk-through of what happens to a message, from the moment it arrives to the answer you
 see. For what it can't do and how to tune it, see `CAPABILITIES_AND_LIMITS.md` in this folder.
 
 ---
 
 ## 1. The short version
 
-TrustGraph has **three separate checks**. None of them is a chatbot or a large language model you talk to, and none
+TrustGraph has **two separate checks**. None of them is a chatbot or a large language model you talk to, and none
 needs an API key.
 
 | Check | Question it answers | How | Status |
 |---|---|---|---|
 | **Scam check** | "Is this message trying to scam me?" | First looks for a matching scam report in the database. If none, the **4-signal engine** scores it. | Working, in the website and extension |
-| **Deepfake check** | "Has the face in this video been faked?" | Google's **EfficientNet-B0** turns each face into numbers; **your small trained layer** turns those into a fake score. | Built, **not trained yet** |
 | **AI-written check** | "Did an AI write this text?" | **distilroberta**, a small language model, fine-tuned to tell human from AI text. | Built, **not trained yet** |
 
-Each check works on its own. A message with a video attached gets two separate answers, not one combined verdict.
+Each check works on its own; they are not combined into one verdict. The scam check is the AI that is fully working.
 
 ---
 
@@ -38,8 +37,8 @@ Each check works on its own. A message with a video attached gets two separate a
   │                   STAGE 2: 4-signal scam engine ──► Low / Caution / High    │
   │                   (backend/app/ai/scam_engine.py → ai/src/trustgraph)       │
   │                                                                             │
-  │  Video / image ──► deepfake check  ─┐  through TrustGraphAI.analyze         │
-  │  Text          ──► AI-written check ┘  (backend/app/services/ai_model.py)   │
+  │  Text ──► AI-written check, through TrustGraphAI.analyze                    │
+  │           (backend/app/services/ai_model.py)                                │
   │                    no trained model? → "pending, no score" (never invented) │
   └─────────────────────────────────────────────────────────────────────────────┘
                      ▲ loads models from ai/models
@@ -165,7 +164,7 @@ Combined: 1 − (0.24 × 0.44) = **0.895 → Caution**, just under High.
 **"Dear customer, your parcel is held. Pay the 49 rupee customs fee at india-post-redeliver.top to release it"**
 Similarity 0.21, anomaly 0.04 → **0.236 → Low.** This is a **miss**: a calmly worded fake-delivery scam. No red flag
 fired, and the wording isn't close enough to a known script. This is exactly the kind of scam the learning routine
-(section 6) and stage 1 reports exist to catch.
+(section 5) and stage 1 reports exist to catch.
 
 ### What the extension does with it
 
@@ -175,27 +174,7 @@ message text is never stored in the extension's history.
 
 ---
 
-## 4. The deepfake check (built, not trained yet)
-
-1. **Pick frames:** 16 frames spread evenly across the whole video (not just the start).
-2. **Find the face:** OpenCV's face detector finds the largest face in each frame and crops it, with a 20% margin.
-3. **Describe the face:** **EfficientNet-B0** (by Google, downloaded once from Hugging Face, about 21 MB, no account
-   needed) turns each face into **1,280 numbers**. It was trained on everyday photos, not deepfakes. Its job is only
-   to describe the face well. It stays frozen (unchanged).
-4. **Judge the face:** **your trained layer** (one small layer, about 6 KB, `models/efficientnet_head.pt`) turns
-   those 1,280 numbers into a fake score from 0 to 1. This is the part that learns real vs fake, from labelled
-   videos.
-5. **Average:** the face scores are averaged. **0.5 or more → likely fake**, below → likely real. No face in any
-   frame → **inconclusive**, with no score.
-
-This is called **transfer learning**: a big model's general skill (describing faces), plus a small layer you train for
-your specific question. Optionally, training can also adjust EfficientNet's last few blocks, very gently.
-
-It checks faces only: no voice, no lip-sync, and no motion between frames.
-
----
-
-## 5. The AI-written check (built, not trained yet)
+## 4. The AI-written check (built, not trained yet)
 
 1. The text is split into word pieces (up to 256).
 2. **distilroberta-base** (a small language model, about 82 million parameters) reads it. Fine-tuning by
@@ -207,7 +186,7 @@ verdict. Short messages carry little evidence.
 
 ---
 
-## 6. How it gets better over time
+## 5. How it gets better over time
 
 ### The learning routine (`learn_cycle.py`, every 2 hours)
 
@@ -224,18 +203,18 @@ verdict. Short messages carry little evidence.
    (`python scripts/promote_model.py models/candidate/<version> --yes`). The website's scam check uses this engine
    too, so promoting changes its answers. Agree with your teammate first.
 
-It doesn't retrain the anomaly model, and it doesn't touch the deepfake or AI-written models.
+It doesn't retrain the anomaly model, and it doesn't touch the AI-written model.
 
 ### The accuracy routine (`run_cycle.py`, every 2 hours)
 
-It scores one **never-used** batch of labelled test data with the trained deepfake and AI-written models. It reports
+It scores one **never-used** batch of labelled test data with the trained AI-written model. It reports
 accuracy, precision, recall, F1 and ROC-AUC, then marks the batch as used forever. It never trains anything. Its job
-is to show honestly whether a retrained model really got better. It has nothing to score until you train the two
-models.
+is to show honestly whether a retrained model really got better. It has nothing to score until you train that
+model.
 
 ---
 
-## 7. Where each part lives
+## 6. Where each part lives
 
 | Part | File |
 |---|---|
@@ -244,12 +223,12 @@ models.
 | Live model files | `models/anomaly_isolation_forest.joblib`, `models/risk_bands.json` |
 | Website ↔ engine bridge | `backend/app/ai/scam_engine.py` (repository root) |
 | Stage 1 report matching | `backend/app/services/previous_report_matcher.py` (repository root) |
-| Deepfake and AI-written code | `backend/app/ai/` (repository root); training: `train_video.py`, `train_text.py` |
+| AI-written code | `backend/app/ai/` (repository root); training: `train_text.py` |
 | Routines | `learn_cycle.py`, `run_cycle.py`, settings in `detection_config.json` |
 
 ---
 
-## 8. What to keep in mind
+## 7. What to keep in mind
 
 - **Almost all the numbers are synthetic data.** On a locked synthetic test, the live engine caught about **52%** of
   scams, and the best improved version (not live) about **65%**. On 4,827 real UK text messages, it wrongly flagged
@@ -259,4 +238,4 @@ models.
   friendly openers with no request yet are missed most.
 - **A text message alone gives two of the four signals (continuity, precedent) almost nothing to work with.** They
   need contact history and a real reports database.
-- **The deepfake and AI-written checks give no scores until you train them** on real data (Celeb-DF, HC3).
+- **The AI-written check gives no scores until you train it** on real data (HC3).
